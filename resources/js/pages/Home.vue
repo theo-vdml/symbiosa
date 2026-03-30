@@ -3,6 +3,7 @@ import { Head } from '@inertiajs/vue3';
 import Header from '@/components/Header.vue';
 import UpcomingEvent from '@/components/UpcomingEvent.vue';
 import NewsSection from '@/components/NewsSection.vue';
+import MaximSection from '@/components/MaximSection.vue';
 import SpotifyPlaylist from '@/components/SpotifyPlaylist.vue';
 import BentoGallery from '@/components/BentoGallery.vue';
 import Footer from '@/components/Footer.vue';
@@ -44,6 +45,8 @@ import Footer from '@/components/Footer.vue';
         />
 
         <NewsSection />
+
+        <MaximSection />
 
         <SpotifyPlaylist />
 
