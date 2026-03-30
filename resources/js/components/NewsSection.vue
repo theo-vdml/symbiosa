@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AppButton from '@/components/AppButton.vue';
 import { Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
@@ -59,15 +60,21 @@ const secondaryNews = computed(() => newsList.slice(1));
                     </h2>
                 </div>
 
-                <Link
+                <div class="hidden md:block">
+                  <AppButton
                     href="/news"
-                    class="hidden md:flex items-center gap-2 text-gray-400 hover:text-white transition-colors duration-300 group font-medium"
-                >
+                    variant="ghost"
+                    size="md"
+                    className="text-gray-400 hover:text-white"
+                  >
                     Toutes les actualités
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 transition-transform group-hover:translate-x-1">
+                    <template #right-icon>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 transition-transform group-hover:translate-x-1">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                    </svg>
-                </Link>
+                      </svg>
+                    </template>
+                  </AppButton>
+                </div>
             </div>
 
             <!-- News Grid -->
@@ -126,13 +133,20 @@ const secondaryNews = computed(() => newsList.slice(1));
             </div>
 
             <!-- Mobile CTA -->
-            <div class="mt-12 md:hidden">
-                <Link
-                    href="/news"
-                    class="flex items-center justify-center gap-2 py-4 border border-white/10 rounded-full text-white font-bold hover:bg-white hover:text-black transition-all duration-300"
-                >
-                    Toutes les actualités
-                </Link>
+            <div class="mt-12 flex justify-center md:hidden">
+              <AppButton
+                href="/news"
+                variant="primary"
+                size="md"
+                className="w-full"
+              >
+                Toutes les actualités
+                <template #right-icon>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 transition-transform group-hover:translate-x-1">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                  </svg>
+                </template>
+              </AppButton>
             </div>
         </div>
     </section>

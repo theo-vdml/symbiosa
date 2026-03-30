@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
+import AppButton from '@/components/AppButton.vue';
 
 interface Props {
   eventTitle: string;
@@ -68,30 +68,64 @@ defineProps<Props>();
 
         <!-- CTAs -->
         <div class="flex flex-col sm:flex-row gap-6 pt-4">
-          <Link
+          <AppButton
             :href="ticketLink"
-            class="px-10 py-5 bg-[#c80a45] text-white font-bold rounded-full text-center hover:bg-[#a6083a] transition-colors duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(200,10,69,0.4)]"
+            variant="primary"
+            size="lg"
           >
+            <template #left-icon>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-12v.75m0 3v.75m0 3v.75m0 3V18M3.75 6.75h16.5M3.75 9.75h16.5M3.75 12.75h16.5M3.75 15.75h16.5M12 6.75v10.5m-3.75-10.5v10.5m7.5-10.5v10.5" />
+              </svg>
+            </template>
             Acheter un ticket
-          </Link>
-          <Link
+          </AppButton>
+          <AppButton
             :href="moreInfoLink"
-            class="px-10 py-5 border-2 border-white/20 text-white font-bold rounded-full text-center hover:bg-white hover:text-black transition-all duration-300"
+            variant="outline"
+            size="lg"
           >
+            <template #left-icon>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+              </svg>
+            </template>
             Plus d'informations
-          </Link>
+          </AppButton>
         </div>
 
-        <Link
-          :href="calendarLink"
-          class="inline-flex items-center gap-2 text-gray-500 hover:text-white font-medium transition-colors duration-300 group"
-        >
-          Voir tout le calendrier
+        <div class="md:block hidden">
+          <AppButton
+            :href="calendarLink"
+            variant="ghost"
+            className="justify-start px-0 hover:bg-transparent text-gray-400 hover:text-white"
+          >
+            Voir tout le calendrier
+            <template #right-icon>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 transition-transform group-hover:translate-x-1">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+              </svg>
+            </template>
+          </AppButton>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile CTA -->
+    <div class="mt-12 flex justify-center md:hidden">
+      <AppButton
+        :href="calendarLink"
+        variant="primary"
+        size="md"
+        className="w-full"
+      >
+        Voir tout le calendrier
+        <template #right-icon>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 transition-transform group-hover:translate-x-1">
             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
           </svg>
-        </Link>
-      </div>
+        </template>
+      </AppButton>
     </div>
   </section>
 </template>
