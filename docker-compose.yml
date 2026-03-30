@@ -1,0 +1,38 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: symbiosa-db
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 5s
+      retries: 10
+    environment:
+      MYSQL_DATABASE: symbiosa_db
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./cms/database:/var/lib/mysql
+
+  directus:
+    image: directus/directus:11.14.1
+    container_name: symbiosa-directus
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    ports:
+      - "8055:8055"
+    volumes:
+      - ./cms/uploads:/directus/uploads
+      - ./cms/extensions:/directus/extensions
+    environment:
+      SECRET: "XSAwwUlVE5XRdu8CeDwpHnGkQ1+MmWTT2t2PRzYc0Jk="
+      DB_CLIENT: "mysql"
+      DB_HOST: "db"
+      DB_PORT: "3306"
+      DB_DATABASE: "symbiosa_db"
+      DB_USER: "root"
+      DB_PASSWORD: "root"
+      WEBSOCKETS_ENABLED: "true"
