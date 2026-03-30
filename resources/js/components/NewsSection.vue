@@ -16,7 +16,7 @@ const newsList: NewsItem[] = [
         id: 1,
         title: "Le festival EDEN 2026 : Ce qu'il faut savoir sur cette édition exceptionnelle",
         description: "Plongez au cœur de l'expérience Symbiosa pour cette édition exceptionnelle à Gembloux. Découvrez la programmation complète et les nouveautés de cette année qui s'annonce mémorable pour tous les passionnés de musique électronique.",
-        image: "https://picsum.photos/800/600?random=1",
+        image: "/photo_07.jpg",
         date: "Mars 2026",
         category: "Annonce"
     },
@@ -24,7 +24,7 @@ const newsList: NewsItem[] = [
         id: 2,
         title: "Nouveau Soundsystem Révolutionnaire",
         description: "Une immersion sonore inédite grâce à notre nouveau partenariat technique avec les plus grands ingénieurs du son actuels pour une clarté absolue.",
-        image: "https://picsum.photos/400/300?random=2",
+        image: "/photo_08.jpg",
         date: "Février 2026",
         category: "Technique"
     },
@@ -32,7 +32,7 @@ const newsList: NewsItem[] = [
         id: 3,
         title: "Aftermovie 2025 disponible maintenant",
         description: "Revivez les meilleurs moments de l'édition précédente en vidéo haute définition avec des interviews exclusives des artistes.",
-        image: "https://picsum.photos/400/300?random=3",
+        image: "/photo_09.jpg",
         date: "Janvier 2026",
         category: "Média"
     }

@@ -12,6 +12,10 @@
     --font-synonym: "Synonym", sans-serif;
 }
 
+html {
+    background: linear-gradient(to bottom, #000000 50%, #ffffff 50%) fixed;
+}
+
 body {
-    background: black;
+    background: white;
 }
