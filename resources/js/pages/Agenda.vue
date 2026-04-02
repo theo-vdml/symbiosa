@@ -153,7 +153,7 @@ function getDateParts(isoDate: string) {
         ></div>
 
         <main
-            class="relative z-10 mx-auto max-w-7xl px-6 pt-40 pb-24 md:px-12 lg:px-24"
+            class="relative z-10 mx-auto max-w-6xl px-6 pt-34 pb-24 md:px-10 lg:px-14"
         >
             <section class="mb-14 space-y-4 text-center md:text-left">
                 <p
