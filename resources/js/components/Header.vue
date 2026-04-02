@@ -4,15 +4,15 @@ import { Link } from '@inertiajs/vue3';
 </script>
 <template>
     <nav
-        class="fixed top-0 left-0 z-50 flex w-full items-center justify-between p-12 mix-blend-difference"
+        class="fixed top-0 left-0 z-50 flex w-full items-center justify-between p-12 mix-blend-difference pointer-events-none"
     >
         <Link href="/">
-            <span class="cursor-pointer font-chillax text-2xl text-white">
+            <span class="cursor-pointer font-chillax text-2xl text-white pointer-events-auto">
                 Symbiosa
             </span>
         </Link>
 
-        <div class="hidden md:block">
+        <div class="hidden md:block pointer-events-auto">
             <ul
                 class="flex items-center gap-8 font-synonym text-sm font-medium tracking-widest text-white uppercase"
             >
