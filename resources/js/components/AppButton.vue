@@ -34,22 +34,29 @@ const variantClasses = {
 
 const sizeClasses = {
     sm: 'px-4 py-2 text-sm',
-    md: 'px-8 py-4 text-base tracking-wide uppercase',
-    lg: 'px-8 py-4 text-sm font-bold tracking-wide uppercase',
+    md: 'px-8 py-4 text-sm tracking-wide uppercase',
+    lg: 'px-8 py-4 text-base font-bold tracking-wide uppercase',
 };
 
-const baseClasses = 'group inline-flex items-center justify-center gap-2 font-bold rounded-full transition-all duration-300';
+const baseClasses =
+    'group inline-flex items-center justify-center gap-2 font-bold rounded-full transition-all duration-300';
 </script>
 
 <template>
     <component
         :is="componentType"
         :href="href"
-        :class="cn(baseClasses, variantClasses[variant], sizeClasses[size], className)"
+        :class="
+            cn(
+                baseClasses,
+                variantClasses[variant],
+                sizeClasses[size],
+                className,
+            )
+        "
     >
         <slot name="left-icon" />
         <slot />
         <slot name="right-icon" />
     </component>
 </template>
-

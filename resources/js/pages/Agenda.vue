@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
+import AppButton from '@/components/AppButton.vue';
 
 interface AgendaEvent {
     id: number;
@@ -71,6 +72,8 @@ const events: AgendaEvent[] = [
     },
 ];
 
+
+
 const futureEvents = computed(() => {
     const now = new Date();
     return [...events].filter((event) => new Date(event.isoDate) >= now);
@@ -80,8 +83,7 @@ const selectedTypes = ref<string[]>([]);
 const selectedGenres = ref<string[]>([]);
 
 const hasFilters = computed(() => {
-    return selectedGenres.value.length > 0 ||
-        selectedTypes.value.length > 0
+    return selectedGenres.value.length > 0 || selectedTypes.value.length > 0;
 });
 
 const filteredFutureEvents = computed(() => {
@@ -96,7 +98,15 @@ const filteredFutureEvents = computed(() => {
     });
 });
 
-function toggleFilter(group: 'type' | 'genre', value: string | null = null) {
+function toggleFilter(
+    group: 'type' | 'genre' | null = null,
+    value: string | null = null,
+) {
+    if (group === null) {
+        selectedTypes.value = [];
+        selectedGenres.value = [];
+        return;
+    }
     const source = group === 'type' ? typeOptions : genreOptions;
     const target = group === 'type' ? selectedTypes : selectedGenres;
     if (value === null || !source.includes(value)) {
@@ -131,7 +141,7 @@ function getDateParts(isoDate: string) {
 
     <Header />
 
-    <div class="relative z-10 overflow-hidden rounded-b-[6rem] bg-black">
+    <div class="relative z-10 overflow-hidden rounded-b-[6rem] bg-black min-h-[120vh]">
         <div
             class="pointer-events-none absolute inset-0 bg-linear-to-b from-black via-black to-black"
         ></div>
@@ -232,6 +242,7 @@ function getDateParts(isoDate: string) {
 
             <section
                 class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3"
+                v-if="filteredFutureEvents.length >= 1"
             >
                 <Link
                     v-for="event in filteredFutureEvents"
@@ -317,6 +328,34 @@ function getDateParts(isoDate: string) {
                         </div>
                     </div>
                 </Link>
+            </section>
+            <section
+                v-else
+                class="flex flex-col items-center justify-center py-20 text-center"
+            >
+                <h2 class="font-chillax text-3xl text-white md:text-4xl">
+                    {{
+                        hasFilters
+                            ? 'Aucun résultat trouvé'
+                            : 'Aucun événement à venir'
+                    }}
+                </h2>
+                <p class="mt-4 max-w-sm text-gray-400">
+                    {{
+                        hasFilters
+                            ? 'Essaie de réinitialiser les filtres pour voir tous les événements à venir.'
+                            : "Reste à l'affût, de nouveaux événements seront annoncés bientôt !"
+                    }}
+                </p>
+                <AppButton
+                    v-if="hasFilters"
+                    @click="toggleFilter()"
+                    variant="primary"
+                    size="md"
+                    class="mt-8 cursor-pointer"
+                >
+                    Réinitialiser les filtres
+                </AppButton>
             </section>
         </main>
     </div>
