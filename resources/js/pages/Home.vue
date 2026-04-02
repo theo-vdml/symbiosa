@@ -38,10 +38,10 @@ import Footer from '@/components/Footer.vue';
             eventTitle="EDEN"
             eventDate="Samedi 28 Octobre 2026"
             eventLocation="Gembloux, Belgique"
-            eventImage="/eden_poster.png"
+            eventImage="/eden_poster_light.png"
             ticketLink="/tickets/eden"
             moreInfoLink="/events/eden"
-            calendarLink="/events"
+            calendarLink="/agenda"
         />
 
         <NewsSection />

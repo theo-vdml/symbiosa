@@ -1,5 +1,7 @@
 <script setup lang="ts">
 
+    import { Link } from '@inertiajs/vue3';
+
     defineProps<{
         to: string
         label: string
@@ -9,10 +11,10 @@
 
 <template>
     <li class="group relative overflow-hidden py-1">
-        <a
+        <Link
             :href="to"
             class="transition-colors hover:text-white"
-            >{{ label }}</a
+            >{{ label }}</Link
         >
         <span
             class="absolute bottom-0 left-0 h-px w-full translate-x-[-101%] bg-white transition-transform duration-300 group-hover:translate-x-0"

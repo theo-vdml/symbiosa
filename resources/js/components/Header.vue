@@ -1,22 +1,24 @@
 <script setup lang="ts">
 import NavItem from '@/components/NavItem.vue';
+import { Link } from '@inertiajs/vue3';
 </script>
 <template>
     <nav
         class="fixed top-0 left-0 z-50 flex w-full items-center justify-between p-12 mix-blend-difference"
     >
-        <div>
+        <Link href="/">
             <span class="cursor-pointer font-chillax text-2xl text-white">
                 Symbiosa
             </span>
-        </div>
+        </Link>
 
         <div class="hidden md:block">
             <ul
                 class="flex items-center gap-8 font-synonym text-sm font-medium tracking-widest text-white uppercase"
             >
-                <NavItem to="#" label="Calendrier" />
+                <NavItem to="/agenda" label="Calendrier" />
                 <NavItem to="#" label="Archives" />
+                <NavItem to="#" label="Actualité" />
                 <NavItem to="#" label="A Propos" />
                 <NavItem to="#" label="Contact" />
             </ul>

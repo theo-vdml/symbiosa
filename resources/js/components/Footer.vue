@@ -9,7 +9,7 @@ import { Link } from '@inertiajs/vue3';
                 <!-- Left Column: Navigation -->
                 <div class="flex flex-col space-y-1 text-center md:text-left">
                     <Link href="/" class="text-base cursor-pointer transition-colors hover:underline">Home</Link>
-                    <Link href="/calendar" class="text-base cursor-pointer transition-colors hover:underline">Calendrier</Link>
+                    <Link href="/agenda" class="text-base cursor-pointer transition-colors hover:underline">Calendrier</Link>
                     <Link href="/archives" class="text-base cursor-pointer transition-colors hover:underline">Archives</Link>
                     <Link href="/about" class="text-base cursor-pointer transition-colors hover:underline">A propos</Link>
                     <Link href="/contact" class="text-base cursor-pointer transition-colors hover:underline">Contact</Link>

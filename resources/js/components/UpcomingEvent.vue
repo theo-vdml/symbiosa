@@ -8,14 +8,13 @@ interface Props {
   eventImage: string;
   ticketLink: string;
   moreInfoLink: string;
-  calendarLink: string;
 }
 
 defineProps<Props>();
 </script>
 
 <template>
-  <section class="relative bg-black py-24 px-12 lg:px-32 overflow-hidden">
+  <section class="relative bg-black pb-24 pt-48 px-12 lg:px-32 overflow-hidden">
     <!-- Horizontal Glow Orb spanning across the section -->
     <div
         class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[500px] bg-[#c80a45] rounded-[100%] blur-[160px] opacity-25 pointer-events-none"
@@ -39,13 +38,13 @@ defineProps<Props>();
           <div class="flex items-center gap-4 justify-center md:justify-start">
             <div class="h-px w-8 bg-[#c80a45]"></div>
             <span class="text-[#c80a45] text-sm font-bold tracking-[0.3em] uppercase">
-                Prochain Événement
+                Coming Soon
             </span>
           </div>
           <h2 class="text-6xl md:text-8xl font-chillax font-bold text-white leading-tight">
             {{ eventTitle }}
           </h2>
-          <div class="flex flex-col space-y-4 text-2xl text-gray-400 font-medium">
+          <div class="flex flex-col space-y-4 text-xl text-gray-400 font-medium">
             <div class="flex items-center gap-4">
               <span class="w-8 h-8 flex items-center justify-center text-[#c80a45]">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -96,7 +95,7 @@ defineProps<Props>();
 
         <div class="md:block hidden">
           <AppButton
-            :href="calendarLink"
+            href="/agenda"
             variant="ghost"
             className="justify-start px-0 hover:bg-transparent text-gray-400 hover:text-white"
           >
