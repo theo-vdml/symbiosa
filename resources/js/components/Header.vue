@@ -18,7 +18,7 @@ import { Link } from '@inertiajs/vue3';
             >
                 <NavItem to="/agenda" label="Calendrier" />
                 <NavItem to="/archives" label="Archives" />
-                <NavItem to="#" label="Actualité" />
+                <NavItem to="/news" label="Actualité" />
                 <NavItem to="#" label="A Propos" />
                 <NavItem to="#" label="Contact" />
             </ul>
