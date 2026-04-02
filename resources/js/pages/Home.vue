@@ -17,7 +17,7 @@ import Footer from '@/components/Footer.vue';
     <div class="relative z-10 rounded-b-[6rem] overflow-hidden bg-black">
         <div class="relative h-screen w-full overflow-hidden">
             <video
-                src="/aftermovie.mp4"
+                src="/abstract.mp4"
                 autoplay
                 loop
                 muted
@@ -26,7 +26,7 @@ import Footer from '@/components/Footer.vue';
             ></video>
 
             <div
-                class="absolute inset-0 z-0 bg-black/40 backdrop-blur-xs"
+                class="absolute inset-0 z-0 bg-black/60 backdrop-blur-sm"
             ></div>
 
             <div class="relative z-10 flex h-full items-center justify-center">

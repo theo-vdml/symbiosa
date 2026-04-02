@@ -17,7 +17,7 @@ import { Link } from '@inertiajs/vue3';
                 class="flex items-center gap-8 font-synonym text-sm font-medium tracking-widest text-white uppercase"
             >
                 <NavItem to="/agenda" label="Calendrier" />
-                <NavItem to="#" label="Archives" />
+                <NavItem to="/archives" label="Archives" />
                 <NavItem to="#" label="Actualité" />
                 <NavItem to="#" label="A Propos" />
                 <NavItem to="#" label="Contact" />
