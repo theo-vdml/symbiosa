@@ -27,7 +27,7 @@
             genres: ['House'],
             isoDate: '2026-10-28T20:00:00+02:00',
             location: 'Gembloux, Belgique',
-            image: '/eden_poster_light.png',
+            image: '/origins/poster_light.png',
             infoLink: '/events/eden-opening',
         },
         {
@@ -37,7 +37,7 @@
             genres: ['House', 'Techno'],
             isoDate: '2026-11-18T20:00:00+01:00',
             location: 'Gembloux, Belgique',
-            image: '/eden_poster_light.png',
+            image: '/origins/poster_light.png',
             infoLink: '/events/eden-night-01',
         },
         {
@@ -47,7 +47,7 @@
             genres: ['Techno', 'Hardstyle'],
             isoDate: '2026-12-16T20:00:00+01:00',
             location: 'Gembloux, Belgique',
-            image: '/eden_poster_light.png',
+            image: '/origins/poster_light.png',
             infoLink: '/events/eden-night-02',
         },
         {
@@ -57,7 +57,7 @@
             genres: ['Techno'],
             isoDate: '2027-01-20T20:00:00+01:00',
             location: 'Gembloux, Belgique',
-            image: '/eden_poster_light.png',
+            image: '/origins/poster_light.png',
             infoLink: '/events/eden-winter-session',
         },
         {
@@ -67,7 +67,7 @@
             genres: ['House'],
             isoDate: '2027-03-17T20:00:00+01:00',
             location: 'Gembloux, Belgique',
-            image: '/eden_poster_light.png',
+            image: '/origins/poster_light.png',
             infoLink: '/events/eden-spring-session',
         },
     ];
