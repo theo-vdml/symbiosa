@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Posts\Schemas;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Utilities\Set;
@@ -14,6 +15,14 @@ class PostForm
     {
         return $schema
             ->components([
+                FileUpload::make('thumbnail')
+                    ->columnSpanFull()
+                    ->image()
+                    ->directory('posts/thumbnails')
+                    ->imageEditor()
+                    ->imagePreviewHeight(600)
+                    ->helperText('Image de couverture de l\'article. Recommandé : 1200x630px.'),
+
                 TextInput::make('title')
                     ->columnSpanFull()
                     ->required()

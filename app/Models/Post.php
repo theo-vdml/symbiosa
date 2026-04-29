@@ -10,5 +10,6 @@ class Post extends Model
         'title',
         'slug',
         'content',
+        'thumbnail',
     ];
 }
