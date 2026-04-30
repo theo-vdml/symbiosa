@@ -21,7 +21,10 @@ class CategoryResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
 
-    protected static string|UnitEnum|null $navigationGroup = 'News';
+    protected static string|UnitEnum|null $navigationGroup = 'Actualités';
+
+    protected static ?string $modelLabel = 'Catégorie';
+    protected static ?string $pluralModelLabel = 'Catégories';
 
     public static function form(Schema $schema): Schema
     {

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Posts\Tables;
 
+use App\Enums\PostStatus;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -18,20 +19,30 @@ class PostsTable
         return $table
             ->columns([
                 ImageColumn::make('thumbnail')
-                    ->label('Thumbnail')
+                    ->label('Vignette')
                     ->square(),
                 TextColumn::make('title')
+                    ->label('Titre')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('category.name')
-                    ->label('Category')
+                TextColumn::make('status')
+                    ->label('Statut')
                     ->badge()
                     ->sortable(),
-                TextColumn::make('slug'),
+                TextColumn::make('category.name')
+                    ->label('Catégorie')
+                    ->badge()
+                    ->sortable(),
+                TextColumn::make('published_at')
+                    ->label('Publié le')
+                    ->dateTime()
+                    ->sortable(),
             ])
             ->filters([
+                SelectFilter::make('status')
+                    ->options(PostStatus::class),
                 SelectFilter::make('category_id')
-                    ->label('Category')
+                    ->label('Catégorie')
                     ->relationship('category', 'name'),
             ])
             ->recordActions([

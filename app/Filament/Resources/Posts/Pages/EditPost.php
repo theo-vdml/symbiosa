@@ -14,8 +14,8 @@ class EditPost extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            ViewAction::make(),
-            DeleteAction::make(),
+            ViewAction::make()->icon('heroicon-o-eye')->label('Mode lecture'),
+            DeleteAction::make()->icon('heroicon-o-trash')->label('Supprimer'),
         ];
     }
 }
