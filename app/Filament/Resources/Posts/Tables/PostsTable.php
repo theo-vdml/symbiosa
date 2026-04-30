@@ -11,6 +11,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use TinusG\FilamentHoverImageColumn\HoverImageColumn;
 
 class PostsTable
 {
@@ -18,7 +19,7 @@ class PostsTable
     {
         return $table
             ->columns([
-                ImageColumn::make('thumbnail')
+                HoverImageColumn::make('thumbnail')
                     ->label('Vignette')
                     ->square(),
                 TextColumn::make('title')
