@@ -15,4 +15,17 @@ class Event extends Model
         'date' => 'date',
         'faq' => 'array',
     ];
+
+    public function sponsors()
+    {
+        return $this->belongsToMany(Sponsor::class)
+            ->withPivot('sort_order')
+            ->withTimestamps()
+            ->orderBy('event_sponsor.sort_order');
+    }
+
+    public function eventSponsors()
+    {
+        return $this->hasMany(EventSponsor::class);
+    }
 }

@@ -2,14 +2,17 @@
 
 namespace App\Filament\Resources\Events\Schemas;
 
+use App\Models\Sponsor;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
+use Filament\Forms\Components\ViewField;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
@@ -199,6 +202,89 @@ class EventForm
                                                     ->rows(1)
                                                     ->required()
                                             ])
+                                    ])
+                            ]),
+
+                        Tab::make('Sponsors')
+                            ->icon(Heroicon::Heart)
+                            ->schema([
+                                Section::make('Sponsors de l\'événement')
+                                    ->description('Gérez les sponsors associés à cet événement')
+                                    ->schema([
+                                        Repeater::make('eventSponsors')
+                                            ->hiddenLabel()
+                                            ->relationship()
+                                            ->addActionLabel('Ajouter un sponsor')
+                                            ->schema([
+                                                ViewField::make('sponsor_id')
+                                                    ->label('Aperçu du sponsor')
+                                                    ->view('filament.forms.components.sponsor-preview')
+                                                    ->columnSpanFull(),
+
+                                                Select::make('sponsor_id')
+                                                    ->hiddenLabel()
+                                                    ->relationship('sponsor', 'name')
+                                                    ->preload()
+                                                    ->placeholder('Sélectionnez un sponsor')
+                                                    ->searchable()
+                                                    ->selectablePlaceholder(false)
+                                                    ->required()
+                                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                                                    ->prefixIcon('heroicon-m-briefcase')
+                                                    ->createOptionForm([
+                                                        TextInput::make('name')
+                                                            ->label('Nom du sponsor')
+                                                            ->required(),
+                                                        FileUpload::make('logo')
+                                                            ->label('Logo du sponsor')
+                                                            ->image()
+                                                            ->disk('public')
+                                                            ->visibility('public')
+                                                            ->directory('sponsors/logos')
+                                                            ->required(),
+                                                        TextInput::make('website')
+                                                            ->label('Site web')
+                                                            ->url()
+                                                            ->prefixIcon('heroicon-m-globe-alt'),
+                                                        Textarea::make('description')
+                                                            ->label('Description')
+                                                            ->autosize()
+                                                            ->columnSpanFull(),
+                                                    ])
+                                                    ->editOptionForm([
+                                                        TextInput::make('name')
+                                                            ->label('Nom du sponsor')
+                                                            ->required(),
+                                                        FileUpload::make('logo')
+                                                            ->label('Logo du sponsor')
+                                                            ->image()
+                                                            ->disk('public')
+                                                            ->visibility('public')
+                                                            ->directory('sponsors/logos')
+                                                            ->required(),
+                                                        TextInput::make('website')
+                                                            ->label('Site web')
+                                                            ->url()
+                                                            ->prefixIcon('heroicon-m-globe-alt'),
+                                                        Textarea::make('description')
+                                                            ->label('Description')
+                                                            ->autosize()
+                                                            ->columnSpanFull(),
+                                                    ])
+                                                    ->live(),
+                                            ])
+                                            ->itemLabel(
+                                                fn(array $state): ?string =>
+                                                isset($state['sponsor_id'])
+                                                    ? Sponsor::find($state['sponsor_id'])?->name
+                                                    : 'Nouveau Sponsor'
+                                            )
+                                            ->defaultItems(0)
+                                            ->reorderable()
+                                            ->orderColumn('sort_order')
+                                            ->grid(2)
+
+
                                     ])
                             ])
 
