@@ -21,6 +21,7 @@ class PostsTable
             ->columns([
                 HoverImageColumn::make('thumbnail')
                     ->label('Vignette')
+                    ->disk('public')
                     ->square(),
                 TextColumn::make('title')
                     ->label('Titre')

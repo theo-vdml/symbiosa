@@ -7,6 +7,7 @@ use App\Filament\Resources\Posts\Actions\PostStatusActions;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Actions;
@@ -37,6 +38,8 @@ class PostForm
                                     ->label('Vignette')
                                     ->columnSpanFull()
                                     ->image()
+                                    ->disk('public')
+                                    ->visibility('public')
                                     ->directory('posts/thumbnails')
                                     ->imageEditor()
                                     ->imagePreviewHeight(600)
@@ -71,6 +74,12 @@ class PostForm
                                     ->alphaDash()
                                     ->prefix('https://symbiosa.be/news/')
                                     ->helperText('Généré automatiquement à partir du titre. Ne doit contenir que des tirets.'),
+
+                                Textarea::make('excerpt')
+                                    ->label('Extrait')
+                                    ->autosize()
+                                    ->required()
+                                    ->helperText('Un court résumé de l\'article. Affiché sur la page d\'accueil et les listes d\'articles.'),
 
                                 RichEditor::make('content')
                                     ->label('Contenu de l\'article')
