@@ -21,7 +21,7 @@ class EventResource extends Resource
 {
     protected static ?string $model = Event::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::CalendarDays;
 
     protected static string|UnitEnum|null $navigationGroup = 'Gestion des événements';
     protected static string|null $modelLabel = 'Événement';
