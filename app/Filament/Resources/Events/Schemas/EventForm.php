@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Events\Schemas;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -32,6 +33,7 @@ class EventForm
                                     ->schema([
                                         TextInput::make('title')
                                             ->label('Titre')
+                                            ->prefixIcon(Heroicon::PencilSquare)
                                             ->placeholder('Donnez un nom à l\'événement')
                                             ->required()
                                             ->columnSpanFull(),
@@ -170,6 +172,36 @@ class EventForm
                                             ]),
                                     ])
                             ]),
+
+                        Tab::make('FAQ')
+                            ->icon('heroicon-o-question-mark-circle')
+                            ->schema([
+                                Section::make('Foire aux questions')
+                                    ->description('Ajoutez des questions fréquentes pour aider les participants')
+                                    ->schema([
+                                        Repeater::make('faq')
+                                            ->hiddenLabel()
+                                            ->addActionLabel('Ajouter une question')
+                                            ->deleteAction(
+                                                fn(Action $action) => $action->requiresConfirmation(),
+                                            )
+                                            ->schema([
+                                                TextInput::make('question')
+                                                    ->label('Question')
+                                                    ->placeholder('Entrez une question fréquente')
+                                                    ->required()
+                                                    ->prefixIcon(Heroicon::QuestionMarkCircle),
+
+                                                Textarea::make('answer')
+                                                    ->label('Réponse')
+                                                    ->placeholder('Entrez la réponse à cette question')
+                                                    ->autosize()
+                                                    ->rows(1)
+                                                    ->required()
+                                            ])
+                                    ])
+                            ])
+
                     ]),
             ]);
     }
