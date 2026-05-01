@@ -26,9 +26,9 @@
             </div>
         </div>
 
-        <UpcomingEvent eventTitle="ORIGIN" eventDate="Samedi 28 Octobre 2026" eventLocation="Gembloux, Belgique"
-            eventImage="/origins/poster_light.png" ticketLink="/tickets/eden" moreInfoLink="/events/eden"
-            calendarLink="/agenda" />
+        <UpcomingEvent eventTitle="Origins" eventDate="28 Octobre 2026" eventDay="Samedi" eventCity="Gembloux"
+            eventCountry="Belgique" eventImage="/origins/poster_light.png" ticketLink="/tickets/eden"
+            moreInfoLink="/events/eden" calendarLink="/agenda" />
 
         <NewsSection />
 
