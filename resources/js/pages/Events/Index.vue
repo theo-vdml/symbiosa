@@ -5,6 +5,32 @@
     import Footer from '@/components/Footer.vue';
     import AppButton from '@/components/AppButton.vue';
 
+    interface Event {
+        id: number;
+        title: string;
+        date: string;
+        start_time: string;
+        end_time: string;
+        city: string;
+        country: string;
+        address: string;
+        dress_code: string;
+        minimum_age: number;
+        description: string;
+        background: string;
+        poster: string;
+        created_at: string;
+        updated_at: string;
+        faq: {
+            question: string;
+            answer: string;
+        }[];
+    }
+
+    const props = defineProps<{
+        events: Event[];
+    }>();
+
     interface AgendaEvent {
         id: number;
         title: string;
@@ -258,7 +284,7 @@
                                 </svg>
                                 <span class="truncate">{{
                                     event.location
-                                    }}</span>
+                                }}</span>
                             </p>
                         </div>
                     </div>

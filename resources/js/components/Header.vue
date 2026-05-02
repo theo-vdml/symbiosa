@@ -1,5 +1,6 @@
 <script setup lang="ts">
     import NavItem from '@/components/NavItem.vue';
+    import events from '@/routes/events';
     import { Link } from '@inertiajs/vue3';
 </script>
 <template>
@@ -8,7 +9,7 @@
 
         <div class="hidden md:block pointer-events-auto w-full">
             <ul class="flex items-center gap-8 font-synonym text-sm font-medium tracking-widest text-white uppercase">
-                <NavItem to="/agenda" label="Calendrier" />
+                <NavItem :to="events.index.url()" label="Calendrier" />
                 <NavItem to="/archives" label="Archives" />
             </ul>
         </div>
@@ -29,8 +30,8 @@
         </div>
 
         <div class="flex flex-col gap-1.5 md:hidden">
-            <div class="h-[1px] w-6 bg-white"></div>
-            <div class="h-[1px] w-6 bg-white"></div>
+            <div class="h-px w-6 bg-white"></div>
+            <div class="h-px w-6 bg-white"></div>
         </div>
     </nav>
 </template>

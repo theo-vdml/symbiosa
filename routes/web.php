@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::inertia('/', 'Home')->name('home');
 
-Route::inertia('/agenda', 'Events/Index')->name('agenda');
+Route::get('/events', [\App\Http\Controllers\EventController::class, 'index'])
+    ->name('events.index');
+
 Route::get('/events/{slug}', function (string $slug) {
     return Inertia::render('Events/Show', [
         'slug' => $slug,
@@ -14,5 +16,8 @@ Route::get('/events/{slug}', function (string $slug) {
 
 Route::inertia('/archives', 'Archives')->name('archives');
 
-Route::get('/news', [\App\Http\Controllers\NewsController::class, 'index'])->name('news');
-Route::get('/news/{slug}', [\App\Http\Controllers\NewsController::class, 'show'])->name('news.show');
+Route::get('/news', [\App\Http\Controllers\NewsController::class, 'index'])
+    ->name('news');
+
+Route::get('/news/{slug}', [\App\Http\Controllers\NewsController::class, 'show'])
+    ->name('news.show');
