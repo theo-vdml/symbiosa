@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\InteractsWithFiles;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,12 +10,22 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Event extends Model
 {
+    use InteractsWithFiles;
+
     protected $guarded = [];
 
     protected $casts = [
         'date' => 'date',
         'faq' => 'array',
     ];
+
+    public function fileAttributes(): array
+    {
+        return [
+            'poster' => 'public',
+            'background' => 'public',
+        ];
+    }
 
     public function sponsors()
     {

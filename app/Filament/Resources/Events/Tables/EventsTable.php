@@ -17,6 +17,7 @@ class EventsTable
         return $table
             ->columns([
                 HoverImageColumn::make('poster')
+                    ->disk('public')
                     ->label('Affiche')
                     ->square(),
 

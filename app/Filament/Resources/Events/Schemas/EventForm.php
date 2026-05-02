@@ -165,12 +165,16 @@ class EventForm
                                                     ->image()
                                                     ->required()
                                                     ->directory('events/posters')
+                                                    ->disk('public')
+                                                    ->visibility('public')
                                                     ->imageEditor(),
 
                                                 FileUpload::make('background')
                                                     ->label('Background')
                                                     ->image()
                                                     ->directory('events/backgrounds')
+                                                    ->disk('public')
+                                                    ->visibility('public')
                                                     ->imageEditor(),
                                             ]),
                                     ])

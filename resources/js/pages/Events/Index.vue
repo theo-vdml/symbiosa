@@ -1,9 +1,9 @@
 <script setup lang="ts">
-    import { computed, ref } from 'vue';
     import { Head, Link } from '@inertiajs/vue3';
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
     import AppButton from '@/components/AppButton.vue';
+    import { archives } from '@/routes';
 
     interface Event {
         id: number;
@@ -25,132 +25,15 @@
             question: string;
             answer: string;
         }[];
+        genres?: string[]; // Adding as optional for UI purposes
     }
 
-    const props = defineProps<{
+    defineProps<{
         events: Event[];
     }>();
 
-    interface AgendaEvent {
-        id: number;
-        title: string;
-        type: string;
-        genres: string[];
-        isoDate: string;
-        location: string;
-        image: string;
-        infoLink: string;
-    }
-
-    const typeOptions = ['DJ Set', 'Festival', 'Open Air'];
-    const genreOptions = ['House', 'Techno', 'Hardstyle'];
-
-    const events: AgendaEvent[] = [
-        {
-            id: 1,
-            title: 'EDEN Opening',
-            type: 'Festival',
-            genres: ['House'],
-            isoDate: '2026-10-28T20:00:00+02:00',
-            location: 'Gembloux, Belgique',
-            image: '/origins/poster_light.png',
-            infoLink: '/events/eden-opening',
-        },
-        {
-            id: 2,
-            title: 'EDEN Night 01',
-            type: 'DJ Set',
-            genres: ['House', 'Techno'],
-            isoDate: '2026-11-18T20:00:00+01:00',
-            location: 'Gembloux, Belgique',
-            image: '/origins/poster_light.png',
-            infoLink: '/events/eden-night-01',
-        },
-        {
-            id: 3,
-            title: 'EDEN Night 02',
-            type: 'DJ Set',
-            genres: ['Techno', 'Hardstyle'],
-            isoDate: '2026-12-16T20:00:00+01:00',
-            location: 'Gembloux, Belgique',
-            image: '/origins/poster_light.png',
-            infoLink: '/events/eden-night-02',
-        },
-        {
-            id: 4,
-            title: 'EDEN Winter Session',
-            type: 'Festival',
-            genres: ['Techno'],
-            isoDate: '2027-01-20T20:00:00+01:00',
-            location: 'Gembloux, Belgique',
-            image: '/origins/poster_light.png',
-            infoLink: '/events/eden-winter-session',
-        },
-        {
-            id: 5,
-            title: 'EDEN Spring Session',
-            type: 'Open Air',
-            genres: ['House'],
-            isoDate: '2027-03-17T20:00:00+01:00',
-            location: 'Gembloux, Belgique',
-            image: '/origins/poster_light.png',
-            infoLink: '/events/eden-spring-session',
-        },
-    ];
-
-
-
-    const futureEvents = computed(() => {
-        const now = new Date();
-        return [...events].filter((event) => new Date(event.isoDate) >= now);
-    });
-
-    const selectedTypes = ref<string[]>([]);
-    const selectedGenres = ref<string[]>([]);
-
-    const hasFilters = computed(() => {
-        return selectedGenres.value.length > 0 || selectedTypes.value.length > 0;
-    });
-
-    const filteredFutureEvents = computed(() => {
-        return futureEvents.value.filter((event) => {
-            const isTypeMatch =
-                selectedTypes.value.length === 0 ||
-                selectedTypes.value.includes(event.type);
-            const isGenreMatch =
-                selectedGenres.value.length === 0 ||
-                event.genres.some((genre) => selectedGenres.value.includes(genre));
-            return isTypeMatch && isGenreMatch;
-        });
-    });
-
-    function toggleFilter(
-        group: 'type' | 'genre' | null = null,
-        value: string | null = null,
-    ) {
-        if (group === null) {
-            selectedTypes.value = [];
-            selectedGenres.value = [];
-            return;
-        }
-        const source = group === 'type' ? typeOptions : genreOptions;
-        const target = group === 'type' ? selectedTypes : selectedGenres;
-        if (value === null || !source.includes(value)) {
-            target.value = [];
-            return;
-        }
-        if (target.value.includes(value)) {
-            target.value = target.value.filter((item) => item !== value);
-        } else {
-            target.value = [...target.value, value];
-        }
-        if (target.value.length === source.length) {
-            target.value = [];
-        }
-    }
-
-    function getDateParts(isoDate: string) {
-        const date = new Date(isoDate);
+    function getDateParts(dateString: string) {
+        const date = new Date(dateString);
         const day = new Intl.DateTimeFormat('fr-BE', { day: '2-digit' }).format(
             date,
         );
@@ -158,7 +41,8 @@
             .format(date)
             .replace('.', '')
             .toUpperCase();
-        return { day, month };
+        const year = date.getFullYear();
+        return { day, month, year };
     }
 </script>
 
@@ -168,7 +52,8 @@
 
     <Header />
 
-    <div class="relative z-10 overflow-hidden rounded-b-[6rem] bg-black min-h-[120vh]">
+    <div class="relative z-10 overflow-hidden rounded-b-[6rem] bg-black min-h-screen">
+        <!-- Background Effects -->
         <div class="pointer-events-none absolute inset-0 bg-linear-to-b from-black via-black to-black"></div>
         <div
             class="pointer-events-none absolute -top-32 left-1/2 h-115 w-[130%] -translate-x-1/2 rounded-full bg-[#06402B]/18 blur-[150px]">
@@ -176,138 +61,157 @@
         <div class="pointer-events-none absolute inset-0 bg-[url('/noise.png')] opacity-[0.04] mix-blend-soft-light">
         </div>
 
-        <main class="relative z-10 mx-auto max-w-6xl px-6 pt-34 pb-24 md:px-10 lg:px-14">
-            <section class="mb-14 space-y-4 text-center md:text-left">
+        <main class="relative z-10 mx-auto max-w-6xl px-6 pt-34 pb-32 md:px-10">
+            <header class="mb-20 space-y-4 text-center md:text-left">
                 <p class="text-xs font-bold tracking-[0.35em] text-[#51A687] uppercase">
                     Calendrier
                 </p>
                 <h1 class="font-chillax text-5xl leading-[0.92] text-white md:text-7xl lg:text-8xl">
-                    Tous les événements à venir
+                    Tous les événements <br class="hidden md:block" />
+                    à venir
                 </h1>
                 <p class="max-w-2xl text-sm text-gray-300 md:text-base">
-                    Explore les prochaines dates Symbiosa et filtre rapidement
-                    selon l'ambiance musicale que tu recherches.
+                    Découvrez les prochaines expériences Symbiosa.
+                    <br class="hidden md:block" />
+                    Chaque événement est une immersion unique dans l'univers
+                    électronique.
                 </p>
+            </header>
 
-                <div class="space-y-2.5 pt-1">
-                    <div class="flex flex-wrap items-center gap-1.5">
-                        <span class="mr-1 text-[10px] font-bold tracking-[0.2em] text-gray-500 uppercase">Type</span>
-                        <button type="button" @click="toggleFilter('type')" :class="[
-                            'cursor-pointer rounded-full border px-2.5 py-1 text-[10px] font-bold tracking-[0.18em] uppercase transition-colors',
-                            selectedTypes.length === 0
-                                ? 'border-[#51A687] bg-[#51A687]/20 text-white'
-                                : 'border-white/15 bg-white/5 text-gray-300 hover:border-white/30',
-                        ]">
-                            All
-                        </button>
-                        <button v-for="type in typeOptions" :key="type" type="button"
-                            @click="toggleFilter('type', type)" :class="[
-                                'cursor-pointer rounded-full border px-2.5 py-1 text-[10px] font-bold tracking-[0.18em] uppercase transition-colors',
-                                selectedTypes.includes(type)
-                                    ? 'border-[#51A687] bg-[#51A687]/20 text-white'
-                                    : 'border-white/15 bg-white/5 text-gray-300 hover:border-white/30',
-                            ]">
-                            {{ type }}
-                        </button>
-                    </div>
-
-                    <div class="flex flex-wrap items-center gap-1.5">
-                        <span class="mr-1 text-[10px] font-bold tracking-[0.2em] text-gray-500 uppercase">Genre</span>
-                        <button type="button" @click="toggleFilter('genre')" :class="[
-                            'cursor-pointer rounded-full border px-2.5 py-1 text-[10px] font-bold tracking-[0.18em] uppercase transition-colors',
-                            selectedGenres.length === 0
-                                ? 'border-[#51A687] bg-[#51A687]/20 text-white'
-                                : 'border-white/15 bg-white/5 text-gray-300 hover:border-white/30',
-                        ]">
-                            All
-                        </button>
-                        <button v-for="genre in genreOptions" :key="genre" type="button"
-                            @click="toggleFilter('genre', genre)" :class="[
-                                'cursor-pointer rounded-full border px-2.5 py-1 text-[10px] font-bold tracking-[0.18em] uppercase transition-colors',
-                                selectedGenres.includes(genre)
-                                    ? 'border-[#51A687] bg-[#51A687]/20 text-white'
-                                    : 'border-white/15 bg-white/5 text-gray-300 hover:border-white/30',
-                            ]">
-                            {{ genre }}
-                        </button>
-                    </div>
+            <div v-if="events.length > 0" class="relative mt-20 px-4 md:px-0">
+                <!-- Timeline Line -->
+                <div
+                    class="absolute top-0 bottom-0 left-1/2 z-1 hidden w-0.5 -translate-x-1/2 bg-linear-to-b from-transparent via-[#51A687]/50 via-10% to-transparent md:block">
                 </div>
-            </section>
 
-            <section class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3"
-                v-if="filteredFutureEvents.length >= 1">
-                <Link v-for="event in filteredFutureEvents" :key="event.id" :href="event.infoLink"
-                    class="group overflow-hidden rounded-2xl border border-white/10 bg-white/3 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/20 focus-visible:ring-2 focus-visible:ring-[#06402B] focus-visible:outline-none">
-                    <div class="relative aspect-3/4 overflow-hidden">
-                        <img :src="event.image" :alt="event.title"
-                            class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
-                        <div
-                            class="pointer-events-none absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent">
+                <div class="relative space-y-8 md:space-y-0">
+                    <article v-for="(event, index) in events" :key="event.id" class="relative">
+                        <!-- Timeline Node -->
+                        <div class="absolute top-34 left-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 md:block">
+                            <div
+                                class="h-3 w-3 rotate-45 border-2 border-[#51A687] bg-black shadow-[0_0_20px_rgba(81,166,135,0.8)]">
+                            </div>
                         </div>
 
                         <div
-                            class="absolute top-4 left-4 flex h-20 w-20 flex-col items-center justify-center rounded-md border border-white/25 bg-black/70 text-center backdrop-blur-sm">
-                            <p class="font-chillax text-4xl leading-none text-white">
-                                {{ getDateParts(event.isoDate).day }}
-                            </p>
-                            <p class="text-[10px] font-bold tracking-[0.2em] text-gray-200 uppercase">
-                                {{ getDateParts(event.isoDate).month }}
-                            </p>
+                            class="grid grid-cols-1 items-start gap-12 rounded-[2.5rem] border border-white/10 bg-white/3 p-6 md:grid-cols-2 md:gap-24 md:border-0 md:bg-transparent md:p-0 md:py-24">
+                            <!-- Poster Column -->
+                            <div :class="index % 2 === 0 ? 'md:order-1' : 'md:order-2'" class="flex justify-center">
+                                <div
+                                    class="relative aspect-3/4 w-full overflow-hidden rounded-2xl border border-white/10 shadow-2xl md:max-w-md md:rounded-3xl">
+                                    <img :src="event.poster" :alt="event.title" class="h-full w-full object-cover" />
+                                </div>
+                            </div>
+
+                            <!-- Info Column -->
+                            <div :class="[index % 2 === 0 ? 'md:order-2 md:pl-12' : 'md:order-1 md:pr-12 md:text-right']"
+                                class="flex flex-col px-2 pb-4 md:px-0 md:pb-0">
+                                <!-- Header: Date + Title + Genres (Grouped for mobile) -->
+                                <div class="flex flex-row items-start gap-6 md:flex-col"
+                                    :class="index % 2 !== 0 ? 'md:items-end' : 'md:items-start'">
+                                    <!-- Date Badge -->
+                                    <div class="shrink-0">
+                                        <div
+                                            class="flex h-20 w-20 flex-col items-center justify-center rounded-2xl border border-[#51A687]/30 bg-[#51A687]/10 text-center backdrop-blur-md">
+                                            <span class="font-chillax text-3xl leading-none text-white">
+                                                {{ getDateParts(event.date).day }}
+                                            </span>
+                                            <span
+                                                class="text-[10px] font-bold tracking-[0.25em] text-[#51A687] uppercase">
+                                                {{ getDateParts(event.date).month }}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex flex-col"
+                                        :class="index % 2 !== 0 ? 'md:items-end' : 'md:items-start'">
+                                        <h2
+                                            class="mb-2 font-chillax text-4xl leading-[1.1] text-white md:mb-6 md:text-6xl lg:text-7xl">
+                                            {{ event.title }}
+                                        </h2>
+
+                                        <!-- Music Styles -->
+                                        <div class="mb-4 flex flex-wrap gap-2 md:mb-8"
+                                            :class="index % 2 !== 0 ? 'md:justify-end' : 'md:justify-start'">
+                                            <span v-for="genre in event.genres || ['House', 'Techno']" :key="genre"
+                                                class="text-[10px] font-bold tracking-[0.3em] text-[#51A687] uppercase md:text-xs">
+                                                {{ genre }}
+                                                <span
+                                                    v-if="(event.genres || ['House', 'Techno']).indexOf(genre) < (event.genres || ['House', 'Techno']).length - 1"
+                                                    class="ml-1 text-gray-700">/</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Location -->
+                                <div class="mt-6 mb-8 flex items-center gap-3 text-gray-400 md:mt-0 md:mb-10" :class="index % 2 !== 0 ? 'md:justify-end' : ''
+                                    ">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="2" stroke="currentColor" class="h-5 w-5 text-[#51A687]">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                                    </svg>
+                                    <span class="text-lg font-medium tracking-wide uppercase">
+                                        {{ event.city }}, {{ event.country }}
+                                    </span>
+                                </div>
+
+                                <!-- CTAs -->
+                                <div class="flex flex-col gap-6 sm:flex-row" :class="index % 2 !== 0
+                                    ? 'md:flex-row-reverse'
+                                    : 'md:flex-row'
+                                    ">
+                                    <AppButton :href="`/events/${event.id}`" variant="outline" size="lg"
+                                        class="w-full md:w-auto">
+                                        Découvrir l'expérience
+                                    </AppButton>
+                                </div>
+                            </div>
                         </div>
+                    </article>
+                </div>
+                <div class="mt-32 flex flex-col items-center text-center bg-black z-2 relative">
+                    <div
+                        class="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-[#51A687]/10 text-[#51A687]">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                            stroke="currentColor" class="h-6 w-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
                     </div>
+                    <h3 class="font-chillax text-2xl text-white">
+                        C'est tout pour le moment !
+                    </h3>
+                    <p class="mt-3 max-w-sm text-sm text-gray-400">
+                        Tu as vu tous nos événements à venir. En attendant les
+                        prochaines annonces, replonge dans nos souvenirs.
+                    </p>
+                    <AppButton :href="archives.url()" variant="outline" size="md" class="mt-10">
+                        Consulter les archives
+                    </AppButton>
+                </div>
+            </div>
 
-                    <div class="space-y-3.5 p-5">
-                        <div class="flex flex-wrap gap-2">
-                            <span
-                                class="rounded-full border border-[#51A687]/40 bg-[#51A687]/15 px-3 py-1 text-[10px] font-bold tracking-[0.18em] text-white uppercase">
-                                {{ event.type }}
-                            </span>
-                            <span v-for="genre in event.genres" :key="`${event.id}-${genre}`"
-                                class="rounded-full border border-white/20 bg-white/5 px-3 py-1 text-[10px] font-bold tracking-[0.18em] text-gray-200 uppercase">
-                                {{ genre }}
-                            </span>
-                        </div>
-
-                        <h2 class="font-chillax text-[1.9rem] leading-none text-white md:text-[2.1rem]">
-                            {{ event.title }}
-                        </h2>
-
-                        <div class="pt-2">
-                            <p
-                                class="inline-flex max-w-full items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium tracking-wide text-gray-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                    stroke="currentColor" class="h-3.5 w-3.5 text-[#51A687]">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-                                </svg>
-                                <span class="truncate">{{
-                                    event.location
-                                }}</span>
-                            </p>
-                        </div>
-                    </div>
-                </Link>
-            </section>
-            <section v-else class="flex flex-col items-center justify-center py-20 text-center">
-                <h2 class="font-chillax text-3xl text-white md:text-4xl">
-                    {{
-                        hasFilters
-                            ? 'Aucun résultat trouvé'
-                            : 'Aucun événement à venir'
-                    }}
+            <section v-else class="flex flex-col items-center justify-center py-16 text-center">
+                <div class="mb-8 flex h-24 w-24 items-center justify-center rounded-full bg-white/5 text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="h-12 w-12">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                    </svg>
+                </div>
+                <h2 class="font-chillax text-4xl text-white">
+                    Aucun événement programmé
                 </h2>
                 <p class="mt-4 max-w-sm text-gray-400">
-                    {{
-                        hasFilters
-                            ? 'Essaie de réinitialiser les filtres pour voir tous les événements à venir.'
-                            : "Reste à l'affût, de nouveaux événements seront annoncés bientôt !"
-                    }}
+                    Nous préparons de nouvelles expériences. En attendant les
+                    prochaines dates, découvre nos anciens événements.
                 </p>
-                <AppButton v-if="hasFilters" @click="toggleFilter()" variant="primary" size="md"
-                    class="mt-8 cursor-pointer">
-                    Réinitialiser les filtres
+                <AppButton :href="archives.url()" variant="outline" size="md" class="mt-10">
+                    Voir les archives
                 </AppButton>
             </section>
         </main>
