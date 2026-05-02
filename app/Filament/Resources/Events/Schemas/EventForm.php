@@ -40,7 +40,15 @@ class EventForm
                                             ->prefixIcon(Heroicon::PencilSquare)
                                             ->placeholder('Donnez un nom à l\'événement')
                                             ->required()
-                                            ->columnSpanFull(),
+                                            ->live(onBlur: true)
+                                            ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', \Illuminate\Support\Str::slug($state))),
+
+                                        TextInput::make('slug')
+                                            ->label('Slug')
+                                            ->prefixIcon(Heroicon::Link)
+                                            ->placeholder('Identifiant unique pour l\'URL')
+                                            ->required()
+                                            ->unique('events', 'slug', ignoreRecord: true),
 
                                         RichEditor::make('description')
                                             ->label('Description')

@@ -33,6 +33,7 @@
     "dependencies": {
         "@inertiajs/vite": "^3.0.0",
         "@inertiajs/vue3": "^3.0.0",
+        "@lucide/vue": "^1.14.0",
         "@tailwindcss/typography": "^0.5.19",
         "@vitejs/plugin-vue": "^6.0.0",
         "@vueuse/core": "^12.8.2",

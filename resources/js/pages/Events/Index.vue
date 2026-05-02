@@ -14,6 +14,7 @@
     interface Event {
         id: number;
         title: string;
+        slug: string;
         date: string;
         start_time: string;
         end_time: string;
@@ -32,6 +33,11 @@
             answer: string;
         }[];
         genres?: Genre[];
+        sponsors?: {
+            name: string;
+            logo: string;
+            link: string;
+        }[];
     }
 
     defineProps<{
@@ -170,7 +176,7 @@
                                     ? 'md:flex-row-reverse'
                                     : 'md:flex-row'
                                     ">
-                                    <AppButton :href="`/events/${event.id}`" variant="outline" size="lg"
+                                    <AppButton :href="`/events/${event.slug}`" variant="outline" size="lg"
                                         class="w-full md:w-auto">
                                         Découvrir l'expérience
                                     </AppButton>

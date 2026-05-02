@@ -15,4 +15,13 @@ class EventController extends Controller
             'events' => $events,
         ]);
     }
+
+    public function show(string $slug)
+    {
+        $event = Event::where('slug', $slug)->with('genres', 'sponsors')->firstOrFail();
+
+        return Inertia::render('Events/Show', [
+            'event' => $event,
+        ]);
+    }
 }

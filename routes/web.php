@@ -8,11 +8,8 @@ Route::inertia('/', 'Home')->name('home');
 Route::get('/events', [\App\Http\Controllers\EventController::class, 'index'])
     ->name('events.index');
 
-Route::get('/events/{slug}', function (string $slug) {
-    return Inertia::render('Events/Show', [
-        'slug' => $slug,
-    ]);
-})->name('events.show');
+Route::get('/events/{slug}', [\App\Http\Controllers\EventController::class, 'show'])
+    ->name('events.show');
 
 Route::inertia('/archives', 'Archives')->name('archives');
 
