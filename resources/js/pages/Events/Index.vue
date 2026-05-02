@@ -5,6 +5,12 @@
     import AppButton from '@/components/AppButton.vue';
     import { archives } from '@/routes';
 
+    interface Genre {
+        id: number;
+        name: string;
+        slug: string;
+    }
+
     interface Event {
         id: number;
         title: string;
@@ -25,7 +31,7 @@
             question: string;
             answer: string;
         }[];
-        genres?: string[]; // Adding as optional for UI purposes
+        genres?: Genre[];
     }
 
     defineProps<{
@@ -131,13 +137,13 @@
                                         </h2>
 
                                         <!-- Music Styles -->
-                                        <div class="mb-4 flex flex-wrap gap-2 md:mb-8"
+                                        <div v-if="event.genres && event.genres.length > 0"
+                                            class="mb-4 flex flex-wrap gap-2 md:mb-8"
                                             :class="index % 2 !== 0 ? 'md:justify-end' : 'md:justify-start'">
-                                            <span v-for="genre in event.genres || ['House', 'Techno']" :key="genre"
+                                            <span v-for="(genre, genreIndex) in event.genres" :key="genre.id"
                                                 class="text-[10px] font-bold tracking-[0.3em] text-[#51A687] uppercase md:text-xs">
-                                                {{ genre }}
-                                                <span
-                                                    v-if="(event.genres || ['House', 'Techno']).indexOf(genre) < (event.genres || ['House', 'Techno']).length - 1"
+                                                {{ genre.name }}
+                                                <span v-if="genreIndex < event.genres.length - 1"
                                                     class="ml-1 text-gray-700">/</span>
                                             </span>
                                         </div>

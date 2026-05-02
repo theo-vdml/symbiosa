@@ -39,4 +39,9 @@ class Event extends Model
     {
         return $this->hasMany(EventSponsor::class);
     }
+
+    public function genres()
+    {
+        return $this->belongsToMany(Genre::class);
+    }
 }

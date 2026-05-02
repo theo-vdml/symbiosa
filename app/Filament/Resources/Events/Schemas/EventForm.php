@@ -13,6 +13,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\ViewField;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
@@ -110,6 +111,31 @@ class EventForm
                                             ->prefixIcon(Heroicon::MapPin)
                                             ->placeholder('Entrez l\'adresse complète du lieu de l\'événement')
                                             ->required(),
+                                    ]),
+
+                                Section::make('Genres musicaux')
+                                    ->description('Sélectionnez les genres musicaux de l\'événement')
+                                    ->collapsible()
+                                    ->schema([
+                                        Select::make('genres')
+                                            ->label('Genres')
+                                            ->placeholder('Sélectionnez les genres musicaux associés à cet événement')
+                                            ->prefixIcon(Heroicon::MusicalNote)
+                                            ->multiple()
+                                            ->relationship('genres', 'name')
+                                            ->preload()
+                                            ->searchable()
+                                            ->createOptionForm([
+                                                TextInput::make('name')
+                                                    ->label('Nom')
+                                                    ->required()
+                                                    ->live(onBlur: true)
+                                                    ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', \Illuminate\Support\Str::slug($state))),
+                                                TextInput::make('slug')
+                                                    ->label('Slug')
+                                                    ->required()
+                                                    ->unique('genres', 'slug'),
+                                            ]),
                                     ]),
 
                                 Section::make('Autre')

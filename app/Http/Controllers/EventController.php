@@ -9,7 +9,7 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::orderBy('date')->get();
+        $events = Event::with('genres')->orderBy('date')->get();
 
         return Inertia::render('Events/Index', [
             'events' => $events,
