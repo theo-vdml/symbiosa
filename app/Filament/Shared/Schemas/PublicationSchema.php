@@ -2,6 +2,7 @@
 
 namespace App\Filament\Shared\Schemas;
 
+use App\Enums\PublicationStatus;
 use Filament\Infolists\Components\TextEntry;
 use Illuminate\Support\HtmlString;
 
@@ -15,9 +16,9 @@ class PublicationSchema
                 ->dehydrated(true)
                 ->badge()
                 ->size('lg')
-                ->color(fn($record) => $record->status->getDynamicColor($record->published_at))
-                ->icon(fn($record) => $record->status->getDynamicIcon($record->published_at))
-                ->state(fn($record) => $record->status->getDynamicLabel($record->published_at)),
+                ->color(fn($record) => $record?->status?->getDynamicColor($record->published_at) ?? PublicationStatus::Draft->getColor())
+                ->icon(fn($record) => $record?->status?->getDynamicIcon($record->published_at) ?? PublicationStatus::Draft->getIcon())
+                ->state(fn($record) => $record?->status?->getDynamicLabel($record->published_at) ?? PublicationStatus::Draft->getLabel()),
 
             TextEntry::make('published_at_view')
                 ->label('Date de publication')

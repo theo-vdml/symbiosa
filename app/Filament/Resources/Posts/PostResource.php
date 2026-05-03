@@ -21,13 +21,15 @@ class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::Newspaper;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNewspaper;
 
     protected static string|UnitEnum|null $navigationGroup = 'Actualités';
 
     protected static ?string $modelLabel = 'Article';
 
     protected static ?string $pluralModelLabel = 'Articles';
+
+    protected static ?string $recordTitleAttribute = 'title';
 
     public static function form(Schema $schema): Schema
     {

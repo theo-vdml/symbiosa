@@ -9,6 +9,7 @@
     import Footer from '@/components/Footer.vue';
 
     const props = defineProps<{
+        posts: any[];
         spotifyPlaylistHeading: string | null;
         spotifyPlaylistId: string | null;
         showSpotifyPlaylist: boolean;
@@ -36,7 +37,7 @@
             eventCountry="Belgique" eventImage="/origins/poster_light.png" ticketLink="/tickets/eden"
             moreInfoLink="/events/eden" calendarLink="/agenda" />
 
-        <NewsSection />
+        <NewsSection v-if="props.posts.length > 0" :posts="props.posts" />
 
         <MaximSection />
 

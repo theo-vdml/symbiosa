@@ -15,7 +15,7 @@ Route::get('/events/{slug}', [\App\Http\Controllers\EventController::class, 'sho
 Route::inertia('/archives', 'Archives')->name('archives');
 
 Route::get('/news', [\App\Http\Controllers\NewsController::class, 'index'])
-    ->name('news');
+    ->name('news.index');
 
 Route::get('/news/{slug}', [\App\Http\Controllers\NewsController::class, 'show'])
     ->name('news.show');

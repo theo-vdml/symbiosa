@@ -1,5 +1,6 @@
 <script setup lang="ts">
     import AppButton from '@/components/AppButton.vue';
+    import { ArrowRight } from '@lucide/vue';
 
     interface Props {
         playlistId: string;
@@ -29,7 +30,7 @@
                     </span>
                     <div class="h-px w-8 bg-[#51A687]"></div>
                 </div>
-                <h2 class="font-chillax text-5xl font-bold text-white uppercase italic">
+                <h2 class="font-chillax text-5xl text-white uppercase italic">
                     {{ heading }}
                 </h2>
             </div>
@@ -52,19 +53,9 @@
             <div class="mt-12 text-center">
                 <AppButton :href="`https://open.spotify.com/playlist/${playlistId}`" variant="primary" external>
                     <template #left-icon>
-                        <svg class="h-6 w-6 text-[#1DB954]" viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.49 17.306c-.215.353-.674.464-1.026.249-2.858-1.746-6.456-2.14-10.693-1.17-.404.093-.81-.157-.903-.561-.093-.404.156-.81.561-.903 4.634-1.06 8.595-.61 11.808 1.352.352.215.463.674.249 1.026zm1.466-3.26c-.27.442-.846.582-1.288.312-3.272-2.01-8.258-2.592-12.126-1.417-.497.15-1.023-.13-1.173-.627-.152-.497.13-1.023.627-1.173 4.417-1.34 9.907-.695 13.65 1.603.442.27.583.846.312 1.288h-.002zm.127-3.398C15.197 8.245 8.79 8.032 5.06 9.165c-.628.19-1.293-.16-1.484-.789-.19-.628.16-1.293.789-1.484 4.286-1.3 11.36-1.056 16.038 1.72.565.335.753 1.067.42 1.632-.335.565-1.066.753-1.632.42z" />
-                        </svg>
+                        <img src="/spotify-icon.svg" alt="Spotify Icon" class="w-6 h-6 mr-2" />
                     </template>
                     Suivre sur Spotify
-                    <template #right-icon>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                            stroke="currentColor" class="h-4 w-4 transition-transform group-hover:translate-x-1">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                        </svg>
-                    </template>
                 </AppButton>
             </div>
         </div>
