@@ -7,6 +7,12 @@
     import SpotifyPlaylist from '@/components/SpotifyPlaylist.vue';
     import BentoGallery from '@/components/BentoGallery.vue';
     import Footer from '@/components/Footer.vue';
+
+    const props = defineProps<{
+        spotifyPlaylistHeading: string | null;
+        spotifyPlaylistId: string | null;
+        showSpotifyPlaylist: boolean;
+    }>();
 </script>
 
 <template>
@@ -34,7 +40,8 @@
 
         <MaximSection />
 
-        <SpotifyPlaylist />
+        <SpotifyPlaylist v-if="props.showSpotifyPlaylist && props.spotifyPlaylistId"
+            :playlistId="props.spotifyPlaylistId" :heading="props.spotifyPlaylistHeading ?? undefined" />
 
         <BentoGallery />
     </div>

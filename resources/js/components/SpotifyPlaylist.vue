@@ -2,15 +2,13 @@
     import AppButton from '@/components/AppButton.vue';
 
     interface Props {
-        playlistId?: string;
-        title?: string;
-        subtitle?: string;
+        playlistId: string;
+        heading?: string;
     }
 
     withDefaults(defineProps<Props>(), {
-        playlistId: '1t4HqapUmOPIamxdTYPBHC', // Default to a Techno/Electronic playlist if none provided
-        title: 'Sound of Symbiosa',
-        subtitle: 'Playlist',
+        playlistId: '1t4HqapUmOPIamxdTYPBHC',
+        heading: 'Sound of Symbiosa',
     });
 </script>
 
@@ -27,20 +25,19 @@
                 <div class="mb-4 flex items-center gap-4">
                     <div class="h-px w-8 bg-[#51A687]"></div>
                     <span class="text-sm font-bold tracking-[0.3em] text-[#51A687] uppercase">
-                        {{ subtitle }}
+                        Playlist
                     </span>
                     <div class="h-px w-8 bg-[#51A687]"></div>
                 </div>
                 <h2 class="font-chillax text-5xl font-bold text-white uppercase italic">
-                    {{ title }}
+                    {{ heading }}
                 </h2>
             </div>
 
             <!-- Spotify Embed -->
             <div class="group relative">
                 <div class="relative overflow-hidden rounded-4xl border border-white/10 bg-[#121212] shadow-2xl">
-                    <iframe style="border-radius: 12px;"
-                        :src="`https://open.spotify.com/embed/playlist/${playlistId}?utm_source=generator&theme=0`"
+                    <iframe style="border-radius: 12px;" :src="`https://open.spotify.com/embed/playlist/${playlistId}`"
                         width="100%" height="500" allow="
                             autoplay;
                             clipboard-write;

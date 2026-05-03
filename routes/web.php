@@ -3,7 +3,8 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 
-Route::inertia('/', 'Home')->name('home');
+Route::get('/', [\App\Http\Controllers\HomepageController::class, 'index'])
+    ->name('home');
 
 Route::get('/events', [\App\Http\Controllers\EventController::class, 'index'])
     ->name('events.index');
