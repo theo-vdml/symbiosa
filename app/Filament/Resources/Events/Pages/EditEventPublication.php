@@ -27,7 +27,7 @@ class EditEventPublication extends ViewRecord
         return $this->record->title . ' - Publication';
     }
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::PaperAirplane;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPaperAirplane;
 
 
     protected function getHeaderActions(): array

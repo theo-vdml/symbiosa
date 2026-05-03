@@ -7,6 +7,7 @@ use App\Filament\Resources\Events\Pages\EditEvent;
 use App\Filament\Resources\Events\Pages\EditEventCopywritting;
 use App\Filament\Resources\Events\Pages\EditEventDetails;
 use App\Filament\Resources\Events\Pages\EditEventFaq;
+use App\Filament\Resources\Events\Pages\EditEventLineup;
 use App\Filament\Resources\Events\Pages\EditEventPublication;
 use App\Filament\Resources\Events\Pages\EditEventSponsors;
 use App\Filament\Resources\Events\Pages\EditEventVisuals;
@@ -28,7 +29,9 @@ class EventResource extends Resource
 {
     protected static ?string $model = Event::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::CalendarDays;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;
+
+    protected static ?int $navigationSort = 0;
 
     protected static string|UnitEnum|null $navigationGroup = 'Gestion des événements';
     protected static string|null $modelLabel = 'Événement';
@@ -72,6 +75,7 @@ class EventResource extends Resource
             'visuals' => EditEventVisuals::route('/{record}/visuals'),
             'faq' => EditEventFaq::route('/{record}/faq'),
             'sponsors' => EditEventSponsors::route('/{record}/sponsors'),
+            'lineup' => EditEventLineup::route('/{record}/lineup'),
         ];
     }
 
@@ -83,6 +87,7 @@ class EventResource extends Resource
             EditEventDetails::class,
             EditEventCopywritting::class,
             EditEventVisuals::class,
+            EditEventLineup::class,
             EditEventFaq::class,
             EditEventSponsors::class,
         ]);

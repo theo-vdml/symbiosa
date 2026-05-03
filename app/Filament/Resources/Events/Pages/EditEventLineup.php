@@ -10,24 +10,24 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
 
-class EditEventCopywritting extends EditRecord
+class EditEventLineup extends EditRecord
 {
     protected static string $resource = EventResource::class;
 
-    protected static ?string $navigationLabel = 'Copywritting';
+    protected static ?string $navigationLabel = 'Lineup';
 
-    protected static ?string $breadcrumb = 'Copywritting';
+    protected static ?string $breadcrumb = 'Lineup';
 
     public function getTitle(): string|Htmlable
     {
-        return $this->record->title . ' - Copywritting';
+        return $this->record->title . ' - Lineup';
     }
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPencilSquare;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
 
     public function form(Schema $schema): Schema
     {
         return $schema
-            ->components(EventForm::getCopywrittingSchema());
+            ->components(EventForm::getLineupSchema());
     }
 }

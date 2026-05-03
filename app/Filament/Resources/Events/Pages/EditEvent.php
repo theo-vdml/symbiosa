@@ -24,7 +24,7 @@ class EditEvent extends EditRecord
         return $this->record->title . ' - Général';
     }
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::Cog6Tooth;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
     public function form(Schema $schema): Schema
     {

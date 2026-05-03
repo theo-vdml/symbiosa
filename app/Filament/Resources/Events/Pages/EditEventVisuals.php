@@ -23,7 +23,7 @@ class EditEventVisuals extends EditRecord
         return $this->record->title . ' - Identité visuelle';
     }
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::Swatch;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSwatch;
 
     public function form(Schema $schema): Schema
     {

@@ -23,7 +23,7 @@ class EditEventFaq extends EditRecord
         return $this->record->title . ' - Foire aux questions';
     }
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::QuestionMarkCircle;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleBottomCenterText;
 
     public function form(Schema $schema): Schema
     {

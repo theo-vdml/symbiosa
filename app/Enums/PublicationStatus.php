@@ -38,4 +38,28 @@ enum PublicationStatus: string implements HasColor, HasIcon, HasLabel
             self::Archived => 'heroicon-o-archive-box',
         };
     }
+
+    public function getDynamicLabel($date = null): string
+    {
+        if ($this === self::Published && $date?->isFuture()) {
+            return 'Programmé';
+        }
+        return $this->getLabel();
+    }
+
+    public function getDynamicColor($date = null): string
+    {
+        if ($this === self::Published && $date?->isFuture()) {
+            return 'info';
+        }
+        return $this->getColor();
+    }
+
+    public function getDynamicIcon($date = null): ?string
+    {
+        if ($this === self::Published && $date?->isFuture()) {
+            return 'heroicon-o-clock';
+        }
+        return $this->getIcon();
+    }
 }

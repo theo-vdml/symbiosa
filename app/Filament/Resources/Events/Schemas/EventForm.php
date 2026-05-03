@@ -46,6 +46,10 @@ class EventForm
                             ->icon('heroicon-o-question-mark-circle')
                             ->schema(static::getFaqSchema()),
 
+                        Tab::make('Lineup')
+                            ->icon('heroicon-o-users')
+                            ->schema(static::getLineupSchema()),
+
                         Tab::make('Sponsors')
                             ->icon(Heroicon::Heart)
                             ->schema(static::getSponsorsSchema())
@@ -196,17 +200,7 @@ class EventForm
                         ->relationship('genres', 'name')
                         ->preload()
                         ->searchable()
-                        ->createOptionForm([
-                            TextInput::make('name')
-                                ->label('Nom')
-                                ->required()
-                                ->live(onBlur: true)
-                                ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', \Illuminate\Support\Str::slug($state))),
-                            TextInput::make('slug')
-                                ->label('Slug')
-                                ->required()
-                                ->unique('genres', 'slug'),
-                        ]),
+                        ->quickAdd(label: "Nouveau genre: {search}", resetSearch: true),
                 ]),
 
             Section::make('Autre')
@@ -386,11 +380,103 @@ class EventForm
                                 ? Sponsor::find($state['sponsor_id'])?->name
                                 : 'Nouveau Sponsor'
                         )
+                        ->deleteAction(
+                            fn(Action $action) => $action->requiresConfirmation(),
+                        )
                         ->defaultItems(0)
                         ->reorderable()
                         ->orderColumn('sort_order')
                         ->grid(2)
                 ])
+        ];
+    }
+
+    public static function getLineupSchema(): array
+    {
+        return [
+            Section::make('Lineup de l\'événement')
+                ->description('Gérez les artistes associés à cet événement')
+                ->columnSpanFull()
+                ->schema([
+                    Repeater::make('artistEvents')
+                        ->hiddenLabel()
+                        ->relationship()
+                        ->addActionLabel('Ajouter un artiste')
+                        ->schema([
+                            ViewField::make('artist_id')
+                                ->label('Aperçu de l\'artiste')
+                                ->view('filament.forms.components.artist-preview')
+                                ->columnSpanFull(),
+
+                            Select::make('artist_id')
+                                ->label('Artiste')
+                                ->relationship('artist', 'name')
+                                ->preload()
+                                ->placeholder('Sélectionnez un artiste')
+                                ->searchable()
+                                ->selectablePlaceholder(false)
+                                ->required()
+                                ->prefixIcon(Heroicon::User)
+                                ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                                ->createOptionForm(static::getArtistFormSchema())
+                                ->editOptionForm(static::getArtistFormSchema())
+                                ->live(),
+
+                            TimePicker::make('performance_time')
+                                ->label('Heure de passage')
+                                ->prefixIcon(Heroicon::Clock)
+                                ->native(false)
+                                ->seconds(false)
+                                ->displayFormat('H:i')
+                                ->live(),
+                        ])
+                        ->itemLabel(
+                            fn(array $state): ?string =>
+                            isset($state['artist_id'])
+                                ? \App\Models\Artist::find($state['artist_id'])?->name
+                                : 'Nouvel Artiste'
+                        )
+                        ->defaultItems(0)
+                        ->reorderable()
+                        ->orderColumn('sort_order')
+                        ->deleteAction(
+                            fn(Action $action) => $action->requiresConfirmation(),
+                        )
+                        ->grid([
+                            'md' => 1,
+                            'xl' => 2,
+                        ])
+                ])
+        ];
+    }
+
+    public static function getArtistFormSchema(): array
+    {
+        return [
+            TextInput::make('name')
+                ->label('Nom de l\'artiste')
+                ->required(),
+            FileUpload::make('thumbnail')
+                ->label('Photo de l\'artiste')
+                ->image()
+                ->disk('public')
+                ->visibility('public')
+                ->directory('artists/thumbnails')
+                ->required(),
+            TextInput::make('website')
+                ->label('Site web / Instagram')
+                ->url()
+                ->prefixIcon('heroicon-m-globe-alt'),
+            Select::make('genres')
+                ->label('Genres')
+                ->multiple()
+                ->relationship('genres', 'name')
+                ->preload()
+                ->searchable()
+                ->quickAdd(label: "Nouveau genre: {search}", resetSearch: true),
+            Textarea::make('biography')
+                ->label('Biographie')
+                ->columnSpanFull(),
         ];
     }
 }

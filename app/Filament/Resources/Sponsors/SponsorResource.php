@@ -19,7 +19,9 @@ class SponsorResource extends Resource
 {
     protected static ?string $model = Sponsor::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::Heart;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedHeart;
+
+    protected static ?int $navigationSort = 2;
 
     protected static string|UnitEnum|null $navigationGroup = 'Gestion des événements';
 

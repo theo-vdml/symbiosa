@@ -30,16 +30,14 @@ class EventsTable
                 TextColumn::make('status')
                     ->label('Statut')
                     ->badge()
+                    ->formatStateUsing(fn($record) => $record->status->getDynamicLabel($record->published_at))
+                    ->color(fn($record) => $record->status->getDynamicColor($record->published_at))
+                    ->icon(fn($record) => $record->status->getDynamicIcon($record->published_at))
                     ->sortable(),
 
                 TextColumn::make('date')
                     ->label('Date de l\'event')
                     ->date()
-                    ->sortable(),
-
-                TextColumn::make('published_at')
-                    ->label('Publié le')
-                    ->dateTime()
                     ->sortable(),
 
                 TextColumn::make('city')

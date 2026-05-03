@@ -23,7 +23,7 @@ class EditEventSponsors extends EditRecord
         return $this->record->title . ' - Sponsors';
     }
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::Heart;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedHeart;
 
     public function form(Schema $schema): Schema
     {

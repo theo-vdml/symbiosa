@@ -63,4 +63,18 @@ class Event extends Model
     {
         return $this->belongsToMany(Genre::class);
     }
+
+    public function artists()
+    {
+        return $this->belongsToMany(Artist::class, 'artist_event')
+            ->using(ArtistEvent::class)
+            ->withPivot('performance_time', 'sort_order')
+            ->withTimestamps()
+            ->orderByPivot('sort_order', 'asc');
+    }
+
+    public function artistEvents()
+    {
+        return $this->hasMany(ArtistEvent::class);
+    }
 }
