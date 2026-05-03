@@ -36,8 +36,19 @@
         sponsors?: {
             name: string;
             logo: string;
-            link: string;
+            website: string;
         }[];
+        artists: {
+            name: string;
+            thumbnail: string;
+            website: string;
+            genres?: Genre[];
+            biography: string;
+            pivot: {
+                performance_time: string;
+                sort_order: number;
+            }
+        }[]
     }
 
     const props = defineProps<{
@@ -79,6 +90,10 @@
         };
 
         return `${start.toLocaleTimeString('fr-FR', options)} - ${end.toLocaleTimeString('fr-FR', options)}`;
+    };
+
+    const getPerformanceTime = (time: string) => {
+        return time.substring(0, 5).replace(':', 'h');
     };
 
 </script>
@@ -168,18 +183,19 @@
                         <h2 class="font-chillax text-4xl text-white">Line-up</h2>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <component :is="artist.link ? 'a' : 'div'" v-for="(artist, index) in lineup"
-                                :key="artist.name" :href="artist.link" :target="artist.link ? '_blank' : undefined"
-                                :rel="artist.link ? 'noopener noreferrer' : undefined" :class="[
+                            <component :is="artist.website ? 'a' : 'div'" v-for="(artist, index) in (event.artists)"
+                                :key="artist.name" :href="artist.website"
+                                :target="artist.website ? '_blank' : undefined"
+                                :rel="artist.website ? 'noopener noreferrer' : undefined" :class="[
                                     'relative overflow-hidden group bg-[#052519] transition-all duration-500',
                                     'rounded-tl-[3rem] rounded-br-[3rem]',
-                                    artist.link ? 'cursor-pointer' : 'cursor-default',
-                                    (lineup.length % 2 !== 0 && index === 0) ||
-                                        (lineup.length % 2 === 0 && (index === 0 || index === 1))
+                                    artist.website ? 'cursor-pointer' : 'cursor-default',
+                                    (event.artists.length % 2 !== 0 && index === 0) ||
+                                        (event.artists.length % 2 === 0 && (index === 0 || index === 1))
                                         ? 'md:col-span-2 h-80 md:h-96' : 'h-80'
                                 ]">
                                 <!-- Artist Image - Clean and visible -->
-                                <img :src="artist.image" :alt="artist.name"
+                                <img :src="'/' + artist.thumbnail" :alt="artist.name"
                                     class="absolute inset-0 h-full w-full object-cover transition-all duration-700 group-hover:scale-105" />
 
                                 <!-- Luminous Overlays - More vibrant and light -->
@@ -198,9 +214,9 @@
 
                                 <!-- Genre Badges (Strict Hero Style) -->
                                 <div class="absolute top-6 right-8 flex flex-wrap gap-2 justify-end max-w-[70%]">
-                                    <span v-for="genre in artist.genres" :key="genre"
+                                    <span v-for="genre in artist.genres" :key="genre.name"
                                         class="rounded-full border border-white/20 bg-white/5 px-4 py-1.5 text-[10px] font-bold tracking-[0.25em] text-gray-200 uppercase backdrop-blur-md">
-                                        {{ genre }}
+                                        {{ genre.name }}
                                     </span>
                                 </div>
 
@@ -208,8 +224,8 @@
                                 <div class="absolute bottom-8 left-8 right-32 pointer-events-none">
                                     <h3 :class="[
                                         'font-chillax text-white tracking-tighter leading-tight font-normal drop-shadow-md',
-                                        (lineup.length % 2 !== 0 && index === 0) ||
-                                            (lineup.length % 2 === 0 && (index === 0 || index === 1))
+                                        (event.artists.length % 2 !== 0 && index === 0) ||
+                                            (event.artists.length % 2 === 0 && (index === 0 || index === 1))
                                             ? 'text-4xl md:text-6xl' : 'text-2xl md:text-4xl'
                                     ]">
                                         <template v-if="artist.name.includes(' b2b ')">
@@ -228,7 +244,7 @@
                                 <div class="absolute bottom-8 right-8 text-right">
                                     <p
                                         class="font-chillax text-xl md:text-2xl text-white/80 font-semibold tracking-widest group-hover:text-white transition-colors">
-                                        {{ artist.time }}
+                                        {{ getPerformanceTime(artist.pivot.performance_time) }}
                                     </p>
                                 </div>
                             </component>
@@ -298,7 +314,7 @@
                 <div class="relative flex overflow-hidden marquee-container">
                     <div class="marquee-content flex items-center gap-20 py-4 pr-20 shrink-0">
                         <!-- First set of logos -->
-                        <a v-for="(sponsor, index) in event.sponsors" :key="'s1-' + index" :href="sponsor.link"
+                        <a v-for="(sponsor, index) in event.sponsors" :key="'s1-' + index" :href="sponsor.website"
                             target="_blank" class="shrink-0 transition-transform duration-300 hover:scale-110">
                             <img :src="'/' + sponsor.logo"
                                 class="h-10 w-auto opacity-80 fill-white transition-all duration-300 hover:opacity-100"
@@ -307,7 +323,7 @@
                     </div>
                     <div class="marquee-content flex items-center gap-20 py-4 pr-20 shrink-0" aria-hidden="true">
                         <!-- Second set for seamless loop -->
-                        <a v-for="(sponsor, index) in event.sponsors" :key="'s2-' + index" :href="sponsor.link"
+                        <a v-for="(sponsor, index) in event.sponsors" :key="'s2-' + index" :href="sponsor.website"
                             target="_blank" class="shrink-0 transition-transform duration-300 hover:scale-110">
                             <img :src="'/' + sponsor.logo"
                                 class="h-10 w-auto opacity-80 fill-white transition-all duration-300 hover:opacity-100"

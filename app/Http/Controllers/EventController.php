@@ -18,7 +18,9 @@ class EventController extends Controller
 
     public function show(string $slug)
     {
-        $event = Event::where('slug', $slug)->with('genres', 'sponsors')->firstOrFail();
+        $event = Event::where('slug', $slug)->with('genres', 'sponsors', 'artists', 'artists.genres')->firstOrFail();
+
+        // return compact('event');
 
         return Inertia::render('Events/Show', [
             'event' => $event,
