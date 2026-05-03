@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Posts\Tables;
 
-use App\Enums\PostStatus;
+use App\Enums\PublicationStatus;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -42,7 +42,7 @@ class PostsTable
             ])
             ->filters([
                 SelectFilter::make('status')
-                    ->options(PostStatus::class),
+                    ->options(PublicationStatus::class),
                 SelectFilter::make('category_id')
                     ->label('Catégorie')
                     ->relationship('category', 'name'),

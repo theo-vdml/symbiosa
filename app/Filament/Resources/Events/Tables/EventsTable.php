@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\Events\Tables;
 
+use App\Enums\PublicationStatus;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use TinusG\FilamentHoverImageColumn\HoverImageColumn;
 
@@ -25,23 +27,29 @@ class EventsTable
                     ->searchable()
                     ->sortable(),
 
+                TextColumn::make('status')
+                    ->label('Statut')
+                    ->badge()
+                    ->sortable(),
+
                 TextColumn::make('date')
-                    ->label('Date')
+                    ->label('Date de l\'event')
                     ->date()
+                    ->sortable(),
+
+                TextColumn::make('published_at')
+                    ->label('Publié le')
+                    ->dateTime()
                     ->sortable(),
 
                 TextColumn::make('city')
                     ->label('Ville')
                     ->searchable()
                     ->sortable(),
-
-                TextColumn::make('country')
-                    ->label('Pays')
-                    ->searchable()
-                    ->sortable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->options(PublicationStatus::class),
             ])
             ->recordActions([
                 EditAction::make(),

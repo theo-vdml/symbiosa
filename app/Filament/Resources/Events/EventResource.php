@@ -7,6 +7,7 @@ use App\Filament\Resources\Events\Pages\EditEvent;
 use App\Filament\Resources\Events\Pages\EditEventCopywritting;
 use App\Filament\Resources\Events\Pages\EditEventDetails;
 use App\Filament\Resources\Events\Pages\EditEventFaq;
+use App\Filament\Resources\Events\Pages\EditEventPublication;
 use App\Filament\Resources\Events\Pages\EditEventSponsors;
 use App\Filament\Resources\Events\Pages\EditEventVisuals;
 use App\Filament\Resources\Events\Pages\ListEvents;
@@ -65,6 +66,7 @@ class EventResource extends Resource
             'index' => ListEvents::route('/'),
             'create' => CreateEvent::route('/create'),
             'edit' => EditEvent::route('/{record}/edit'),
+            'publication' => EditEventPublication::route('/{record}/publication'),
             'details' => EditEventDetails::route('/{record}/details'),
             'copywritting' => EditEventCopywritting::route('/{record}/copywritting'),
             'visuals' => EditEventVisuals::route('/{record}/visuals'),
@@ -77,6 +79,7 @@ class EventResource extends Resource
     {
         return $page->generateNavigationItems([
             EditEvent::class,
+            EditEventPublication::class,
             EditEventDetails::class,
             EditEventCopywritting::class,
             EditEventVisuals::class,

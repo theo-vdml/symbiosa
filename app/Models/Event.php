@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Traits\InteractsWithFiles;
+use App\Enums\PublicationStatus;
+use App\Traits\HasPublication;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -11,12 +13,29 @@ use Illuminate\Database\Eloquent\Model;
 class Event extends Model
 {
     use InteractsWithFiles;
+    use HasPublication;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'title',
+        'slug',
+        'status',
+        'published_at',
+        'date',
+        'start_time',
+        'end_time',
+        'location',
+        'address',
+        'body',
+        'faq',
+        'poster',
+        'background',
+    ];
 
     protected $casts = [
         'date' => 'date',
         'faq' => 'array',
+        'status' => PublicationStatus::class,
+        'published_at' => 'datetime',
     ];
 
     public function fileAttributes(): array

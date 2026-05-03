@@ -2,20 +2,18 @@
 
 namespace App\Filament\Resources\Posts\Schemas;
 
-use App\Enums\PostStatus;
-use App\Filament\Resources\Posts\Actions\PostStatusActions;
+use App\Filament\Shared\Actions\PublicationActions;
+use App\Filament\Shared\Schemas\PublicationSchema;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
-use Illuminate\Support\HtmlString;
 use Str;
 
 class PostForm
@@ -108,45 +106,10 @@ class PostForm
                                 '2xl' => 1,      // 1 colonne à partir des tablettes/laptops
                             ])
                             ->schema([
-                                TextEntry::make('status_label')
-                                    ->label('Statut actuel')
-                                    ->badge()
-                                    ->size('lg')
-                                    ->color(fn($record) => match (true) {
-                                        $record?->status === PostStatus::Archived => 'danger', // 'red'
-                                        $record?->status === PostStatus::Draft => 'gray',
-                                        // Si publié mais dans le futur
-                                        $record?->status === PostStatus::Published && $record->published_at?->isFuture() => 'info', // 'blue'
-                                        $record?->status === PostStatus::Published => 'success', // 'green'
-                                        default => 'gray',
-                                    })
-                                    ->state(fn($record) => match (true) {
-                                        $record?->status === PostStatus::Archived => $record->status->getLabel(),
-                                        $record?->status === PostStatus::Draft => $record->status->getLabel(),
-                                        // Logique de texte pour la programmation
-                                        $record?->status === PostStatus::Published && $record->published_at?->isFuture() => 'Programmé',
-                                        $record?->status === PostStatus::Published => 'Publié',
-                                        default => 'Brouillon',
-                                    }),
+                                ...PublicationSchema::make(),
 
-                                TextEntry::make('published_at_view')
-                                    ->label('Date de publication')
-                                    ->state(function ($record) {
-                                        if (!$record?->published_at) {
-                                            return new HtmlString('<span class="text-gray-500 italic">Non défini</span>');
-                                        }
-
-                                        $date = $record->published_at->translatedFormat('l j F Y à H:i');
-
-                                        // On peut ajouter une petite info si c'est dans le futur
-                                        if ($record->published_at->isFuture()) {
-                                            return new HtmlString("{$date}");
-                                        }
-
-                                        return $date;
-                                    }),
                                 Actions::make([
-                                    ...PostStatusActions::make(),
+                                    ...PublicationActions::make("l'article"),
                                 ])
                                     ->hidden(fn($record) => $record === null)
                                     ->verticalAlignment('start'),
