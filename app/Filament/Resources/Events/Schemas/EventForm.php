@@ -32,301 +32,365 @@ class EventForm
                     ->contained(false)
                     ->tabs([
                         Tab::make('Présentation')
-                            ->schema([
-                                Section::make('Informations générales')
-                                    ->schema([
-                                        TextInput::make('title')
-                                            ->label('Titre')
-                                            ->prefixIcon(Heroicon::PencilSquare)
-                                            ->placeholder('Donnez un nom à l\'événement')
-                                            ->required()
-                                            ->live(onBlur: true)
-                                            ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', \Illuminate\Support\Str::slug($state))),
-
-                                        TextInput::make('slug')
-                                            ->label('Slug')
-                                            ->prefixIcon(Heroicon::Link)
-                                            ->placeholder('Identifiant unique pour l\'URL')
-                                            ->required()
-                                            ->unique('events', 'slug', ignoreRecord: true),
-
-                                        RichEditor::make('description')
-                                            ->label('Description')
-                                            ->placeholder('Décrivez l\'événement')
-                                            ->required()
-                                            ->columnSpanFull(),
-                                    ]),
-                            ]),
+                            ->schema(static::getBasicInfoSchema()),
 
                         Tab::make('Details')
                             ->icon('heroicon-o-calendar')
-                            ->schema([
-                                Section::make('Date et heure')
-                                    ->description('Date et heure de l\'événement')
-                                    ->collapsible()
-                                    ->schema([
-                                        DatePicker::make('date')
-                                            ->label('Date')
-                                            ->prefixIcon(Heroicon::CalendarDays)
-                                            ->placeholder('Sélectionnez la date de l\'événement')
-                                            ->required()
-                                            ->native(false)
-                                            ->displayFormat('l j F Y'),
-
-                                        Grid::make(2)
-                                            ->schema([
-                                                TimePicker::make('start_time')
-                                                    ->label('Heure de début')
-                                                    ->prefixIcon(Heroicon::Clock)
-                                                    ->placeholder('Sélectionnez l\'heure de début')
-                                                    ->required()
-                                                    ->native(false)
-                                                    ->seconds(false)
-                                                    ->displayFormat('H:i'),
-
-                                                TimePicker::make('end_time')
-                                                    ->prefixIcon(Heroicon::Clock)
-                                                    ->label('Heure de fin')
-                                                    ->placeholder('Sélectionnez l\'heure de fin')
-                                                    ->required()
-                                                    ->native(false)
-                                                    ->seconds(false)
-                                                    ->displayFormat('H:i'),
-                                            ]),
-                                    ]),
-
-                                Section::make('Lieu')
-                                    ->description('Informations sur le lieu de l\'événement')
-                                    ->collapsible()
-                                    ->schema([
-                                        Grid::make(2)
-                                            ->schema([
-                                                TextInput::make('city')
-                                                    ->label('Ville')
-                                                    ->prefixIcon(Heroicon::BuildingStorefront)
-                                                    ->placeholder('Entrez la ville où se déroule l\'événement')
-                                                    ->required(),
-
-                                                TextInput::make('country')
-                                                    ->label('Pays')
-                                                    ->prefixIcon(Heroicon::GlobeEuropeAfrica)
-                                                    ->placeholder('Entrez le pays où se déroule l\'événement')
-                                                    ->required(),
-                                            ]),
-
-                                        TextInput::make('address')
-                                            ->label('Adresse complète')
-                                            ->prefixIcon(Heroicon::MapPin)
-                                            ->placeholder('Entrez l\'adresse complète du lieu de l\'événement')
-                                            ->required(),
-                                    ]),
-
-                                Section::make('Genres musicaux')
-                                    ->description('Sélectionnez les genres musicaux de l\'événement')
-                                    ->collapsible()
-                                    ->schema([
-                                        Select::make('genres')
-                                            ->label('Genres')
-                                            ->placeholder('Sélectionnez les genres musicaux associés à cet événement')
-                                            ->prefixIcon(Heroicon::MusicalNote)
-                                            ->multiple()
-                                            ->relationship('genres', 'name')
-                                            ->preload()
-                                            ->searchable()
-                                            ->createOptionForm([
-                                                TextInput::make('name')
-                                                    ->label('Nom')
-                                                    ->required()
-                                                    ->live(onBlur: true)
-                                                    ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', \Illuminate\Support\Str::slug($state))),
-                                                TextInput::make('slug')
-                                                    ->label('Slug')
-                                                    ->required()
-                                                    ->unique('genres', 'slug'),
-                                            ]),
-                                    ]),
-
-                                Section::make('Autre')
-                                    ->icon('heroicon-o-ellipsis-horizontal')
-                                    ->description('Informations complémentaires')
-                                    ->collapsible()
-                                    ->schema([
-                                        TextInput::make('dress_code')
-                                            ->label('Dress code')
-                                            ->prefixIcon(Heroicon::Sparkles)
-                                            ->placeholder('Indiquez le dress code de l\'événement')
-                                            ->suffixAction(
-                                                Action::make('no_dress_code')
-                                                    ->label('Pas de dress code')
-                                                    ->icon(Heroicon::XMark)
-                                                    ->action(fn(TextInput $component) => $component->state(null))
-                                                    ->disabled(fn(TextInput $component) => $component->getState() === null)
-                                            )
-                                            ->live(),
-
-                                        TextInput::make('minimum_age')
-                                            ->label('Âge minimum')
-                                            ->prefixIcon(Heroicon::Cake)
-                                            ->placeholder('Indiquez l\'âge minimum requis')
-                                            ->numeric()
-                                            ->integer()
-                                            ->hintAction(
-                                                Action::make('18_plus')
-                                                    ->label('18 ans et plus')
-                                                    ->action(fn(TextInput $component) => $component->state(18))
-                                                    ->visible(fn(TextInput $component) => $component->getState() !== 18.00)
-                                            )
-                                            ->suffixAction(
-                                                Action::make('no_age_limit')
-                                                    ->label('Pas de limite d\'âge')
-                                                    ->icon(Heroicon::XMark)
-                                                    ->action(fn(TextInput $component) => $component->state(null))
-                                                    ->disabled(fn(TextInput $component) => $component->getState() === null)
-                                            )
-                                            ->live(),
-                                    ]),
-                            ]),
+                            ->schema(static::getDetailsSchema()),
 
                         Tab::make('Médias')
                             ->icon('heroicon-o-photo')
-                            ->schema([
-                                Section::make('Visuels de l\'événement')
-                                    ->schema([
-                                        Grid::make(2)
-                                            ->schema([
-                                                FileUpload::make('poster')
-                                                    ->label('Poster')
-                                                    ->image()
-                                                    ->required()
-                                                    ->directory('events/posters')
-                                                    ->disk('public')
-                                                    ->visibility('public')
-                                                    ->imageEditor(),
-
-                                                FileUpload::make('background')
-                                                    ->label('Background')
-                                                    ->image()
-                                                    ->directory('events/backgrounds')
-                                                    ->disk('public')
-                                                    ->visibility('public')
-                                                    ->imageEditor(),
-                                            ]),
-                                    ])
-                            ]),
+                            ->schema(static::getVisualsSchema()),
 
                         Tab::make('FAQ')
                             ->icon('heroicon-o-question-mark-circle')
-                            ->schema([
-                                Section::make('Foire aux questions')
-                                    ->description('Ajoutez des questions fréquentes pour aider les participants')
-                                    ->schema([
-                                        Repeater::make('faq')
-                                            ->hiddenLabel()
-                                            ->addActionLabel('Ajouter une question')
-                                            ->deleteAction(
-                                                fn(Action $action) => $action->requiresConfirmation(),
-                                            )
-                                            ->schema([
-                                                TextInput::make('question')
-                                                    ->label('Question')
-                                                    ->placeholder('Entrez une question fréquente')
-                                                    ->required()
-                                                    ->prefixIcon(Heroicon::QuestionMarkCircle),
-
-                                                Textarea::make('answer')
-                                                    ->label('Réponse')
-                                                    ->placeholder('Entrez la réponse à cette question')
-                                                    ->autosize()
-                                                    ->rows(1)
-                                                    ->required()
-                                            ])
-                                    ])
-                            ]),
+                            ->schema(static::getFaqSchema()),
 
                         Tab::make('Sponsors')
                             ->icon(Heroicon::Heart)
-                            ->schema([
-                                Section::make('Sponsors de l\'événement')
-                                    ->description('Gérez les sponsors associés à cet événement')
-                                    ->schema([
-                                        Repeater::make('eventSponsors')
-                                            ->hiddenLabel()
-                                            ->relationship()
-                                            ->addActionLabel('Ajouter un sponsor')
-                                            ->schema([
-                                                ViewField::make('sponsor_id')
-                                                    ->label('Aperçu du sponsor')
-                                                    ->view('filament.forms.components.sponsor-preview')
-                                                    ->columnSpanFull(),
-
-                                                Select::make('sponsor_id')
-                                                    ->hiddenLabel()
-                                                    ->relationship('sponsor', 'name')
-                                                    ->preload()
-                                                    ->placeholder('Sélectionnez un sponsor')
-                                                    ->searchable()
-                                                    ->selectablePlaceholder(false)
-                                                    ->required()
-                                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                                                    ->prefixIcon('heroicon-m-briefcase')
-                                                    ->createOptionForm([
-                                                        TextInput::make('name')
-                                                            ->label('Nom du sponsor')
-                                                            ->required(),
-                                                        FileUpload::make('logo')
-                                                            ->label('Logo du sponsor')
-                                                            ->image()
-                                                            ->disk('public')
-                                                            ->visibility('public')
-                                                            ->directory('sponsors/logos')
-                                                            ->required(),
-                                                        TextInput::make('website')
-                                                            ->label('Site web')
-                                                            ->url()
-                                                            ->prefixIcon('heroicon-m-globe-alt'),
-                                                        Textarea::make('description')
-                                                            ->label('Description')
-                                                            ->autosize()
-                                                            ->columnSpanFull(),
-                                                    ])
-                                                    ->editOptionForm([
-                                                        TextInput::make('name')
-                                                            ->label('Nom du sponsor')
-                                                            ->required(),
-                                                        FileUpload::make('logo')
-                                                            ->label('Logo du sponsor')
-                                                            ->image()
-                                                            ->disk('public')
-                                                            ->visibility('public')
-                                                            ->directory('sponsors/logos')
-                                                            ->required(),
-                                                        TextInput::make('website')
-                                                            ->label('Site web')
-                                                            ->url()
-                                                            ->prefixIcon('heroicon-m-globe-alt'),
-                                                        Textarea::make('description')
-                                                            ->label('Description')
-                                                            ->autosize()
-                                                            ->columnSpanFull(),
-                                                    ])
-                                                    ->live(),
-                                            ])
-                                            ->itemLabel(
-                                                fn(array $state): ?string =>
-                                                isset($state['sponsor_id'])
-                                                    ? Sponsor::find($state['sponsor_id'])?->name
-                                                    : 'Nouveau Sponsor'
-                                            )
-                                            ->defaultItems(0)
-                                            ->reorderable()
-                                            ->orderColumn('sort_order')
-                                            ->grid(2)
-
-
-                                    ])
-                            ])
+                            ->schema(static::getSponsorsSchema())
 
                     ]),
             ]);
+    }
+
+    public static function getBasicInfoSchema(): array
+    {
+        return [
+            Section::make('Informations générales')
+                ->columnSpanFull()
+                ->schema([
+                    TextInput::make('title')
+                        ->label('Titre')
+                        ->prefixIcon(Heroicon::PencilSquare)
+                        ->placeholder('Donnez un nom à l\'événement')
+                        ->required()
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', \Illuminate\Support\Str::slug($state))),
+
+                    TextInput::make('slug')
+                        ->label('Slug')
+                        ->prefixIcon(Heroicon::Link)
+                        ->placeholder('Identifiant unique pour l\'URL')
+                        ->required()
+                        ->unique('events', 'slug', ignoreRecord: true),
+
+                    Textarea::make('description')
+                        ->label('Description')
+                        ->placeholder('Décrivez l\'événement en quelques mots')
+                        ->required()
+                        ->columnSpanFull(),
+                ]),
+        ];
+    }
+
+    public static function getDateTimeSchema(bool $collapsible = false): array
+    {
+        return [
+            Section::make('Date et heure')
+                ->description('Date et heure de l\'événement')
+                ->collapsible($collapsible)
+                ->columnSpanFull()
+                ->schema([
+                    DatePicker::make('date')
+                        ->label('Date')
+                        ->prefixIcon(Heroicon::CalendarDays)
+                        ->placeholder('Sélectionnez la date de l\'événement')
+                        ->required()
+                        ->native(false)
+                        ->displayFormat('l j F Y'),
+
+                    Grid::make(2)
+                        ->schema([
+                            TimePicker::make('start_time')
+                                ->label('Heure de début')
+                                ->prefixIcon(Heroicon::Clock)
+                                ->placeholder('Sélectionnez l\'heure de début')
+                                ->native(false)
+                                ->seconds(false)
+                                ->displayFormat('H:i'),
+
+                            TimePicker::make('end_time')
+                                ->prefixIcon(Heroicon::Clock)
+                                ->label('Heure de fin')
+                                ->placeholder('Sélectionnez l\'heure de fin')
+                                ->native(false)
+                                ->seconds(false)
+                                ->displayFormat('H:i'),
+                        ]),
+                ]),
+        ];
+    }
+
+    public static function getLocationSchema(bool $collapsible = false): array
+    {
+        return [
+            Section::make('Lieu')
+                ->description('Informations sur le lieu de l\'événement')
+                ->collapsible($collapsible)
+                ->columnSpanFull()
+                ->schema([
+                    Grid::make(2)
+                        ->schema([
+                            TextInput::make('city')
+                                ->label('Ville')
+                                ->prefixIcon(Heroicon::BuildingStorefront)
+                                ->placeholder('Entrez la ville où se déroule l\'événement')
+                                ->hintAction(
+                                    Action::make('gembloux_shortcut')
+                                        ->label('Gembloux')
+                                        ->action(fn(TextInput $component) => $component->state('Gembloux'))
+                                        ->visible(fn(TextInput $component) => $component->getState() !== 'Gembloux')
+                                )
+                                ->required(),
+
+                            TextInput::make('country')
+                                ->label('Pays')
+                                ->prefixIcon(Heroicon::GlobeEuropeAfrica)
+                                ->placeholder('Entrez le pays où se déroule l\'événement')
+                                ->hintAction(
+                                    Action::make('belgium_shortcut')
+                                        ->label('Belgique')
+                                        ->action(fn(TextInput $component) => $component->state('Belgique'))
+                                        ->visible(fn(TextInput $component) => $component->getState() !== 'Belgique')
+                                )
+                                ->required(),
+                        ]),
+
+                    TextInput::make('address')
+                        ->label('Adresse complète')
+                        ->prefixIcon(Heroicon::MapPin)
+                        ->placeholder('Entrez l\'adresse complète du lieu de l\'événement')
+                ]),
+        ];
+    }
+
+    public static function getCopywrittingSchema(): array
+    {
+        return [
+            Section::make('Copywritting')
+                ->description('Rédigez des textes accrocheurs pour promouvoir l\'événement')
+                ->columnSpanFull()
+                ->schema([
+                    RichEditor::make('body')
+                        ->label('Contenu de la page')
+                        ->placeholder('Rédigez le contenu de la page de l\'événement avec des détails, des anecdotes, etc.')
+                        ->required()
+                        ->columnSpanFull(),
+                ]),
+        ];
+    }
+
+    public static function getDetailsSchema(): array
+    {
+        return [
+            Section::make('Genres musicaux')
+                ->description('Sélectionnez les genres musicaux de l\'événement')
+                ->columnSpanFull()
+                ->schema([
+                    Select::make('genres')
+                        ->label('Genres')
+                        ->placeholder('Sélectionnez les genres musicaux associés à cet événement')
+                        ->prefixIcon(Heroicon::MusicalNote)
+                        ->multiple()
+                        ->relationship('genres', 'name')
+                        ->preload()
+                        ->searchable()
+                        ->createOptionForm([
+                            TextInput::make('name')
+                                ->label('Nom')
+                                ->required()
+                                ->live(onBlur: true)
+                                ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', \Illuminate\Support\Str::slug($state))),
+                            TextInput::make('slug')
+                                ->label('Slug')
+                                ->required()
+                                ->unique('genres', 'slug'),
+                        ]),
+                ]),
+
+            Section::make('Autre')
+                ->icon('heroicon-o-ellipsis-horizontal')
+                ->description('Informations complémentaires')
+                ->columnSpanFull()
+                ->schema([
+                    TextInput::make('dress_code')
+                        ->label('Dress code')
+                        ->prefixIcon(Heroicon::Sparkles)
+                        ->placeholder('Indiquez le dress code de l\'événement')
+                        ->suffixAction(
+                            Action::make('no_dress_code')
+                                ->label('Pas de dress code')
+                                ->icon(Heroicon::XMark)
+                                ->action(fn(TextInput $component) => $component->state(null))
+                                ->disabled(fn(TextInput $component) => $component->getState() === null)
+                        )
+                        ->live(),
+
+                    TextInput::make('minimum_age')
+                        ->label('Âge minimum')
+                        ->prefixIcon(Heroicon::Cake)
+                        ->placeholder('Indiquez l\'âge minimum requis')
+                        ->numeric()
+                        ->integer()
+                        ->hintAction(
+                            Action::make('18_plus')
+                                ->label('18 ans et plus')
+                                ->action(fn(TextInput $component) => $component->state(18))
+                                ->visible(fn(TextInput $component) => $component->getState() !== 18.00)
+                        )
+                        ->suffixAction(
+                            Action::make('no_age_limit')
+                                ->label('Pas de limite d\'âge')
+                                ->icon(Heroicon::XMark)
+                                ->action(fn(TextInput $component) => $component->state(null))
+                                ->disabled(fn(TextInput $component) => $component->getState() === null)
+                        )
+                        ->live(),
+                ]),
+        ];
+    }
+
+    public static function getVisualsSchema(): array
+    {
+        return [
+            Section::make('Visuels de l\'événement')
+                ->columnSpanFull()
+                ->schema([
+                    Grid::make(2)
+                        ->schema([
+                            FileUpload::make('poster')
+                                ->label('Poster')
+                                ->image()
+                                ->directory('events/posters')
+                                ->disk('public')
+                                ->visibility('public')
+                                ->imageEditor(),
+
+                            FileUpload::make('background')
+                                ->label('Background')
+                                ->image()
+                                ->directory('events/backgrounds')
+                                ->disk('public')
+                                ->visibility('public')
+                                ->imageEditor(),
+                        ]),
+                ])
+        ];
+    }
+
+    public static function getFaqSchema(): array
+    {
+        return [
+            Section::make('Foire aux questions')
+                ->description('Ajoutez des questions fréquentes pour aider les participants')
+                ->columnSpanFull()
+                ->schema([
+                    Repeater::make('faq')
+                        ->hiddenLabel()
+                        ->addActionLabel('Ajouter une question')
+                        ->defaultItems(0)
+                        ->deleteAction(
+                            fn(Action $action) => $action->requiresConfirmation(),
+                        )
+                        ->schema([
+                            TextInput::make('question')
+                                ->label('Question')
+                                ->placeholder('Entrez une question fréquente')
+                                ->required()
+                                ->prefixIcon(Heroicon::QuestionMarkCircle),
+
+                            Textarea::make('answer')
+                                ->label('Réponse')
+                                ->placeholder('Entrez la réponse à cette question')
+                                ->autosize()
+                                ->rows(1)
+                                ->required()
+                        ])
+                ])
+        ];
+    }
+
+    public static function getSponsorsSchema(): array
+    {
+        return [
+            Section::make('Sponsors de l\'événement')
+                ->description('Gérez les sponsors associés à cet événement')
+                ->columnSpanFull()
+                ->schema([
+                    Repeater::make('eventSponsors')
+                        ->hiddenLabel()
+                        ->relationship()
+                        ->addActionLabel('Ajouter un sponsor')
+                        ->schema([
+                            ViewField::make('sponsor_id')
+                                ->label('Aperçu du sponsor')
+                                ->view('filament.forms.components.sponsor-preview')
+                                ->columnSpanFull(),
+
+                            Select::make('sponsor_id')
+                                ->hiddenLabel()
+                                ->relationship('sponsor', 'name')
+                                ->preload()
+                                ->placeholder('Sélectionnez un sponsor')
+                                ->searchable()
+                                ->selectablePlaceholder(false)
+                                ->required()
+                                ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                                ->prefixIcon('heroicon-m-briefcase')
+                                ->createOptionForm([
+                                    TextInput::make('name')
+                                        ->label('Nom du sponsor')
+                                        ->required(),
+                                    FileUpload::make('logo')
+                                        ->label('Logo du sponsor')
+                                        ->image()
+                                        ->disk('public')
+                                        ->visibility('public')
+                                        ->directory('sponsors/logos')
+                                        ->required(),
+                                    TextInput::make('website')
+                                        ->label('Site web')
+                                        ->url()
+                                        ->prefixIcon('heroicon-m-globe-alt'),
+                                    Textarea::make('description')
+                                        ->label('Description')
+                                        ->autosize()
+                                        ->columnSpanFull(),
+                                ])
+                                ->editOptionForm([
+                                    TextInput::make('name')
+                                        ->label('Nom du sponsor')
+                                        ->required(),
+                                    FileUpload::make('logo')
+                                        ->label('Logo du sponsor')
+                                        ->image()
+                                        ->disk('public')
+                                        ->visibility('public')
+                                        ->directory('sponsors/logos')
+                                        ->required(),
+                                    TextInput::make('website')
+                                        ->label('Site web')
+                                        ->url()
+                                        ->prefixIcon('heroicon-m-globe-alt'),
+                                    Textarea::make('description')
+                                        ->label('Description')
+                                        ->autosize()
+                                        ->columnSpanFull(),
+                                ])
+                                ->live(),
+                        ])
+                        ->itemLabel(
+                            fn(array $state): ?string =>
+                            isset($state['sponsor_id'])
+                                ? Sponsor::find($state['sponsor_id'])?->name
+                                : 'Nouveau Sponsor'
+                        )
+                        ->defaultItems(0)
+                        ->reorderable()
+                        ->orderColumn('sort_order')
+                        ->grid(2)
+                ])
+        ];
     }
 }

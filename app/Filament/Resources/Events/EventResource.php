@@ -4,13 +4,19 @@ namespace App\Filament\Resources\Events;
 
 use App\Filament\Resources\Events\Pages\CreateEvent;
 use App\Filament\Resources\Events\Pages\EditEvent;
+use App\Filament\Resources\Events\Pages\EditEventCopywritting;
+use App\Filament\Resources\Events\Pages\EditEventDetails;
+use App\Filament\Resources\Events\Pages\EditEventFaq;
+use App\Filament\Resources\Events\Pages\EditEventSponsors;
+use App\Filament\Resources\Events\Pages\EditEventVisuals;
 use App\Filament\Resources\Events\Pages\ListEvents;
-use App\Filament\Resources\Events\Pages\ViewEvent;
 use App\Filament\Resources\Events\Schemas\EventForm;
 use App\Filament\Resources\Events\Schemas\EventInfolist;
 use App\Filament\Resources\Events\Tables\EventsTable;
 use App\Models\Event;
 use BackedEnum;
+use Filament\Pages\Page;
+use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -26,6 +32,10 @@ class EventResource extends Resource
     protected static string|UnitEnum|null $navigationGroup = 'Gestion des événements';
     protected static string|null $modelLabel = 'Événement';
     protected static string|null $pluralModelLabel = 'Événements';
+
+    protected static ?string $recordTitleAttribute = 'title';
+
+    protected static ?SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Start;
 
     public static function form(Schema $schema): Schema
     {
@@ -54,8 +64,24 @@ class EventResource extends Resource
         return [
             'index' => ListEvents::route('/'),
             'create' => CreateEvent::route('/create'),
-            'view' => ViewEvent::route('/{record}'),
             'edit' => EditEvent::route('/{record}/edit'),
+            'details' => EditEventDetails::route('/{record}/details'),
+            'copywritting' => EditEventCopywritting::route('/{record}/copywritting'),
+            'visuals' => EditEventVisuals::route('/{record}/visuals'),
+            'faq' => EditEventFaq::route('/{record}/faq'),
+            'sponsors' => EditEventSponsors::route('/{record}/sponsors'),
         ];
+    }
+
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
+            EditEvent::class,
+            EditEventDetails::class,
+            EditEventCopywritting::class,
+            EditEventVisuals::class,
+            EditEventFaq::class,
+            EditEventSponsors::class,
+        ]);
     }
 }

@@ -4,3 +4,7 @@
 @source '../../../../resources/views/filament/**/*';
 
 @source '../../../../vendor/codewithdennis/filament-advanced-choice/resources/**/*.blade.php';
+
+.fi-main {
+    @apply max-w-none!;
+}
