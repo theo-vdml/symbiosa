@@ -3,6 +3,7 @@
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
     import AppButton from '@/components/AppButton.vue';
+    import SponsorMarquee from '@/components/SponsorMarquee.vue';
     import { Calendar, MapPin } from '@lucide/vue';
 
     interface Genre {
@@ -311,26 +312,7 @@
                     Cet événement ne serait pas possible sans nos sponsors
                 </p>
 
-                <div class="relative flex overflow-hidden marquee-container">
-                    <div class="marquee-content flex items-center gap-20 py-4 pr-20 shrink-0">
-                        <!-- First set of logos -->
-                        <a v-for="(sponsor, index) in event.sponsors" :key="'s1-' + index" :href="sponsor.website"
-                            target="_blank" class="shrink-0 transition-transform duration-300 hover:scale-110">
-                            <img :src="'/' + sponsor.logo"
-                                class="h-10 w-auto opacity-80 fill-white transition-all duration-300 hover:opacity-100"
-                                alt="Sponsor Logo" />
-                        </a>
-                    </div>
-                    <div class="marquee-content flex items-center gap-20 py-4 pr-20 shrink-0" aria-hidden="true">
-                        <!-- Second set for seamless loop -->
-                        <a v-for="(sponsor, index) in event.sponsors" :key="'s2-' + index" :href="sponsor.website"
-                            target="_blank" class="shrink-0 transition-transform duration-300 hover:scale-110">
-                            <img :src="'/' + sponsor.logo"
-                                class="h-10 w-auto opacity-80 fill-white transition-all duration-300 hover:opacity-100"
-                                alt="Sponsor Logo" />
-                        </a>
-                    </div>
-                </div>
+                <SponsorMarquee v-if="event.sponsors?.length" :sponsors="event.sponsors" />
             </section>
 
             <!-- FAQ Section -->
@@ -367,21 +349,4 @@
 </template>
 
 <style scoped>
-.marquee-content {
-    animation: marquee 40s linear infinite;
-}
-
-.marquee-container:hover .marquee-content {
-    animation-play-state: paused;
-}
-
-@keyframes marquee {
-    0% {
-        transform: translateX(0);
-    }
-
-    100% {
-        transform: translateX(-100%);
-    }
-}
 </style>
