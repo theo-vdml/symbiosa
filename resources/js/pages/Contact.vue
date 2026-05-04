@@ -1,98 +1,98 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { Head } from '@inertiajs/vue3';
-import Header from '@/components/Header.vue';
-import Footer from '@/components/Footer.vue';
-import AppButton from '@/components/AppButton.vue';
+    import { ref, computed, onMounted, onUnmounted } from 'vue';
+    import { Head } from '@inertiajs/vue3';
+    import Header from '@/components/Header.vue';
+    import Footer from '@/components/Footer.vue';
+    import AppButton from '@/components/AppButton.vue';
 
-const faqItems = [
-    {
-        question: "J'ai perdu mes billets",
-        answer: "Retrouvez-les dans votre boîte mail (cherchez 'Symbiosa' ou 'Ticket'). Si rien n'apparaît, utilisez le formulaire."
-    },
-    {
-        question: "Devenir Partenaire",
-        answer: "Sélectionnez 'Sponsoring' et présentez votre vision. Nous cherchons des collaborations qui font sens."
-    },
-    {
-        question: "Candidature Artiste",
-        answer: "Envoyez vos sets. Nous cherchons des identités sonores tranchées et organiques."
-    },
-    {
-        question: "Accès & PMR",
-        answer: "La majorité de nos lieux sont adaptés. Contactez-nous pour préparer votre venue dans les meilleures conditions."
-    }
-];
+    const faqItems = [
+        {
+            question: "J'ai perdu mes billets",
+            answer: "Retrouvez-les dans votre boîte mail (cherchez 'Symbiosa' ou 'Ticket'). Si rien n'apparaît, utilisez le formulaire."
+        },
+        {
+            question: "Devenir Partenaire",
+            answer: "Sélectionnez 'Sponsoring' et présentez votre vision. Nous cherchons des collaborations qui font sens."
+        },
+        {
+            question: "Candidature Artiste",
+            answer: "Envoyez vos sets. Nous cherchons des identités sonores tranchées et organiques."
+        },
+        {
+            question: "Accès & PMR",
+            answer: "La majorité de nos lieux sont adaptés. Contactez-nous pour préparer votre venue dans les meilleures conditions."
+        }
+    ];
 
-const form = ref({
-    name: '',
-    email: '',
-    subject: '',
-    message: '',
-    consent: false
-});
+    const form = ref({
+        name: '',
+        email: '',
+        subject: '',
+        message: '',
+        consent: false
+    });
 
-const subjects = [
-    { value: 'helpdesk', label: 'Helpdesk / Billetterie' },
-    { value: 'sponsoring', label: 'Sponsoring / Partenariat' },
-    { value: 'artiste', label: 'Candidature Artiste' },
-    { value: 'benevolat', label: 'Bénévolat' },
-    { value: 'autre', label: 'Autre' }
-];
+    const subjects = [
+        { value: 'helpdesk', label: 'Helpdesk / Billetterie' },
+        { value: 'sponsoring', label: 'Sponsoring / Partenariat' },
+        { value: 'artiste', label: 'Candidature Artiste' },
+        { value: 'benevolat', label: 'Bénévolat' },
+        { value: 'autre', label: 'Autre' }
+    ];
 
-const messagePlaceholder = computed(() => {
-    switch (form.value.subject) {
-        case 'helpdesk': return "Précisez l'événement et l'adresse e-mail de la commande...";
-        case 'sponsoring': return "Présentez-nous brièvement votre marque ou votre projet...";
-        case 'artiste': return "Ajoutez un lien vers votre Soundcloud/portfolio et décrivez votre univers...";
-        case 'benevolat': return "Dites-nous ce qui vous motive et vos éventuelles expériences...";
-        case 'autre':
-        default:
-            return "Comment pouvons-nous vous aider ?";
-    }
-});
+    const messagePlaceholder = computed(() => {
+        switch (form.value.subject) {
+            case 'helpdesk': return "Précisez l'événement et l'adresse e-mail de la commande...";
+            case 'sponsoring': return "Présentez-nous brièvement votre marque ou votre projet...";
+            case 'artiste': return "Ajoutez un lien vers votre Soundcloud/portfolio et décrivez votre univers...";
+            case 'benevolat': return "Dites-nous ce qui vous motive et vos éventuelles expériences...";
+            case 'autre':
+            default:
+                return "Comment pouvons-nous vous aider ?";
+        }
+    });
 
-const isSubmitted = ref(false);
+    const isSubmitted = ref(false);
 
-const openFaq = ref<number | null>(null);
-const selectOpen = ref(false);
-const selectRef = ref<HTMLElement | null>(null);
+    const openFaq = ref<number | null>(null);
+    const selectOpen = ref(false);
+    const selectRef = ref<HTMLElement | null>(null);
 
-const toggleFaq = (index: number) => {
-    openFaq.value = openFaq.value === index ? null : index;
-};
+    const toggleFaq = (index: number) => {
+        openFaq.value = openFaq.value === index ? null : index;
+    };
 
-const toggleSelect = () => {
-    selectOpen.value = !selectOpen.value;
-};
+    const toggleSelect = () => {
+        selectOpen.value = !selectOpen.value;
+    };
 
-const selectSubject = (val: string) => {
-    form.value.subject = val;
-    selectOpen.value = false;
-};
-
-const closeSelect = (e: MouseEvent) => {
-    if (selectRef.value && !selectRef.value.contains(e.target as Node)) {
+    const selectSubject = (val: string) => {
+        form.value.subject = val;
         selectOpen.value = false;
-    }
-};
+    };
 
-onMounted(() => {
-    document.addEventListener('click', closeSelect);
-});
+    const closeSelect = (e: MouseEvent) => {
+        if (selectRef.value && !selectRef.value.contains(e.target as Node)) {
+            selectOpen.value = false;
+        }
+    };
 
-onUnmounted(() => {
-    document.removeEventListener('click', closeSelect);
-});
+    onMounted(() => {
+        document.addEventListener('click', closeSelect);
+    });
 
-const submitForm = () => {
-    if (!form.value.consent || !form.value.subject) return;
-    isSubmitted.value = true;
-    setTimeout(() => {
-        isSubmitted.value = false;
-        form.value = { name: '', email: '', subject: '', message: '', consent: false };
-    }, 5000);
-};
+    onUnmounted(() => {
+        document.removeEventListener('click', closeSelect);
+    });
+
+    const submitForm = () => {
+        if (!form.value.consent || !form.value.subject) return;
+        isSubmitted.value = true;
+        setTimeout(() => {
+            isSubmitted.value = false;
+            form.value = { name: '', email: '', subject: '', message: '', consent: false };
+        }, 5000);
+    };
 </script>
 <template>
 
@@ -128,7 +128,7 @@ const submitForm = () => {
 
                 <!-- FAQ Section -->
                 <div class="space-y-10">
-                    <div class="pb-6">
+                    <div class="çpb-6">
                         <h2 class="font-chillax text-4xl text-white uppercase tracking-wide">
                             Questions Fréquentes
                         </h2>
@@ -191,23 +191,28 @@ const submitForm = () => {
                             </div>
 
                             <div class="space-y-2" ref="selectRef">
-                                <label class="text-[10px] font-bold tracking-[0.2em] text-[#51A687] uppercase">Sujet de la demande</label>
+                                <label class="text-[10px] font-bold tracking-[0.2em] text-[#51A687] uppercase">Sujet de
+                                    la demande</label>
                                 <div class="relative">
                                     <!-- Custom Select Trigger -->
                                     <button type="button" @click.stop.prevent="toggleSelect"
                                         class="w-full flex items-center justify-between border-b border-white/20 bg-transparent py-3 font-synonym focus:outline-none transition-colors cursor-pointer"
                                         :class="[form.subject === '' ? 'text-white/40' : 'text-white', selectOpen ? 'border-[#51A687]' : '']">
                                         <span>
-                                            {{ form.subject ? subjects.find(s => s.value === form.subject)?.label : 'Sélectionnez un sujet' }}
+                                            {{form.subject ? subjects.find(s => s.value === form.subject)?.label :
+                                            'Sélectionnez un sujet' }}
                                         </span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
-                                            class="w-4 h-4 transition-transform duration-300" :class="selectOpen ? 'rotate-180 text-[#51A687]' : 'text-white/50'">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="2" stroke="currentColor"
+                                            class="w-4 h-4 transition-transform duration-300"
+                                            :class="selectOpen ? 'rotate-180 text-[#51A687]' : 'text-white/50'">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                                         </svg>
                                     </button>
 
                                     <!-- Custom Select Dropdown Options -->
-                                    <div v-show="selectOpen" 
+                                    <div v-show="selectOpen"
                                         class="absolute z-50 w-full mt-2 rounded-xl border border-white/10 bg-[#0a0a0a]/95 backdrop-blur-xl shadow-2xl overflow-hidden origin-top animate-in fade-in zoom-in-95 duration-200">
                                         <div class="py-2">
                                             <button v-for="sub in subjects" :key="sub.value" type="button"
@@ -215,8 +220,12 @@ const submitForm = () => {
                                                 class="w-full text-left px-5 py-3 font-synonym text-white/70 hover:text-white hover:bg-white/5 transition-colors flex items-center justify-between"
                                                 :class="{ 'bg-white/5 text-white': form.subject === sub.value }">
                                                 {{ sub.label }}
-                                                <svg v-if="form.subject === sub.value" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-[#51A687]">
-                                                    <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clip-rule="evenodd" />
+                                                <svg v-if="form.subject === sub.value"
+                                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                    fill="currentColor" class="w-4 h-4 text-[#51A687]">
+                                                    <path fill-rule="evenodd"
+                                                        d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
+                                                        clip-rule="evenodd" />
                                                 </svg>
                                             </button>
                                         </div>
@@ -226,7 +235,8 @@ const submitForm = () => {
                             </div>
 
                             <div class="space-y-2">
-                                <label class="text-[10px] font-bold tracking-[0.2em] text-[#51A687] uppercase">Message</label>
+                                <label
+                                    class="text-[10px] font-bold tracking-[0.2em] text-[#51A687] uppercase">Message</label>
                                 <textarea v-model="form.message" rows="5" required
                                     class="w-full border-b border-white/20 bg-transparent py-3 font-synonym text-white focus:border-[#51A687] focus:outline-none focus:ring-0 transition-colors resize-none"
                                     :placeholder="messagePlaceholder"></textarea>
@@ -238,19 +248,25 @@ const submitForm = () => {
                                     <div class="relative flex items-center justify-center mt-0.5 shrink-0">
                                         <input type="checkbox" v-model="form.consent" required
                                             class="peer appearance-none w-5 h-5 border border-white/20 rounded bg-transparent checked:bg-[#51A687] checked:border-[#51A687] transition-colors focus:outline-none focus:ring-2 focus:ring-[#51A687]/30 cursor-pointer" />
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" 
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                            stroke-linejoin="round"
                                             class="absolute w-3 h-3 text-black opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity">
                                             <polyline points="20 6 9 17 4 12"></polyline>
                                         </svg>
                                     </div>
-                                    <span class="font-synonym text-sm text-gray-400 group-hover:text-gray-300 transition-colors leading-relaxed select-none">
-                                        J'accepte que les informations saisies soient exploitées dans le cadre de ma demande et de la relation qui peut en découler.
+                                    <span
+                                        class="font-synonym text-sm text-gray-400 group-hover:text-gray-300 transition-colors leading-relaxed select-none">
+                                        J'accepte que les informations saisies soient exploitées dans le cadre de ma
+                                        demande et de la relation qui peut en découler.
                                     </span>
                                 </label>
                             </div>
 
                             <div class="pt-4 flex justify-end">
-                                <AppButton as="button" type="submit" variant="primary" size="md" :disabled="!form.consent || !form.subject" :class="{ 'opacity-50 cursor-not-allowed': !form.consent || !form.subject }">
+                                <AppButton as="button" type="submit" variant="primary" size="md"
+                                    :disabled="!form.consent || !form.subject"
+                                    :class="{ 'opacity-50 cursor-not-allowed': !form.consent || !form.subject }">
                                     Envoyer le message
                                 </AppButton>
                             </div>
