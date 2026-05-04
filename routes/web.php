@@ -12,6 +12,9 @@ Route::get('/events', [\App\Http\Controllers\EventController::class, 'index'])
 Route::get('/events/{slug}', [\App\Http\Controllers\EventController::class, 'show'])
     ->name('events.show');
 
+Route::get('/events/{slug}/ticketing', [\App\Http\Controllers\EventController::class, 'ticketing'])
+    ->name('events.ticketing');
+
 Route::inertia('/archives', 'Archives')->name('archives');
 
 Route::inertia('/about', 'About')->name('about');

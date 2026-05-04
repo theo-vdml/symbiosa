@@ -6,6 +6,7 @@
     import SponsorMarquee from '@/components/SponsorMarquee.vue';
     import EventFaq from '@/components/EventFaq.vue';
     import { Calendar, MapPin } from '@lucide/vue';
+    import events from '@/routes/events';
 
     const props = defineProps<{
         event: Event;
@@ -109,7 +110,7 @@
         <main class="relative z-10 mx-auto max-w-7xl px-6 pb-24 md:px-10 lg:px-14">
             <!-- Action Bar -->
             <div class="relative -translate-y-1/2 z-20 flex justify-center px-4">
-                <AppButton href="#" variant="primary" size="lg"
+                <AppButton :href="events.ticketing(event.slug).url" variant="primary" size="lg"
                     class="w-full sm:w-auto border-[#51A687]/50 bg-[#51A687]/10 backdrop-blur-xl hover:bg-[#51A687]/20">
                     Réserver mes places
                 </AppButton>
@@ -244,7 +245,7 @@
                             <p class="text-3xl font-chillax text-white">25€</p>
                         </div>
 
-                        <AppButton href="#" variant="outline" size="md" class="w-full">
+                        <AppButton :href="events.ticketing(event.slug).url" variant="outline" size="md" class="w-full">
                             Acheter ma place
                         </AppButton>
                     </div>
