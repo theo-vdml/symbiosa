@@ -24,8 +24,8 @@
             <ul
                 class="flex items-center justify-end gap-8 font-synonym text-sm font-medium tracking-widest text-white uppercase">
                 <NavItem to="/news" label="Actualité" />
-                <NavItem to="#" label="A Propos" />
-                <NavItem to="#" label="Contact" />
+                <NavItem to="/about" label="A Propos" />
+                <NavItem to="/contact" label="Contact" />
             </ul>
         </div>
 

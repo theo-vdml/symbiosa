@@ -14,6 +14,9 @@ Route::get('/events/{slug}', [\App\Http\Controllers\EventController::class, 'sho
 
 Route::inertia('/archives', 'Archives')->name('archives');
 
+Route::inertia('/about', 'About')->name('about');
+Route::inertia('/contact', 'Contact')->name('contact');
+
 Route::get('/news', [\App\Http\Controllers\NewsController::class, 'index'])
     ->name('news.index');
 
