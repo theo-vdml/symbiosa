@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
+    import { Link } from '@inertiajs/vue3';
 </script>
 
 <template>
@@ -9,12 +9,18 @@ import { Link } from '@inertiajs/vue3';
                 <!-- Left Column: Navigation -->
                 <div class="flex flex-col space-y-1 text-center md:text-left">
                     <Link href="/" class="text-base cursor-pointer transition-colors hover:underline">Home</Link>
-                    <Link href="/agenda" class="text-base cursor-pointer transition-colors hover:underline">Calendrier</Link>
-                    <Link href="/archives" class="text-base cursor-pointer transition-colors hover:underline">Archives</Link>
-                    <Link href="/about" class="text-base cursor-pointer transition-colors hover:underline">A propos</Link>
-                    <Link href="/contact" class="text-base cursor-pointer transition-colors hover:underline">Contact</Link>
-                    <Link href="/status" class="text-base cursor-pointer transition-colors hover:underline">Status ASBL</Link>
-                    <Link href="/legal" class="text-base cursor-pointer transition-colors hover:underline">Mentions Légales</Link>
+                    <Link href="/agenda" class="text-base cursor-pointer transition-colors hover:underline">Calendrier
+                    </Link>
+                    <Link href="/archives" class="text-base cursor-pointer transition-colors hover:underline">Archives
+                    </Link>
+                    <Link href="/about" class="text-base cursor-pointer transition-colors hover:underline">A propos
+                    </Link>
+                    <Link href="/contact" class="text-base cursor-pointer transition-colors hover:underline">Contact
+                    </Link>
+                    <Link href="/status" class="text-base cursor-pointer transition-colors hover:underline">Status ASBL
+                    </Link>
+                    <Link href="/legal" class="text-base cursor-pointer transition-colors hover:underline">Mentions
+                        Légales</Link>
                     <Link href="/roi" class="text-base cursor-pointer transition-colors hover:underline">R.O.I</Link>
                 </div>
 
@@ -50,7 +56,7 @@ import { Link } from '@inertiajs/vue3';
             </div>
 
             <div class="relative mt-24 flex w-full items-center justify-center overflow-visible">
-                <h2 class="font-chillax text-[8vw] select-none md:text-[14rem]">
+                <h2 class="font-chillax text-[8vw] select-none lg:text-[12rem] xl:text-[14rem]">
                     Symbiosa
                 </h2>
             </div>

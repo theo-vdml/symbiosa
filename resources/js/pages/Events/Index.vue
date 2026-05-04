@@ -4,41 +4,7 @@
     import Footer from '@/components/Footer.vue';
     import AppButton from '@/components/AppButton.vue';
     import { archives } from '@/routes';
-
-    interface Genre {
-        id: number;
-        name: string;
-        slug: string;
-    }
-
-    interface Event {
-        id: number;
-        title: string;
-        slug: string;
-        date: string;
-        start_time: string;
-        end_time: string;
-        city: string;
-        country: string;
-        address: string;
-        dress_code: string;
-        minimum_age: number;
-        description: string;
-        background: string;
-        poster: string;
-        created_at: string;
-        updated_at: string;
-        faq: {
-            question: string;
-            answer: string;
-        }[];
-        genres?: Genre[];
-        sponsors?: {
-            name: string;
-            logo: string;
-            link: string;
-        }[];
-    }
+    import { CheckCircle, Clock, MapPin } from '@lucide/vue';
 
     defineProps<{
         events: Event[];
@@ -93,16 +59,14 @@
             <div v-if="events.length > 0" class="relative mt-20 px-4 md:px-0">
                 <!-- Timeline Line -->
                 <div
-                    class="absolute top-0 bottom-0 left-1/2 z-1 hidden w-0.5 -translate-x-1/2 bg-linear-to-b from-transparent via-[#51A687]/50 via-10% to-transparent md:block">
+                    class="absolute top-0 bottom-0 left-1/2 z-1 hidden w-0.5 -translate-x-1/2 bg-linear-to-b from-transparent via-[#51A687]/60 via-10%  to-[#51A687]/20 md:block">
                 </div>
 
                 <div class="relative space-y-8 md:space-y-0">
                     <article v-for="(event, index) in events" :key="event.id" class="relative">
                         <!-- Timeline Node -->
                         <div class="absolute top-34 left-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 md:block">
-                            <div
-                                class="h-3 w-3 rotate-45 border-2 border-[#51A687] bg-black shadow-[0_0_20px_rgba(81,166,135,0.8)]">
-                            </div>
+                            <div class="h-6 w-6 border-8 rounded-full bg-[#51A687] border-black"></div>
                         </div>
 
                         <div
@@ -111,7 +75,66 @@
                             <div :class="index % 2 === 0 ? 'md:order-1' : 'md:order-2'" class="flex justify-center">
                                 <div
                                     class="relative aspect-3/4 w-full overflow-hidden rounded-2xl border border-white/10 shadow-2xl md:max-w-md md:rounded-3xl">
-                                    <img :src="event.poster" :alt="event.title" class="h-full w-full object-cover" />
+                                    <img v-if="event.poster" :src="event.poster" :alt="event.title"
+                                        class="absolute inset-0 h-full w-full object-cover" />
+
+                                    <!-- Fallback 1: Background Image (Atmospheric but clear) -->
+                                    <template v-else-if="event.background">
+                                        <img :src="'/' + event.background" :alt="event.title"
+                                            class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 hover:scale-105" />
+                                        <div
+                                            class="absolute inset-0 bg-linear-to-t from-black/60 via-black/10 to-transparent">
+                                        </div>
+                                    </template>
+
+                                    <!-- Fallback 2: Abstract Branded Glow (Final fallback) -->
+                                    <div v-else
+                                        class="absolute inset-0 flex flex-col items-center justify-center bg-[#010806] text-center overflow-hidden">
+
+                                        <!-- Animated Corner-to-Corner Light Sources -->
+                                        <div class="absolute inset-0">
+                                            <!-- Light Source 1 -->
+                                            <div class="absolute h-0 w-0 animate-corner-path-1">
+                                                <div class="absolute -translate-x-1/2 -translate-y-1/2">
+                                                    <div class="h-96 w-96 rounded-full bg-[#51A687]/40 blur-[100px]">
+                                                    </div>
+                                                    <div
+                                                        class="absolute top-1/2 left-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#51A687]/60 blur-[60px]">
+                                                    </div>
+                                                    <div
+                                                        class="absolute top-1/2 left-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/30 blur-2xl">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Light Source 2 -->
+                                            <div class="absolute h-0 w-0 animate-corner-path-2">
+                                                <div class="absolute -translate-x-1/2 -translate-y-1/2">
+                                                    <div class="h-96 w-96 rounded-full bg-[#51A687]/40 blur-[100px]">
+                                                    </div>
+                                                    <div
+                                                        class="absolute top-1/2 left-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#51A687]/60 blur-[60px]">
+                                                    </div>
+                                                    <div
+                                                        class="absolute top-1/2 left-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/30 blur-2xl">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div
+                                            class="absolute inset-0 bg-[url('/noise.png')] opacity-40 mix-blend-soft-light">
+                                        </div>
+
+                                        <!-- Centered Title Overlay -->
+                                        <div
+                                            class="absolute inset-0 flex flex-col items-center justify-center text-center px-8">
+                                            <span
+                                                class="font-chillax text-4xl md:text-5xl text-white uppercase tracking-tighter leading-[0.9] drop-shadow-[0_0_40px_rgba(81,166,135,0.8)]">
+                                                {{ event.title }}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -138,7 +161,7 @@
                                     <div class="flex flex-col"
                                         :class="index % 2 !== 0 ? 'md:items-end' : 'md:items-start'">
                                         <h2
-                                            class="mb-2 font-chillax text-4xl leading-[1.1] text-white md:mb-6 md:text-6xl lg:text-7xl">
+                                            class="mb-2 font-chillax text-3xl leading-[1.1] text-white md:mb-6 md:text-4xl lg:text-5xl">
                                             {{ event.title }}
                                         </h2>
 
@@ -159,13 +182,7 @@
                                 <!-- Location -->
                                 <div class="mt-6 mb-8 flex items-center gap-3 text-gray-400 md:mt-0 md:mb-10" :class="index % 2 !== 0 ? 'md:justify-end' : ''
                                     ">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="2" stroke="currentColor" class="h-5 w-5 text-[#51A687]">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-                                    </svg>
+                                    <MapPin class="h-5 w-5" />
                                     <span class="text-lg font-medium tracking-wide uppercase">
                                         {{ event.city }}, {{ event.country }}
                                     </span>
@@ -188,11 +205,7 @@
                 <div class="mt-32 flex flex-col items-center text-center bg-black z-2 relative">
                     <div
                         class="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-[#51A687]/10 text-[#51A687]">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                            stroke="currentColor" class="h-6 w-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
+                        <CheckCircle class="h-6 w-6" />
                     </div>
                     <h3 class="font-chillax text-2xl text-white">
                         C'est tout pour le moment !
@@ -209,11 +222,7 @@
 
             <section v-else class="flex flex-col items-center justify-center py-16 text-center">
                 <div class="mb-8 flex h-24 w-24 items-center justify-center rounded-full bg-white/5 text-gray-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="h-12 w-12">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                    </svg>
+                    <Clock class="h-10 w-10" />
                 </div>
                 <h2 class="font-chillax text-4xl text-white">
                     Aucun événement programmé
@@ -231,3 +240,38 @@
 
     <Footer />
 </template>
+
+<style scoped>
+@keyframes corner-path {
+
+    0%,
+    100% {
+        top: 0%;
+        left: 100%;
+    }
+
+    25% {
+        top: 100%;
+        left: 100%;
+    }
+
+    50% {
+        top: 100%;
+        left: 0%;
+    }
+
+    75% {
+        top: 0%;
+        left: 0%;
+    }
+}
+
+.animate-corner-path-1 {
+    animation: corner-path 30s linear infinite;
+}
+
+.animate-corner-path-2 {
+    animation: corner-path 30s linear infinite;
+    animation-delay: -15s;
+}
+</style>

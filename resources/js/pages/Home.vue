@@ -10,6 +10,7 @@
 
     const props = defineProps<{
         posts: any[];
+        upcomingEvent: Event | null;
         spotifyPlaylistHeading: string | null;
         spotifyPlaylistId: string | null;
         showSpotifyPlaylist: boolean;
@@ -27,15 +28,14 @@
             <video src="/abstract.mp4" autoplay loop muted playsinline
                 class="absolute top-1/2 left-1/2 min-h-full min-w-full -translate-x-1/2 -translate-y-1/2 object-cover"></video>
             <div class="absolute inset-0 z-0 bg-black/60 backdrop-blur-sm"></div>
+            <div class="absolute inset-0 z-0 bg-linear-to-b from-transparent via-transparent to-black"></div>
 
             <div class="relative z-10 flex h-full items-center justify-center">
                 <h1 class="font-chillax text-[14rem] text-white">Symbiosa</h1>
             </div>
         </div>
 
-        <UpcomingEvent eventTitle="Origins" eventDate="28 Octobre 2026" eventDay="Samedi" eventCity="Gembloux"
-            eventCountry="Belgique" eventImage="/origins/poster_light.png" ticketLink="/tickets/eden"
-            moreInfoLink="/events/eden" calendarLink="/agenda" />
+        <UpcomingEvent v-if="props.upcomingEvent" :event="props.upcomingEvent" />
 
         <NewsSection v-if="props.posts.length > 0" :posts="props.posts" />
 

@@ -4,11 +4,13 @@ namespace App\Traits;
 
 use App\Enums\PublicationStatus;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 trait HasPublication
 {
     public static function bootHasPublication(): void
     {
+        /** @var Model $this */
         static::saving(function ($model) {
             if ($model->status === null) {
                 $model->status = PublicationStatus::Draft;

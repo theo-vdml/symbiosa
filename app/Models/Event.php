@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\InteractsWithFiles;
 use App\Enums\PublicationStatus;
 use App\Traits\HasPublication;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -17,6 +18,7 @@ class Event extends Model
 
     protected $fillable = [
         'title',
+        'description',
         'slug',
         'status',
         'published_at',
@@ -76,5 +78,11 @@ class Event extends Model
     public function artistEvents()
     {
         return $this->hasMany(ArtistEvent::class);
+    }
+
+    public function scopeUpcoming(Builder $query)
+    {
+        $query->where('date', '>=', now()->toDateString())
+            ->orderBy('date', 'asc');
     }
 }

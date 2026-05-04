@@ -7,70 +7,9 @@
     import EventFaq from '@/components/EventFaq.vue';
     import { Calendar, MapPin } from '@lucide/vue';
 
-    interface Genre {
-        id: number;
-        name: string;
-        slug: string;
-    }
-
-    interface Event {
-        id: number;
-        title: string;
-        slug: string;
-        date: string;
-        start_time: string;
-        end_time: string;
-        city: string;
-        country: string;
-        address: string;
-        dress_code: string;
-        minimum_age: number;
-        description: string;
-        background: string;
-        poster: string;
-        created_at: string;
-        updated_at: string;
-        faq: {
-            question: string;
-            answer: string;
-        }[];
-        genres?: Genre[];
-        sponsors?: {
-            name: string;
-            logo: string;
-            website: string;
-        }[];
-        artists: {
-            name: string;
-            thumbnail: string;
-            website: string;
-            genres?: Genre[];
-            biography: string;
-            pivot: {
-                performance_time: string;
-                sort_order: number;
-            }
-        }[]
-    }
-
     const props = defineProps<{
         event: Event;
     }>();
-
-    interface LineupArtist {
-        name: string;
-        time: string;
-        image: string;
-        genres: string[];
-        link?: string;
-    }
-
-    const lineup: LineupArtist[] = [
-        { name: 'Koda b2b Olvr', time: '02:00', image: '/artists/koda_olvr.png', genres: ['Hard Techno'], link: 'https://www.instagram.com/kodaa_music/' },
-        { name: 'NoID', time: '00:00', image: '/artists/artist_picture_02.png', genres: ['Industrial', 'Techno', 'Dark'] },
-        { name: 'Biname', time: '22:00', image: '/artists/artist_picture_03.png', genres: ['Techno', 'Acid'] },
-        { name: 'Omdat Het Kan & Average Rob', time: '20:00', image: '/artists/artist_picture_04.png', genres: ['House'] },
-    ]
 
     const getWeekday = (dateStr: string) => {
         const date = new Date(dateStr);
@@ -107,13 +46,18 @@
     <Header />
 
     <div class="relative z-10 rounded-b-[6rem] bg-black min-h-screen">
+
         <!-- Hero Banner Section -->
         <section class="relative h-[85vh] w-full overflow-hidden">
-            <img :src="'/' + event.background" class="absolute inset-0 h-full w-full object-cover" alt="" />
+            <template v-if="event.background">
+                <img :src="'/' + event.background" class="absolute inset-0 h-full w-full object-cover" alt="" />
+                <div class="absolute inset-0 bg-linear-to-t from-black via-black/40 to-black/20"></div>
+                <div class="absolute inset-0 bg-[url('/noise.png')] opacity-[0.05] mix-blend-soft-light"></div>
+            </template>
 
-            <!-- Overlays -->
-            <div class="absolute inset-0 bg-linear-to-t from-black via-black/40 to-black/20"></div>
-            <div class="absolute inset-0 bg-[url('/noise.png')] opacity-[0.05] mix-blend-soft-light"></div>
+            <template v-else>
+                <div class="absolute inset-0 bg-linear-to-b from-[#51A687]/30 to-transparent"></div>
+            </template>
 
             <div class="relative z-10 flex h-full flex-col items-center justify-end pb-32 text-center px-6">
                 <div class="space-y-12 max-w-4xl">
@@ -166,7 +110,7 @@
             <!-- Action Bar -->
             <div class="relative -translate-y-1/2 z-20 flex justify-center px-4">
                 <AppButton href="#" variant="primary" size="lg"
-                    class="w-full sm:w-auto shadow-2xl shadow-[#51A687]/20 border-[#51A687]/50 bg-[#51A687]/10 backdrop-blur-xl hover:bg-[#51A687]/20">
+                    class="w-full sm:w-auto border-[#51A687]/50 bg-[#51A687]/10 backdrop-blur-xl hover:bg-[#51A687]/20">
                     Réserver mes places
                 </AppButton>
             </div>
@@ -181,7 +125,7 @@
                         </div>
                     </div>
 
-                    <div class="space-y-12">
+                    <div v-if="event.artists && event.artists.length" class="space-y-12">
                         <h2 class="font-chillax text-4xl text-white">Line-up</h2>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -243,7 +187,7 @@
                                 </div>
 
                                 <!-- Time Label -->
-                                <div class="absolute bottom-8 right-8 text-right">
+                                <div v-if="artist.pivot.performance_time" class="absolute bottom-8 right-8 text-right">
                                     <p
                                         class="font-chillax text-xl md:text-2xl text-white/80 font-semibold tracking-widest group-hover:text-white transition-colors">
                                         {{ getPerformanceTime(artist.pivot.performance_time) }}
@@ -324,5 +268,4 @@
     <Footer />
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

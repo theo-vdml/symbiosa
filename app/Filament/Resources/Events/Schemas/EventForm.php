@@ -81,6 +81,8 @@ class EventForm
 
                     Textarea::make('description')
                         ->label('Description')
+                        ->autosize()
+                        ->rows(3)
                         ->placeholder('Décrivez l\'événement en quelques mots')
                         ->required()
                         ->columnSpanFull(),
