@@ -80,6 +80,16 @@ class Event extends Model
         return $this->hasMany(ArtistEvent::class);
     }
 
+    public function ticketTypes()
+    {
+        return $this->hasMany(TicketType::class)->orderBy('sort_order');
+    }
+
+    public function addons()
+    {
+        return $this->hasMany(EventAddon::class)->orderBy('sort_order');
+    }
+
     public function scopeUpcoming(Builder $query)
     {
         $query->where('date', '>=', now()->toDateString())

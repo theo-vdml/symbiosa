@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "94b0a72541cbe8d3c0ba1debce9b8a86",
+    "content-hash": "9526273d9ace61e4bb9b755ec62f4fb7",
     "packages": [
         {
             "name": "azgasim/filament-unsaved-changes-modal",
@@ -8751,6 +8751,67 @@
                 }
             ],
             "time": "2024-11-21T01:49:47+00:00"
+        },
+        {
+            "name": "yousefaman/filament-modal-repeater",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yousef-aman/filament-modal-repeater.git",
+                "reference": "afb78a03ca4f98cd52809ba4b9b06decdc12ba44"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yousef-aman/filament-modal-repeater/zipball/afb78a03ca4f98cd52809ba4b9b06decdc12ba44",
+                "reference": "afb78a03ca4f98cd52809ba4b9b06decdc12ba44",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^4.0 || ^5.0",
+                "php": "^8.2",
+                "spatie/laravel-package-tools": "^1.9"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^10.0",
+                "pestphp/pest": "^4.0",
+                "pestphp/pest-plugin-livewire": "^3.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "YousefAman\\ModalRepeater\\ModalRepeaterServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "YousefAman\\ModalRepeater\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Yousef Aman"
+                }
+            ],
+            "description": "A Filament form component that displays repeater items in a table with modal-based editing.",
+            "keywords": [
+                "Repeater",
+                "filament",
+                "form",
+                "laravel",
+                "modal",
+                "table"
+            ],
+            "support": {
+                "issues": "https://github.com/yousef-aman/filament-modal-repeater/issues",
+                "source": "https://github.com/yousef-aman/filament-modal-repeater/tree/v1.1.0"
+            },
+            "time": "2026-04-29T09:31:44+00:00"
         }
     ],
     "packages-dev": [

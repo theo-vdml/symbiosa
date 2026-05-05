@@ -19,6 +19,7 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use YousefAman\ModalRepeater\ModalRepeaterPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -31,6 +32,7 @@ class AdminPanelProvider extends PanelProvider
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->unsavedChangesAlerts()
             ->plugin(FilamentUnsavedChangesModalPlugin::make())
+            ->plugin(ModalRepeaterPlugin::make())
             ->login()
             ->colors([
                 'primary' => Color::hex('#51A687'),

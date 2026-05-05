@@ -4,12 +4,14 @@ namespace App\Filament\Resources\Events;
 
 use App\Filament\Resources\Events\Pages\CreateEvent;
 use App\Filament\Resources\Events\Pages\EditEvent;
+use App\Filament\Resources\Events\Pages\EditEventAddons;
 use App\Filament\Resources\Events\Pages\EditEventCopywritting;
 use App\Filament\Resources\Events\Pages\EditEventDetails;
 use App\Filament\Resources\Events\Pages\EditEventFaq;
 use App\Filament\Resources\Events\Pages\EditEventLineup;
 use App\Filament\Resources\Events\Pages\EditEventPublication;
 use App\Filament\Resources\Events\Pages\EditEventSponsors;
+use App\Filament\Resources\Events\Pages\EditEventTicketing;
 use App\Filament\Resources\Events\Pages\EditEventVisuals;
 use App\Filament\Resources\Events\Pages\ListEvents;
 use App\Filament\Resources\Events\Schemas\EventForm;
@@ -76,6 +78,8 @@ class EventResource extends Resource
             'faq' => EditEventFaq::route('/{record}/faq'),
             'sponsors' => EditEventSponsors::route('/{record}/sponsors'),
             'lineup' => EditEventLineup::route('/{record}/lineup'),
+            'ticketing' => EditEventTicketing::route('/{record}/ticketing'),
+            'addons' => EditEventAddons::route('/{record}/addons'),
         ];
     }
 
@@ -90,6 +94,8 @@ class EventResource extends Resource
             EditEventLineup::class,
             EditEventFaq::class,
             EditEventSponsors::class,
+            EditEventTicketing::class,
+            EditEventAddons::class,
         ]);
     }
 }
