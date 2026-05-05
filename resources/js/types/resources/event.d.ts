@@ -24,6 +24,7 @@ interface Event {
     poster: string;
     created_at: string;
     updated_at: string;
+    min_price: number;
     faq: Question[];
     genres?: Genre[];
     sponsors?: Sponsor[];

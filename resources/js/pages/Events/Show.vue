@@ -242,7 +242,7 @@
 
                         <div class="space-y-2">
                             <p class="text-[10px] font-bold tracking-[0.2em] text-[#51A687] uppercase">À partir de</p>
-                            <p class="text-3xl font-chillax text-white">25€</p>
+                            <p class="text-3xl font-chillax text-white">{{ event.min_price }}€</p>
                         </div>
 
                         <AppButton :href="events.ticketing(event.slug).url" variant="outline" size="md" class="w-full">

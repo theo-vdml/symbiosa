@@ -19,16 +19,16 @@ class EventController extends Controller
             'events' => $events,
         ]);
     }
+public function show(string $slug)
+{
+    $event = Event::where('slug', $slug)
+        ->with(['genres', 'sponsors', 'artists', 'artists.genres', 'ticketTypes.prices'])
+        ->firstOrFail();
 
-    public function show(string $slug)
-    {
-        $event = Event::where('slug', $slug)->with('genres', 'sponsors', 'artists', 'artists.genres')->firstOrFail();
-
-        return Inertia::render('Events/Show', [
-            'event' => $event,
-        ]);
-    }
-
+    return Inertia::render('Events/Show', [
+        'event' => $event,
+    ]);
+}
     public function ticketing(string $slug)
     {
         $event = Event::where('slug', $slug)

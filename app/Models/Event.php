@@ -33,12 +33,19 @@ class Event extends Model
         'background',
     ];
 
+    protected $appends = ['min_price'];
+
     protected $casts = [
         'date' => 'date',
         'faq' => 'array',
         'status' => PublicationStatus::class,
         'published_at' => 'datetime',
     ];
+
+    public function getMinPriceAttribute()
+    {
+        return $this->ticketTypes->flatMap->prices->min('price_in_euro');
+    }
 
     public function fileAttributes(): array
     {
