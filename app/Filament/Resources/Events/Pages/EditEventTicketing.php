@@ -108,11 +108,11 @@ class EditEventTicketing extends EditRecord
                                     ->tableColumns([
                                         Column::make('name')
                                             ->label('Phase'),
-                                        Column::make('price')
+                                        Column::make('price_in_euro')
                                             ->label('Prix')
                                             ->formatUsing(
                                                 fn($state) =>
-                                                number_format($state / 100, 2, ',', ' ') . ' €'
+                                                number_format($state, 2, ',', ' ') . ' €'
                                             ),
                                         Column::make('threshold')
                                             ->label('Seuil'),
@@ -132,13 +132,11 @@ class EditEventTicketing extends EditRecord
                                             ->columnSpan(1)
                                             ->live(true),
 
-                                        TextInput::make('price')
-                                            ->label('Prix (€)')
+                                        TextInput::make('price_in_euro')
+                                            ->label('Prix')
                                             ->numeric()
                                             ->required()
                                             ->prefix('€')
-                                            ->formatStateUsing(fn($state) => $state / 100)
-                                            ->dehydrateStateUsing(fn($state) => $state * 100)
                                             ->columnSpan(1)
                                             ->minValue(0)
                                             ->live(true),

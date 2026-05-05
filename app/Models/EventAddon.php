@@ -19,7 +19,8 @@ class EventAddon extends Model
         'available_from',
         'available_until',
         'max_per_order',
-        'sort_order'
+        'sort_order',
+        'price_in_euro',
     ];
 
     protected $casts = [
@@ -31,16 +32,32 @@ class EventAddon extends Model
         'available_until' => 'datetime',
     ];
 
+    protected $appends = ['status', 'price_in_euro'];
+
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
     }
 
+    public function getStatusAttribute(): string
+    {
+        $isSoon = $this->available_from && $this->available_from->isFuture();
+        $isSoldOut = ($this->capacity > 0 && $this->sold_count >= $this->capacity) ||
+            ($this->available_until && $this->available_until->isPast());
+
+        if ($isSoon) return 'soon';
+        if ($isSoldOut) return 'sold_out';
+
+        return 'available';
+    }
+
     protected function priceInEuro(): Attribute
     {
         return Attribute::make(
-            get: fn($value, $attributes) => $attributes['price'] / 100,
-            set: fn($value) => $value * 100,
+            get: fn($value, $attributes) => isset($attributes['price']) ? $attributes['price'] / 100 : 0,
+            set: fn($value) => [
+                'price' => (int) ($value * 100),
+            ],
         );
     }
 }

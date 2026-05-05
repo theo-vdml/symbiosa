@@ -36,4 +36,26 @@ class TicketType extends Model
     {
         return $this->hasMany(TicketPrice::class)->orderBy('sort_order');
     }
+
+    public function getStatusAttribute(): string
+    {
+        if ($this->available_from && $this->available_from->isFuture()) {
+            return 'soon';
+        }
+
+        if ($this->capacity > 0 && $this->sold_count >= $this->capacity) {
+            return 'sold_out';
+        }
+
+        return $this->active_price ? 'available' : 'sold_out';
+    }
+
+    public function getActivePriceAttribute(): ?TicketPrice
+    {
+        return $this->prices->first(function ($price) {
+            $isTimeValid = is_null($price->available_until) || $price->available_until->isFuture();
+            $isThresholdValid = is_null($price->threshold) || $this->sold_count < $price->threshold;
+            return $isTimeValid && $isThresholdValid;
+        });
+    }
 }

@@ -28,4 +28,6 @@ interface Event {
     genres?: Genre[];
     sponsors?: Sponsor[];
     artists?: ArtistWithPivot[];
+    ticket_types?: TicketType[];
+    addons?: EventAddon[];
 }

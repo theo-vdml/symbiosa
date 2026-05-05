@@ -61,13 +61,11 @@ class EditEventAddons extends EditRecord
                                             ->columnSpan(4)
                                             ->live(true),
 
-                                        TextInput::make('price')
-                                            ->label('Prix (€)')
+                                        TextInput::make('price_in_euro')
+                                            ->label('Prix')
                                             ->numeric()
                                             ->required()
                                             ->prefix('€')
-                                            ->formatStateUsing(fn($state) => $state / 100)
-                                            ->dehydrateStateUsing(fn($state) => $state * 100)
                                             ->columnSpan(2)
                                             ->minValue(0)
                                             ->live(true),
