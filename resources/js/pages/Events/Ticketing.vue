@@ -124,7 +124,7 @@
                         <div class="flex items-center gap-2">
                             <Calendar class="w-4 h-4 text-[#51A687]" />
                             <span class="font-chillax uppercase tracking-widest text-sm">{{ getDateFormatted(event.date)
-                                }}</span>
+                            }}</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <MapPin class="w-4 h-4 text-[#51A687]" />
@@ -171,8 +171,8 @@
                         :description="type.description">
                         <TicketingItem v-for="price in type.prices" :key="`ticket_${type.id}_price_${price.id}`"
                             :itemKey="`ticket_${type.id}_price_${price.id}`" :title="price.name"
-                            :price="price.price_in_euro" :disabled="price.status !== 'available'"
-                            :disabled_reason="price.status === 'soon' ? 'Bientôt' : 'Épuisé'"
+                            :price="price.price_in_euro" :disabled="price.status !== 'open'"
+                            :disabled_reason="price.status === 'upcoming' ? 'Bientôt' : 'Épuisé'"
                             :quantity="cart.get(`ticket_${type.id}_price_${price.id}`) || 0"
                             @update-quantity="updateQuantity" :max_per_order="type.max_per_order || 99" />
                     </TicketingSection>
@@ -181,9 +181,11 @@
                     <TicketingSection v-if="event.addons?.length" title="Extras"
                         description="Ajoutez des options supplémentaires">
                         <TicketingItem v-for="addon in event.addons" :key="`addon_${addon.id}`"
-                            :itemKey="`addon_${addon.id}`" :title="addon.name" :price="addon.price_in_euro"
-                            :disabled="false" :quantity="cart.get(`addon_${addon.id}`) || 0"
-                            @update-quantity="updateQuantity" :max_per_order="addon.max_per_order" />
+                            :description="addon.description" :itemKey="`addon_${addon.id}`" :title="addon.name"
+                            :price="addon.price_in_euro" :disabled="addon.status !== 'open'"
+                            :disabled_reason="addon.status === 'upcoming' ? 'Bientôt' : 'Épuisé'"
+                            :quantity="cart.get(`addon_${addon.id}`) || 0" @update-quantity="updateQuantity"
+                            :max_per_order="addon.max_per_order" />
                     </TicketingSection>
                 </div>
 
@@ -206,7 +208,7 @@
                                     class="flex justify-between items-center py-3 border-b border-white/5">
                                     <div class="space-y-0.5">
                                         <p class="text-white text-xs font-medium uppercase tracking-wide">{{ item.name
-                                            }}</p>
+                                        }}</p>
                                         <p class="text-[10px] text-white/50 uppercase">{{ item.qty }} x {{
                                             formatEuro(item.price) }}</p>
                                     </div>

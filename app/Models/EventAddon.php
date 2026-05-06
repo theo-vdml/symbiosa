@@ -2,20 +2,23 @@
 
 namespace App\Models;
 
+use App\Contracts\Reservable;
+use App\Enums\ReservableStatus;
+use App\Traits\HasStock;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class EventAddon extends Model
+class EventAddon extends Model implements Reservable
 {
+    use HasStock;
+
     protected $fillable = [
         'event_id',
         'name',
         'description',
         'price',
         'capacity',
-        'sold_count',
-        'reserved_count',
         'available_from',
         'available_until',
         'max_per_order',
@@ -26,8 +29,6 @@ class EventAddon extends Model
     protected $casts = [
         'price' => 'integer',
         'capacity' => 'integer',
-        'sold_count' => 'integer',
-        'reserved_count' => 'integer',
         'available_from' => 'datetime',
         'available_until' => 'datetime',
     ];
@@ -39,16 +40,23 @@ class EventAddon extends Model
         return $this->belongsTo(Event::class);
     }
 
-    public function getStatusAttribute(): string
+    protected function status(): Attribute
     {
-        $isSoon = $this->available_from && $this->available_from->isFuture();
-        $isSoldOut = ($this->capacity > 0 && $this->sold_count >= $this->capacity) ||
-            ($this->available_until && $this->available_until->isPast());
+        return Attribute::get(function (): ReservableStatus {
+            if ($this->available_from?->isFuture()) {
+                return ReservableStatus::UPCOMING;
+            }
 
-        if ($isSoon) return 'soon';
-        if ($isSoldOut) return 'sold_out';
+            if ($this?->available_until?->isPast()) {
+                return ReservableStatus::SOLD_OUT;
+            }
 
-        return 'available';
+            if ($this->capacity && $this->reserved_stock >= $this->capacity) {
+                return ReservableStatus::SOLD_OUT;
+            }
+
+            return ReservableStatus::OPEN;
+        });
     }
 
     protected function priceInEuro(): Attribute

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ReservableStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -33,29 +34,29 @@ class TicketPrice extends Model
         return $this->belongsTo(TicketType::class);
     }
 
-    public function getStatusAttribute(): string
+    protected function status(): Attribute
     {
-        $type = $this->ticketType;
+        return Attribute::get(function (): ReservableStatus {
+            if ($this->ticketType->status !== ReservableStatus::OPEN) {
+                return $this->ticketType->status;
+            }
 
-        if ($type->available_from && $type->available_from->isFuture()) {
-            return 'soon';
-        }
+            $activePrice = $this->ticketType->activePrice;
 
-        if ($type->capacity > 0 && $type->sold_count >= $type->capacity) {
-            return 'sold_out';
-        }
+            if ($activePrice === null) {
+                return ReservableStatus::SOLD_OUT;
+            }
 
-        $activePrice = $type->activePrice;
+            if ($activePrice->id === $this->id) {
+                return ReservableStatus::OPEN;
+            }
 
-        if (!$activePrice) {
-            return 'sold_out';
-        }
+            if ($this->sort_order > $activePrice->sort_order) {
+                return ReservableStatus::UPCOMING;
+            }
 
-        if ($this->id === $activePrice->id) {
-            return 'available';
-        }
-
-        return $this->sort_order < $activePrice->sort_order ? 'sold_out' : 'soon';
+            return ReservableStatus::SOLD_OUT;
+        });
     }
 
     protected function priceInEuro(): Attribute

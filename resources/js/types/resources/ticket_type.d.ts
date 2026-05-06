@@ -9,6 +9,7 @@ interface TicketType {
     capacity: number | null;
     sold_count: number;
     prices: TicketPrice[];
+    status: 'open' | 'upcoming' | 'sold_out';
 }
 
 interface TicketPrice {
@@ -20,5 +21,5 @@ interface TicketPrice {
     available_until: string;
     threshold: number | null;
     sort_order: number;
-    status: 'available' | 'soon' | 'sold_out';
+    status: 'open' | 'upcoming' | 'sold_out';
 }

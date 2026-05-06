@@ -60,7 +60,6 @@ trait InteractsWithFiles
          * Handle file cleanup during model updates.
          * Deletes the old file if the attribute has changed.
          *
-         * @var Model $this
          */
         static::updated(function (Model $model) {
             if (method_exists($model, 'getNormalizedFileAttributes')) {
@@ -75,7 +74,6 @@ trait InteractsWithFiles
         /**
          * Handle file cleanup during model deletion.
          *
-         * @var Model $this
          */
         static::deleted(function (Model $model) {
             if (method_exists($model, 'getNormalizedFileAttributes')) {

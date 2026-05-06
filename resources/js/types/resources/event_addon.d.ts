@@ -11,4 +11,5 @@ interface EventAddon {
     available_until: string;
     capacity: number | null;
     sold_count: number;
+    status: 'open' | 'upcoming' | 'sold_out';
 }

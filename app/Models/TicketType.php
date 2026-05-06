@@ -2,12 +2,18 @@
 
 namespace App\Models;
 
+use App\Contracts\Reservable;
+use App\Enums\ReservableStatus;
+use App\Traits\HasStock;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class TicketType extends Model
+class TicketType extends Model implements Reservable
 {
+    use HasStock;
+
     protected $fillable = [
         'event_id',
         'name',
@@ -23,9 +29,9 @@ class TicketType extends Model
     protected $casts = [
         'available_from' => 'datetime',
         'capacity' => 'integer',
-        'sold_count' => 'integer',
-        'reserved_count' => 'integer',
     ];
+
+    // --- Relations ---
 
     public function event(): BelongsTo
     {
@@ -37,25 +43,39 @@ class TicketType extends Model
         return $this->hasMany(TicketPrice::class)->orderBy('sort_order');
     }
 
-    public function getStatusAttribute(): string
+    // --- Attributes (Logic) ---
+
+
+    protected function activePrice(): Attribute
     {
-        if ($this->available_from && $this->available_from->isFuture()) {
-            return 'soon';
-        }
+        return Attribute::get(fn(): mixed => $this->prices->first(function (TicketPrice $price): bool {
 
-        if ($this->capacity > 0 && $this->sold_count >= $this->capacity) {
-            return 'sold_out';
-        }
+            $isTimeValid = $price->available_until === null
+                || $price->available_until->isFuture();
 
-        return $this->active_price ? 'available' : 'sold_out';
+            $isThresholdValid = $price->threshold === null
+                || $this->reserved_stock < $price->threshold;
+
+            return $isTimeValid && $isThresholdValid;
+        }));
     }
 
-    public function getActivePriceAttribute(): ?TicketPrice
+    protected function status(): Attribute
     {
-        return $this->prices->first(function ($price) {
-            $isTimeValid = is_null($price->available_until) || $price->available_until->isFuture();
-            $isThresholdValid = is_null($price->threshold) || $this->sold_count < $price->threshold;
-            return $isTimeValid && $isThresholdValid;
+        return Attribute::get(function (): ReservableStatus {
+            if ($this->available_from?->isFuture()) {
+                return ReservableStatus::UPCOMING;
+            }
+
+            if ($this->available_stock !== null && $this->available_stock <= 0) {
+                return ReservableStatus::SOLD_OUT;
+            }
+
+            if (!$this->active_price) {
+                return ReservableStatus::SOLD_OUT;
+            }
+
+            return ReservableStatus::OPEN;
         });
     }
 }

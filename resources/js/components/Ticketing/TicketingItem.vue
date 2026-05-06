@@ -44,7 +44,7 @@
                 <h4 class="font-chillax text-lg text-white uppercase tracking-widest">
                     {{ title }}
                 </h4>
-                <p v-if="description" class="text-white/40 text-[10px] uppercase tracking-widest">
+                <p v-if="description" class="text-white/80 text-xs uppercase tracking-widest">
                     {{ description }}
                 </p>
             </div>
@@ -68,7 +68,7 @@
                     </button>
                     <span class="w-6 text-center font-chillax text-2xl text-white">{{
                         quantity
-                        }}</span>
+                    }}</span>
                     <button @click="addItem"
                         class="h-10 w-10 flex items-center justify-center rounded-full bg-white/5 text-white hover:bg-[#51A687] hover:text-black transition-all duration-300 disabled:opacity-10"
                         :disabled="quantity === (max_per_order || 99)">
