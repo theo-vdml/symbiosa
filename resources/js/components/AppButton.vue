@@ -3,6 +3,8 @@
     import { Link } from '@inertiajs/vue3';
     import { cn } from '@/lib/utils';
 
+    import { Loader2 } from '@lucide/vue';
+
     interface Props {
         href?: string;
         as?: 'a' | 'button' | typeof Link;
@@ -10,12 +12,16 @@
         size?: 'sm' | 'md' | 'lg';
         className?: string;
         external?: boolean;
+        loading?: boolean;
+        disabled?: boolean;
     }
 
     const props = withDefaults(defineProps<Props>(), {
         variant: 'primary',
         size: 'md',
         as: 'button',
+        loading: false,
+        disabled: false,
     });
 
     const componentType = computed(() => {
@@ -39,17 +45,18 @@
     };
 
     const baseClasses =
-        'group inline-flex items-center justify-center gap-2 font-bold rounded-full transition-all duration-300 text-center';
+        'group inline-flex items-center justify-center gap-2 font-bold rounded-full transition-all duration-300 text-center disabled:opacity-50 disabled:cursor-not-allowed';
 </script>
 
 <template>
-    <component :is="componentType" :href="href" :class="cn(
+    <component :is="componentType" :href="href" :disabled="disabled || loading" :class="cn(
         baseClasses,
         variantClasses[variant],
         sizeClasses[size],
         className,
     )
         ">
+        <Loader2 v-if="loading" class="w-4 h-4 animate-spin shrink-0" />
         <slot name="left-icon" />
         <slot />
         <slot name="right-icon" />

@@ -1,10 +1,10 @@
 <script setup lang="ts">
     import { Minus, Plus } from '@lucide/vue';
 
-    type ItemKey = `ticket_${number}_price_${number}` | `addon_${number}`;
-
     const props = defineProps<{
-        itemKey: ItemKey;
+        type: 'ticket' | 'addon';
+        id: number;
+        priceId?: number;
         title: string;
         description?: string;
         price: number;
@@ -15,18 +15,18 @@
     }>();
 
     const emit = defineEmits<{
-        (e: 'update-quantity', itemKey: ItemKey, change: number, maxPerOrder?: number): void;
+        (e: 'update-quantity', details: { type: 'ticket' | 'addon', id: number, priceId?: number }, change: number, maxPerOrder?: number): void;
     }>();
 
     const addItem = () => {
         if (props.quantity < (props.max_per_order || 99)) {
-            emit('update-quantity', props.itemKey, 1, props.max_per_order);
+            emit('update-quantity', { type: props.type, id: props.id, priceId: props.priceId }, 1, props.max_per_order);
         }
     };
 
     const removeItem = () => {
         if (props.quantity > 0) {
-            emit('update-quantity', props.itemKey, -1, props.max_per_order);
+            emit('update-quantity', { type: props.type, id: props.id, priceId: props.priceId }, -1, props.max_per_order);
         }
     };
 

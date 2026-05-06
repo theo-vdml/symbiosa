@@ -25,3 +25,9 @@ Route::get('/news', [\App\Http\Controllers\NewsController::class, 'index'])
 
 Route::get('/news/{slug}', [\App\Http\Controllers\NewsController::class, 'show'])
     ->name('news.show');
+
+Route::post('/events/{event:slug}/checkout', [\App\Http\Controllers\CheckoutController::class, 'store'])
+    ->name('events.checkout.store');
+
+Route::get('/checkout/{checkout:uuid}', [\App\Http\Controllers\CheckoutController::class, 'show'])
+    ->name('checkout.show');

@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->uuid('uuid')->unique();
-            $table->string('customer_email')->index();
-            $table->string('customer_name');
+            $table->string('customer_email')->index()->nullable();
+            $table->string('customer_name')->nullable();
             $table->string('last_stripe_intent_id')->nullable()->index();
             $table->timestamp('last_stripe_intent_created_at')->nullable()->index();
             $table->timestamp('expires_at')->index();

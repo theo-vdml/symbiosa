@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { ref, computed } from 'vue';
-    import { Head, Link } from '@inertiajs/vue3';
+    import { Head, Link, router } from '@inertiajs/vue3';
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
     import AppButton from '@/components/AppButton.vue';
@@ -9,7 +9,12 @@
     import TicketingSection from '@/components/Ticketing/TicketingSection.vue';
     import TicketingItem from '@/components/Ticketing/TicketingItem.vue';
 
-    type ItemKey = `ticket_${number}_price_${number}` | `addon_${number}`;
+    interface CartItem {
+        type: 'ticket' | 'addon';
+        id: number;        // ID du TicketType ou de l'Addon
+        priceId?: number;  // ID du TicketPrice spécifique
+        qty: number;
+    }
 
     interface CartItemDetails {
         name: string;
@@ -20,10 +25,10 @@
     }
 
     const props = defineProps<{
-        event: Event;
+        event: any; // Using any for now as Event type isn't fully defined here
     }>();
 
-    const cart = ref<Map<ItemKey, number>>(new Map());
+    const cart = ref<CartItem[]>([]);
 
     const formatEuro = (amount: number) => {
         return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(amount);
@@ -35,11 +40,15 @@
         });
     };
 
-    const productsLookup = computed(() => {
-        const lookup = new Map<ItemKey, CartItemDetails>();
+    const getItemQuantity = (type: 'ticket' | 'addon', id: number, priceId?: number) => {
+        return cart.value.find(item => item.type === type && item.id === id && item.priceId === priceId)?.qty || 0;
+    };
 
-        props.event.ticket_types?.forEach(type => {
-            type.prices.forEach(price => {
+    const productsLookup = computed(() => {
+        const lookup = new Map<string, CartItemDetails>();
+
+        props.event.ticket_types?.forEach((type: any) => {
+            type.prices.forEach((price: any) => {
                 lookup.set(`ticket_${type.id}_price_${price.id}`, {
                     type: 'ticket',
                     id: type.id,
@@ -50,7 +59,7 @@
             });
         });
 
-        props.event.addons?.forEach(addon => {
+        props.event.addons?.forEach((addon: any) => {
             lookup.set(`addon_${addon.id}`, {
                 type: 'addon',
                 id: addon.id,
@@ -66,39 +75,49 @@
         const items = [];
         let total = 0;
 
-        for (const [key, qty] of cart.value.entries()) {
+        for (const item of cart.value) {
+            const key = item.type === 'ticket' ? `ticket_${item.id}_price_${item.priceId}` : `addon_${item.id}`;
             const product = productsLookup.value.get(key);
-            if (product && qty > 0) {
-                const subtotal = product.price * qty;
+            if (product) {
+                const subtotal = product.price * item.qty;
                 total += subtotal;
-                items.push({ key, name: product.name, price: product.price, qty, subtotal });
+                items.push({ key, name: product.name, price: product.price, qty: item.qty, subtotal });
             }
         }
         return { items, total };
     });
 
     const totalItems = computed(() => {
-        return Array.from(cart.value.values()).reduce((sum, qty) => sum + qty, 0);
+        return cart.value.reduce((sum, item) => sum + item.qty, 0);
     });
 
-    const updateQuantity = (key: ItemKey, change: number, max: number = 99) => {
-        const current = cart.value.get(key) || 0;
-        const next = current + change;
+    const updateQuantity = (details: { type: 'ticket' | 'addon', id: number, priceId?: number }, change: number, max: number = 99) => {
+        const index = cart.value.findIndex(item => item.type === details.type && item.id === details.id && item.priceId === details.priceId);
 
-        if (next <= 0) {
-            cart.value.delete(key);
-        } else if (next <= max) {
-            cart.value.set(key, next);
+        if (index === -1) {
+            if (change > 0) {
+                cart.value.push({ ...details, qty: change });
+            }
+        } else {
+            const next = cart.value[index].qty + change;
+            if (next <= 0) {
+                cart.value.splice(index, 1);
+            } else if (next <= max) {
+                cart.value[index].qty = next;
+            }
         }
     };
 
+    const processing = ref(false);
+
     const handleCheckout = () => {
         if (cartDetails.value.total > 0) {
-            const payload = Array.from(cart.value.entries()).map(([key, qty]) => {
-                const product = productsLookup.value.get(key);
-                return { qty, productId: product?.id, priceId: product?.priceId, type: product?.type };
+            router.post(events.checkout.store(props.event.slug).url, {
+                items: cart.value
+            }, {
+                onStart: () => { processing.value = true },
+                onFinish: () => { processing.value = false },
             });
-            console.log("Validation commande :", payload);
         }
     };
 </script>
@@ -170,10 +189,10 @@
                     <TicketingSection v-for="type in event.ticket_types" :key="type.id" :title="type.name"
                         :description="type.description">
                         <TicketingItem v-for="price in type.prices" :key="`ticket_${type.id}_price_${price.id}`"
-                            :itemKey="`ticket_${type.id}_price_${price.id}`" :title="price.name"
+                            :type="'ticket'" :id="type.id" :priceId="price.id" :title="price.name"
                             :price="price.price_in_euro" :disabled="price.status !== 'open'"
                             :disabled_reason="price.status === 'upcoming' ? 'Bientôt' : 'Épuisé'"
-                            :quantity="cart.get(`ticket_${type.id}_price_${price.id}`) || 0"
+                            :quantity="getItemQuantity('ticket', type.id, price.id)"
                             @update-quantity="updateQuantity" :max_per_order="type.max_per_order || 99" />
                     </TicketingSection>
 
@@ -181,10 +200,10 @@
                     <TicketingSection v-if="event.addons?.length" title="Extras"
                         description="Ajoutez des options supplémentaires">
                         <TicketingItem v-for="addon in event.addons" :key="`addon_${addon.id}`"
-                            :description="addon.description" :itemKey="`addon_${addon.id}`" :title="addon.name"
+                            :description="addon.description" :type="'addon'" :id="addon.id" :title="addon.name"
                             :price="addon.price_in_euro" :disabled="addon.status !== 'open'"
                             :disabled_reason="addon.status === 'upcoming' ? 'Bientôt' : 'Épuisé'"
-                            :quantity="cart.get(`addon_${addon.id}`) || 0" @update-quantity="updateQuantity"
+                            :quantity="getItemQuantity('addon', addon.id)" @update-quantity="updateQuantity"
                             :max_per_order="addon.max_per_order" />
                     </TicketingSection>
                 </div>
@@ -225,6 +244,7 @@
 
                                 <AppButton @click="handleCheckout" variant="primary" size="lg"
                                     :disabled="cartDetails.total === 0"
+                                    :loading="processing"
                                     class="w-full border-[#51A687]/50 bg-[#51A687]/10 backdrop-blur-xl hover:bg-[#51A687]/20 text-[#51A687] disabled:opacity-20">
                                     Commander
                                 </AppButton>

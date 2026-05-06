@@ -11,6 +11,7 @@ use App\Models\TicketType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 use Str;
 
 class CheckoutController extends Controller
@@ -22,7 +23,7 @@ class CheckoutController extends Controller
             'items' => 'required|array|min:1',
             'items.*.qty' => 'required|integer|min:1|max:99',
             'items.*.type' => 'required|in:ticket,addon',
-            'items.*.productId' => 'required|integer',
+            'items.*.id' => 'required|integer',
             'items.*.priceId' => 'nullable|required_if:items.*.type,ticket|integer',
         ]);
 
@@ -44,7 +45,19 @@ class CheckoutController extends Controller
             return $checkout;
         });
 
-        // Redirect to the checkout page
+        return redirect()->route('checkout.show', $checkout->uuid);
+    }
+
+    public function show(Checkout $checkout)
+    {
+        if ($checkout->expires_at->isPast() && !$checkout->completed_at) {
+            return redirect()->route('events.ticketing', $checkout->reservations->first()->reservable->event->slug)
+                ->with('error', 'Votre session a expiré. Veuillez recommencer votre sélection.');
+        }
+
+        return Inertia::render('Checkout/Show', [
+            'checkout' => $checkout->load('reservations.reservable.event'),
+        ]);
     }
 
     private function handleTicketReservation(Checkout $checkout, array $item)
@@ -75,7 +88,7 @@ class CheckoutController extends Controller
 
     private function handleAddonReservation(Checkout $checkout, array $item)
     {
-        $addon = EventAddon::findOrFail($item['productId']);
+        $addon = EventAddon::findOrFail($item['id']);
 
         if ($addon->status !== ReservableStatus::OPEN) {
             throw ValidationException::withMessages([
