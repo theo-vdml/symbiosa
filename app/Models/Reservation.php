@@ -10,6 +10,7 @@ class Reservation extends Model
         'checkout_id',
         'reservable_id',
         'reservable_type',
+        'ticket_price_id',
         'quantity',
         'unit_price',
     ];
@@ -28,5 +29,10 @@ class Reservation extends Model
     public function reservable()
     {
         return $this->morphTo();
+    }
+
+    public function ticketPrice()
+    {
+        return $this->belongsTo(TicketPrice::class);
     }
 }

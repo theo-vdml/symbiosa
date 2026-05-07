@@ -97,6 +97,11 @@ class Event extends Model
         return $this->hasMany(EventAddon::class)->orderBy('sort_order');
     }
 
+    public function checkouts()
+    {
+        return $this->hasMany(Checkout::class);
+    }
+
     public function scopeUpcoming(Builder $query)
     {
         $query->where('date', '>=', now()->toDateString())
