@@ -16,6 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->foreignId('checkout_id')->constrained()->cascadeOnDelete();
             $table->morphs('reservable');
+            $table->foreignId('ticket_price_id')->nullable()->constrained()->nullOnDelete();
             $table->integer('quantity');
             $table->decimal('unit_price', 8, 2);
         });

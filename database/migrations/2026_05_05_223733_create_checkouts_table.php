@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->uuid('uuid')->unique();
+            $table->foreignId('event_id')->constrained();
             $table->string('customer_email')->index()->nullable();
             $table->string('customer_name')->nullable();
-            $table->string('last_stripe_intent_id')->nullable()->index();
-            $table->timestamp('last_stripe_intent_created_at')->nullable()->index();
+            $table->string('stripe_session_id')->nullable();
             $table->timestamp('expires_at')->index();
             $table->timestamp('completed_at')->nullable();
             $table->timestamp('cancelled_at')->nullable();

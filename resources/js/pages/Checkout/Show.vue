@@ -5,6 +5,7 @@
     import Footer from '@/components/Footer.vue';
     import AppButton from '@/components/AppButton.vue';
     import { CreditCard, Clock, Info, ShieldCheck, ChevronRight, User } from '@lucide/vue';
+    import checkoutRoute from '@/routes/checkout';
 
     const props = defineProps<{
         checkout: any;
@@ -56,8 +57,7 @@
     const event = computed(() => props.checkout.reservations[0]?.reservable?.event);
 
     const handleSubmit = () => {
-        // Logique de paiement à venir
-        console.log('Soumission du formulaire', form.data());
+        form.post(checkoutRoute.start(props.checkout.uuid).url);
     };
 </script>
 
@@ -226,12 +226,7 @@
                 </section>
 
                 <!-- Footer de la page -->
-                <div class="flex flex-col items-center gap-6 pt-12 border-t border-white/5">
-                    <div class="flex items-center gap-4 opacity-30 grayscale">
-                        <img src="/sponsors/logo_01.svg" class="h-6" alt="Visa" />
-                        <img src="/sponsors/logo_02.svg" class="h-6" alt="Mastercard" />
-                        <img src="/sponsors/logo_03.svg" class="h-6" alt="Stripe" />
-                    </div>
+                <div class="flex flex-col items-center gap-6 pt-12">
                     <p class="text-[10px] text-white/50 uppercase tracking-[0.3em]">
                         Référence : {{ checkout.uuid }}
                     </p>

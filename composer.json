@@ -17,6 +17,7 @@
         "laravel/tinker": "^3.0",
         "laravel/wayfinder": "^0.1.14",
         "spatie/laravel-settings": "^3.8",
+        "stripe/stripe-php": "^20.1",
         "tinusg/filament-hover-image-column": "^1.0",
         "yousefaman/filament-modal-repeater": "^1.1"
     },

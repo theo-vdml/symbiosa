@@ -30,6 +30,10 @@ class AppServiceProvider extends ServiceProvider
 
         Notifications::alignment(Alignment::Center);
         Notifications::verticalAlignment(VerticalAlignment::Start);
+
+        if (config('services.stripe.secret')) {
+            \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+        }
     }
 
     /**

@@ -31,3 +31,14 @@ Route::post('/events/{event:slug}/checkout', [\App\Http\Controllers\CheckoutCont
 
 Route::get('/checkout/{checkout:uuid}', [\App\Http\Controllers\CheckoutController::class, 'show'])
     ->name('checkout.show');
+
+Route::post('/checkout/{checkout:uuid}/start', [\App\Http\Controllers\CheckoutController::class, 'checkout'])
+    ->name('checkout.start');
+
+Route::get('/checkout/{checkout:uuid}/success', [\App\Http\Controllers\CheckoutController::class, 'success'])
+    ->name('checkout.success');
+
+Route::get('/checkout/{checkout:uuid}/cancel', [\App\Http\Controllers\CheckoutController::class, 'cancel_payment'])
+    ->name('checkout.cancel_payment');
+
+Route::post('/webhooks/stripe', [\App\Http\Controllers\StripeWebhookController::class, 'handle']);

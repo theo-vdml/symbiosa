@@ -14,6 +14,10 @@ class Reservation extends Model
         'unit_price',
     ];
 
+    protected $casts = [
+        'unit_price' => 'integer',
+    ];
+
     // --- Relations ---
 
     public function checkout()
