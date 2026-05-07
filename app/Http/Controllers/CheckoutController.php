@@ -52,10 +52,21 @@ class CheckoutController extends Controller
     public function show(Checkout $checkout)
     {
         if ($checkout->completed_at) {
+            // Le checkout est déjà complété, rediriger vers la page de succès
             return redirect()->route('checkout.success', $checkout->uuid);
-        }
-
-        if ($checkout->expires_at->isPast()) {
+        } else if ($checkout->stripe_session_id) {
+            // Une session de paiement est en cours, vérifier son statut auprès de Stripe
+            $session = Session::retrieve($checkout->stripe_session_id);
+            if ($session) {
+                return redirect()->to($session->url);
+            } else {
+                // La session Stripe n'existe plus, réinitialiser le checkout pour permettre une nouvelle tentative
+                $checkout->update([
+                    'stripe_session_id' => null,
+                ]);
+            }
+        } else if ($checkout->expires_at->isPast()) {
+            // La session a expiré, rediriger vers la page de sélection des billets avec un message d'erreur
             $event = $checkout->event;
             $slug = $event?->slug;
 
@@ -78,11 +89,12 @@ class CheckoutController extends Controller
         ]);
 
         if ($checkout->expires_at->isPast() || $checkout->completed_at || $checkout->cancelled_at) {
-            throw ValidationException::withMessages(['email' => 'La session a expiré.']);
+            return redirect()->route('events.ticketing', $checkout->event->slug)
+                ->with('error', 'La session a expiré.');
         }
 
         if ($checkout->stripe_session_id) {
-            throw ValidationException::withMessages(['email' => 'Une session de paiement est déjà en cours.']);
+            return redirect()->back()->with('error', 'Une session de paiement est déjà en cours.');
         }
 
         $checkout->update([

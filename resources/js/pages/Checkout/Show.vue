@@ -86,6 +86,21 @@
 
             <div class="space-y-12">
 
+                <!-- Flash Error Message -->
+                <div v-if="$page.props.flash.error"
+                    class="p-6 rounded-4xl border border-red-500/20 bg-red-500/5 backdrop-blur-sm flex gap-6 items-center">
+                    <div
+                        class="shrink-0 w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center border border-red-500/20">
+                        <Info class="w-5 h-5 text-red-500" />
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-[10px] font-bold tracking-[0.2em] text-red-500 uppercase">Erreur</p>
+                        <p class="text-xs text-white/60 leading-relaxed uppercase tracking-widest">
+                            {{ $page.props.flash.error }}
+                        </p>
+                    </div>
+                </div>
+
                 <!-- Section 1 : Résumé de la commande -->
                 <section class="space-y-6">
                     <div class="flex items-center gap-6 border-b border-white/10 pb-6">
@@ -121,19 +136,31 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="relative group">
-                            <User
-                                class="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-[#51A687] transition-colors" />
-                            <input v-model="form.name" type="text"
-                                class="w-full bg-white/5 border border-white/10 rounded-2xl pl-14 pr-6 py-5 text-white placeholder:text-white/20 focus:border-[#51A687]/50 focus:ring-0 transition-all outline-none text-sm"
-                                placeholder="Nom Complet" />
+                        <div class="space-y-2">
+                            <div class="relative group">
+                                <User
+                                    class="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-[#51A687] transition-colors" />
+                                <input v-model="form.name" type="text"
+                                    class="w-full bg-white/5 border border-white/10 rounded-2xl pl-14 pr-6 py-5 text-white placeholder:text-white/20 focus:border-[#51A687]/50 focus:ring-0 transition-all outline-none text-sm"
+                                    :class="{ 'border-red-500/50': form.errors.name }" placeholder="Nom Complet" />
+                            </div>
+                            <p v-if="form.errors.name"
+                                class="text-[10px] text-red-400 font-bold uppercase tracking-widest ml-5">
+                                {{ form.errors.name }}
+                            </p>
                         </div>
-                        <div class="relative group">
-                            <CreditCard
-                                class="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-[#51A687] transition-colors" />
-                            <input v-model="form.email" type="email"
-                                class="w-full bg-white/5 border border-white/10 rounded-2xl pl-14 pr-6 py-5 text-white placeholder:text-white/20 focus:border-[#51A687]/50 focus:ring-0 transition-all outline-none text-sm"
-                                placeholder="Adresse Email" />
+                        <div class="space-y-2">
+                            <div class="relative group">
+                                <CreditCard
+                                    class="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-[#51A687] transition-colors" />
+                                <input v-model="form.email" type="email"
+                                    class="w-full bg-white/5 border border-white/10 rounded-2xl pl-14 pr-6 py-5 text-white placeholder:text-white/20 focus:border-[#51A687]/50 focus:ring-0 transition-all outline-none text-sm"
+                                    :class="{ 'border-red-500/50': form.errors.email }" placeholder="Adresse Email" />
+                            </div>
+                            <p v-if="form.errors.email"
+                                class="text-[10px] text-red-400 font-bold uppercase tracking-widest ml-5">
+                                {{ form.errors.email }}
+                            </p>
                         </div>
                     </div>
                 </section>
@@ -159,45 +186,62 @@
                         <!-- Info Note -->
                         <div class="p-8 space-y-8">
 
-                            <div class="space-y-4">
+                            <div class="space-y-6">
                                 <!-- CGV Checkbox -->
-                                <label class="flex items-start gap-4 cursor-pointer group/legal">
-                                    <div class="relative flex items-center justify-center mt-0.5 shrink-0">
-                                        <input v-model="form.accept_cgv" type="checkbox" class="peer sr-only" />
-                                        <div
-                                            class="w-5 h-5 rounded-md border-2 border-white/10 bg-white/5 transition-all duration-300 peer-checked:bg-[#51A687] peer-checked:border-[#51A687]">
+                                <div class="space-y-2">
+                                    <label class="flex items-start gap-4 cursor-pointer group/legal">
+                                        <div class="relative flex items-center justify-center mt-0.5 shrink-0">
+                                            <input v-model="form.accept_cgv" type="checkbox" class="peer sr-only" />
+                                            <div
+                                                class="w-5 h-5 rounded-md border-2 border-white/10 bg-white/5 transition-all duration-300 peer-checked:bg-[#51A687] peer-checked:border-[#51A687]"
+                                                :class="{ 'border-red-500/50': form.errors.accept_cgv }">
+                                            </div>
+                                            <svg class="absolute w-3 h-3 text-black opacity-0 transition-opacity peer-checked:opacity-100"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
+                                                <path d="M5 13l4 4L19 7" />
+                                            </svg>
                                         </div>
-                                        <svg class="absolute w-3 h-3 text-black opacity-0 transition-opacity peer-checked:opacity-100"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
-                                            <path d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    </div>
-                                    <span class="text-[10px] text-white/40 uppercase tracking-widest leading-relaxed">
-                                        J'ai lu et j'accepte les <a href="#"
-                                            class="text-white hover:text-[#51A687] underline underline-offset-4 transition-colors">conditions
-                                            générales de vente</a>.
-                                    </span>
-                                </label>
+                                        <span
+                                            class="text-[10px] text-white/40 uppercase tracking-widest leading-relaxed">
+                                            J'ai lu et j'accepte les <a href="#"
+                                                class="text-white hover:text-[#51A687] underline underline-offset-4 transition-colors">conditions
+                                                générales de vente</a>.
+                                        </span>
+                                    </label>
+                                    <p v-if="form.errors.accept_cgv"
+                                        class="text-[10px] text-red-400 font-bold uppercase tracking-widest ml-9">
+                                        {{ form.errors.accept_cgv }}
+                                    </p>
+                                </div>
 
                                 <!-- RGPD Checkbox -->
-                                <label class="flex items-start gap-4 cursor-pointer group/legal">
-                                    <div class="relative flex items-center justify-center mt-0.5 shrink-0">
-                                        <input v-model="form.accept_rgpd" type="checkbox" class="peer sr-only" />
-                                        <div
-                                            class="w-5 h-5 rounded-md border-2 border-white/10 bg-white/5 transition-all duration-300 peer-checked:bg-[#51A687] peer-checked:border-[#51A687]">
+                                <div class="space-y-2">
+                                    <label class="flex items-start gap-4 cursor-pointer group/legal">
+                                        <div class="relative flex items-center justify-center mt-0.5 shrink-0">
+                                            <input v-model="form.accept_rgpd" type="checkbox" class="peer sr-only" />
+                                            <div
+                                                class="w-5 h-5 rounded-md border-2 border-white/10 bg-white/5 transition-all duration-300 peer-checked:bg-[#51A687] peer-checked:border-[#51A687]"
+                                                :class="{ 'border-red-500/50': form.errors.accept_rgpd }">
+                                            </div>
+                                            <svg class="absolute w-3 h-3 text-black opacity-0 transition-opacity peer-checked:opacity-100"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
+                                                <path d="M5 13l4 4L19 7" />
+                                            </svg>
                                         </div>
-                                        <svg class="absolute w-3 h-3 text-black opacity-0 transition-opacity peer-checked:opacity-100"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
-                                            <path d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    </div>
-                                    <span class="text-[10px] text-white/40 uppercase tracking-widest leading-relaxed">
-                                        J'accepte que mes données soient utilisées pour le traitement de ma commande
-                                        conformément à la <a href="#"
-                                            class="text-white hover:text-[#51A687] underline underline-offset-4 transition-colors">politique
-                                            de confidentialité</a>.
-                                    </span>
-                                </label>
+                                        <span
+                                            class="text-[10px] text-white/40 uppercase tracking-widest leading-relaxed">
+                                            J'accepte que mes données soient utilisées pour le traitement de ma
+                                            commande
+                                            conformément à la <a href="#"
+                                                class="text-white hover:text-[#51A687] underline underline-offset-4 transition-colors">politique
+                                                de confidentialité</a>.
+                                        </span>
+                                    </label>
+                                    <p v-if="form.errors.accept_rgpd"
+                                        class="text-[10px] text-red-400 font-bold uppercase tracking-widest ml-9">
+                                        {{ form.errors.accept_rgpd }}
+                                    </p>
+                                </div>
                             </div>
 
                             <div class="space-y-4">
