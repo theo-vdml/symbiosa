@@ -63,6 +63,11 @@ class Checkout extends Model
         return $this->hasMany(Reservation::class);
     }
 
+    public function issuedTickets()
+    {
+        return $this->hasMany(IssuedTicket::class);
+    }
+
     // --- Scopes ---
 
     public function scopeIsCompleted(Builder $query)

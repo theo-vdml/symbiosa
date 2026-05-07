@@ -102,6 +102,16 @@ class Event extends Model
         return $this->hasMany(Checkout::class);
     }
 
+    public function issuedTickets()
+    {
+        return $this->hasManyThrough(IssuedTicket::class, Checkout::class);
+    }
+
+    public function getAttendeesCountAttribute()
+    {
+        return $this->issuedTickets()->where('is_attendee', true)->count();
+    }
+
     public function scopeUpcoming(Builder $query)
     {
         $query->where('date', '>=', now()->toDateString())

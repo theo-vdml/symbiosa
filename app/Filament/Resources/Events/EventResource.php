@@ -13,7 +13,7 @@ use App\Filament\Resources\Events\Pages\EditEventPublication;
 use App\Filament\Resources\Events\Pages\EditEventSponsors;
 use App\Filament\Resources\Events\Pages\EditEventTicketing;
 use App\Filament\Resources\Events\Pages\EditEventVisuals;
-use App\Filament\Resources\Events\Pages\Events\Pages\ListEventCheckouts;
+use App\Filament\Resources\Events\Pages\ListEventCheckouts;
 use App\Filament\Resources\Events\Pages\ListEvents;
 use App\Filament\Resources\Events\Schemas\EventForm;
 use App\Filament\Resources\Events\Schemas\EventInfolist;

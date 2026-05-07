@@ -57,6 +57,8 @@ class StripeWebhookController extends Controller
                 'completed_at' => now(),
                 'stripe_session_id' => $session->id,
             ]);
+
+            \App\Jobs\FulfillCheckoutJob::dispatch($checkout);
         }
     }
 
