@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Checkouts\Schemas;
 
+use App\Services\TicketPdfService;
+use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput\Actions\CopyAction;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -118,6 +120,20 @@ class CheckoutInfolist
                         ]),
                     Section::make('Billets générés')
                         ->icon('heroicon-m-ticket')
+                        ->headerActions([
+                            Action::make('downloadAllPdfs')
+                                ->label('Télécharger')
+                                ->icon('heroicon-m-arrow-down-tray')
+                                ->action(function ($record, TicketPdfService $pdfService) {
+                                    $pdf = $pdfService->generate($record->issuedTickets);
+                                    $filename = $record->uuid . '.pdf';
+
+                                    return response()->streamDownload(
+                                        fn() => print($pdf->output()),
+                                        $filename
+                                    );
+                                })
+                        ])
                         ->schema([
                             RepeatableEntry::make('issuedTickets')
                                 ->hiddenLabel()
@@ -143,10 +159,23 @@ class CheckoutInfolist
                                                 })
                                                 ->placeholder('Pas encore scanné')
                                                 ->columnSpan(1),
+                                            Action::make('downloadPdf')
+                                                ->label('Télécharger')
+                                                ->icon('heroicon-m-arrow-down-tray')
+                                                ->action(function ($record, TicketPdfService $pdfService) {
+                                                    $pdf = $pdfService->generate($record);
+                                                    $filename = ($record->is_attendee ? 'Billet' : 'Option') . '_' . $record->qr_code_token . '.pdf';
+
+                                                    return response()->streamDownload(
+                                                        fn() => print($pdf->output()),
+                                                        $filename
+                                                    );
+                                                })
                                         ]),
                                 ])
                                 ->grid(1)
                                 ->placeholder('Aucun billet généré pour cette session.'),
+
                         ])
 
                 ])

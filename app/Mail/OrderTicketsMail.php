@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use App\Models\Checkout;
 use App\Models\Event;
+use Barryvdh\DomPDF\PDF;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Attachment;
@@ -21,7 +22,7 @@ class OrderTicketsMail extends Mailable
     public function __construct(
         public Checkout $checkout,
         public Event $event,
-        public array $pdfs // Array of ['content' => binary, 'filename' => string]
+        public PDF $pdfs
     ) {}
 
     /**
@@ -53,12 +54,10 @@ class OrderTicketsMail extends Mailable
     {
         $attachments = [];
 
-        foreach ($this->pdfs as $pdf) {
-            $attachments[] = Attachment::fromData(
-                fn() => $pdf['content'],
-                $pdf['filename']
-            )->withMime('application/pdf');
-        }
+        $attachments[] = Attachment::fromData(
+            fn() => $this->pdfs->output(),
+            'tickets.pdf'
+        )->withMime('application/pdf');
 
         return $attachments;
     }
