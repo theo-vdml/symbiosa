@@ -125,7 +125,7 @@ class CheckoutInfolist
                                 ->label('Télécharger')
                                 ->icon('heroicon-m-arrow-down-tray')
                                 ->action(function ($record, TicketPdfService $pdfService) {
-                                    $pdf = $pdfService->generate($record->issuedTickets);
+                                    $pdf = $pdfService->generate($record->event, $record->issuedTickets);
                                     $filename = $record->uuid . '.pdf';
 
                                     return response()->streamDownload(
@@ -140,7 +140,7 @@ class CheckoutInfolist
                                 ->schema([
                                     Grid::make(3)
                                         ->schema([
-                                            TextEntry::make('qr_code_token')
+                                            TextEntry::make('public_id')
                                                 ->label(function ($record) {
                                                     $reservable = $record->reservable;
                                                     return $reservable->name;
@@ -152,10 +152,10 @@ class CheckoutInfolist
                                                 ->label("Statut")
                                                 ->badge()
                                                 ->state(function ($record) {
-                                                    return $record->scanned_at ? 'Utilisé' : 'Non utilisé';
+                                                    return $record->checked_in_at ? 'Utilisé' : 'Non utilisé';
                                                 })
                                                 ->color(function ($record) {
-                                                    return $record->scanned_at ? 'success' : 'info';
+                                                    return $record->checked_in_at ? 'success' : 'info';
                                                 })
                                                 ->placeholder('Pas encore scanné')
                                                 ->columnSpan(1),
@@ -163,8 +163,8 @@ class CheckoutInfolist
                                                 ->label('Télécharger')
                                                 ->icon('heroicon-m-arrow-down-tray')
                                                 ->action(function ($record, TicketPdfService $pdfService) {
-                                                    $pdf = $pdfService->generate($record);
-                                                    $filename = ($record->is_attendee ? 'Billet' : 'Option') . '_' . $record->qr_code_token . '.pdf';
+                                                    $pdf = $pdfService->generate($record->event, $record);
+                                                    $filename =  $record->public_id . '.pdf';
 
                                                     return response()->streamDownload(
                                                         fn() => print($pdf->output()),

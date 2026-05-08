@@ -7,57 +7,53 @@ use Filament\Tables\Columns\TextColumn;
 
 class IssuedTicketTable
 {
-    public static function configure(Table $table): Table
+    public static function configure(Table $table, bool $withEvent = true): Table
     {
         return $table
             ->columns([
-                // Identifying the Ticket Holder
-                TextColumn::make('name')
-                    ->label('Attendee Name')
+                TextColumn::make('public_id')
+                    ->label('ID du Ticket')
                     ->searchable()
                     ->sortable()
-                    ->description(fn($record) => "Ref: {$record->qr_code_token}"),
+                    ->copyable(),
 
-                // Displaying the polymorphic 'Reservable' relation (e.g., Event or Workshop name)
-                TextColumn::make('reservable.name')
-                    ->label('Resource')
-                    ->placeholder('N/A')
-                    ->sortable(),
+                TextColumn::make('event.title')
+                    ->label('Événement')
+                    ->description(function ($record) {
+                        return $record->event->date->format('d/m/Y');
+                    })
+                    ->searchable()
+                    ->sortable(['date'])
+                    ->hidden(!$withEvent),
 
-                // Financial Information
-                TextColumn::make('price_paid')
-                    ->money('USD', divideBy: 100) // Assuming storage in cents
-                    ->sortable(),
-
-                // Status & Attendance
-                TextColumn::make('is_attendee')
-                    ->label('Status')
-                    ->badge()
-                    ->color(fn(bool $state): string => $state ? 'success' : 'gray')
-                    ->formatStateUsing(fn(bool $state): string => $state ? 'Checked In' : 'Pending'),
-
-                // Timestamp for Scanning
-                TextColumn::make('scanned_at')
-                    ->label('Entry Time')
-                    ->dateTime('M j, Y H:i')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                // Quick Link to Checkout
-                TextColumn::make('checkout.id')
-                    ->label('Order ID')
-                    ->numeric()
-                    ->toggleable(),
-            ])
-            ->filters([
-                \Filament\Tables\Filters\TernaryFilter::make('is_attendee')
-                    ->label('Attendance Status'),
-                \Filament\Tables\Filters\SelectFilter::make('reservable_type')
+                TextColumn::make('type')
                     ->label('Type')
-                    ->options([
-                        'App\Models\Event' => 'Event',
-                        'App\Models\Workshop' => 'Workshop',
-                    ]),
+                    ->state(function ($record) {
+                        return $record->reservable_type === 'App\Models\TicketType' ? 'Ticket' : 'Addon';
+                    })
+                    ->color(function ($record) {
+                        return $record->reservable_type === 'App\Models\TicketType' ? 'primary' : 'info';
+                    })
+                    ->badge()
+                    ->sortable(['reservable_type']),
+
+                TextColumn::make('product')
+                    ->label('Nom')
+                    ->state(function ($record) {
+                        return $record->reservable->name  . ($record->ticketPrice ? ' - ' . $record->ticketPrice->name : '');
+                    })
+                    ->placeholder('N/A'),
+
+                TextColumn::make('price_paid')
+                    ->label('Prix Payé')
+                    ->money('EUR', divideBy: 100)
+                    ->sortable(),
+
+                TextColumn::make('checkout.uuid')
+                    ->label('Commande liée')
+                    ->limit(10)
+                    ->fontFamily('mono')
+                    ->toggleable(),
             ]);
     }
 }

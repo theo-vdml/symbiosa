@@ -13,22 +13,19 @@ return new class extends Migration
     {
         Schema::create('issued_tickets', function (Blueprint $blueprint) {
             $blueprint->id();
+            $blueprint->foreignId('event_id')->constrained()->cascadeOnDelete();
             $blueprint->foreignId('checkout_id')->constrained()->cascadeOnDelete();
-            $blueprint->foreignId('reservation_id')->nullable()->constrained()->nullOnDelete();
-            
-            // Helpful to have direct access to what it is
+            // $blueprint->foreignId('reservation_id')->nullable()->constrained()->nullOnDelete();
+
             $blueprint->morphs('reservable');
-            
-            $blueprint->string('qr_code_token')->unique();
-            $blueprint->timestamp('scanned_at')->nullable();
-            
-            // Flag to distinguish attendees (Tickets) from extras (Addons)
-            $blueprint->boolean('is_attendee')->default(true);
-            
-            // Useful info for the ticket itself
-            $blueprint->string('name'); // Name of the ticket/addon
-            $blueprint->integer('price_paid'); // in cents
-            
+            $blueprint->foreignId('ticket_price_id')->nullable()->constrained()->cascadeOnDelete();
+
+            $blueprint->string('public_id')->unique();
+            // $blueprint->string('qr_code_token')->unique();
+            $blueprint->timestamp('checked_in_at')->nullable();
+
+            $blueprint->integer('price_paid');
+
             $blueprint->timestamps();
         });
     }

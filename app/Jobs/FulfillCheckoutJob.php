@@ -13,7 +13,6 @@ use Illuminate\Queue\SerializesModels;
 use App\Services\TicketPdfService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 
 class FulfillCheckoutJob implements ShouldQueue
 {
@@ -37,19 +36,15 @@ class FulfillCheckoutJob implements ShouldQueue
 
             $issuedTickets = [];
 
-            // 1. Create IssuedTicket entries
             foreach ($this->checkout->reservations as $reservation) {
-                $isAttendee = $reservation->reservable_type === 'App\Models\TicketType';
 
                 for ($i = 0; $i < $reservation->quantity; $i++) {
                     $ticket = IssuedTicket::create([
+                        'event_id' => $event->id,
                         'checkout_id' => $this->checkout->id,
-                        'reservation_id' => $reservation->id,
                         'reservable_type' => $reservation->reservable_type,
                         'reservable_id' => $reservation->reservable_id,
-                        'qr_code_token' => (string) Str::uuid(),
-                        'is_attendee' => $isAttendee,
-                        'name' => $reservation->reservable->name,
+                        'ticket_price_id' => $reservation->ticket_price_id,
                         'price_paid' => $reservation->unit_price,
                     ]);
 
@@ -57,10 +52,8 @@ class FulfillCheckoutJob implements ShouldQueue
                 }
             }
 
-            // 2. Generate PDFs
-            $pdf = $pdfService->generate($issuedTickets);
+            $pdf = $pdfService->generate($event, $issuedTickets);
 
-            // 3. Send Email
             Mail::to($this->checkout->customer_email)->send(
                 new OrderTicketsMail($this->checkout, $event, $pdf)
             );

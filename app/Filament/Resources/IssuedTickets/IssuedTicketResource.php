@@ -11,14 +11,19 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class IssuedTicketResource extends Resource
 {
     protected static ?string $model = IssuedTicket::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::QrCode;
 
-    protected static ?string $recordTitleAttribute = 'qr_code_token';
+    protected static string|UnitEnum|null $navigationGroup = 'Billetterie';
+
+    protected static ?string $navigationLabel = 'Tickets';
+
+    protected static ?string $recordTitleAttribute = 'public_id';
 
     public static function infolist(Schema $schema): Schema
     {

@@ -35,9 +35,13 @@
 
         .header-img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: auto;
+            min-height: 100%;
             position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateY(-50%) translateX(-50%);
+            /* Centre l'image */
             opacity: 0.75;
         }
 
@@ -174,7 +178,7 @@
             @endif
             <div class="header-overlay"></div>
             <div class="header-text">
-                <div class="ticket-category">{{ $ticket->name }}</div>
+                <div class="ticket-category">{{ $ticket->reservable->name }}</div>
                 <h1 class="event-title">{{ $event->title }}</h1>
             </div>
         </div>
@@ -184,7 +188,7 @@
                 <td class="col-left">
                     <div class="section-row">
                         <span class="label">Acheteur</span>
-                        <span class="value">{{ $checkout->customer_name }}</span>
+                        <span class="value">{{ $ticket->checkout->customer_name }}</span>
                     </div>
 
                     <div class="section-row">
@@ -232,14 +236,14 @@
                 <td class="col-right">
                     <div class="qr-box">
                         <img src="data:image/png;base64, {!! base64_encode(
-                            \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(180)->margin(0)->generate($ticket->qr_code_token),
+                            \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(180)->margin(0)->generate($ticket->public_id),
                         ) !!}" style="width: 160px; height: 160px;">
                     </div>
-                    <div class="id-text">{{ $ticket->qr_code_token }}</div>
+                    <div class="id-text">{{ $ticket->public_id }}</div>
 
                     <div class="order-box">
                         <span class="label">Référence commande</span>
-                        <div class="id-text">{{ $checkout->uuid }}</div>
+                        <div class="id-text">{{ $ticket->checkout->uuid }}</div>
                     </div>
                 </td>
             </tr>
