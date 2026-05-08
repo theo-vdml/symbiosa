@@ -1,4 +1,5 @@
 <script setup lang="ts">
+    import { computed } from 'vue';
     import { Head, Link } from '@inertiajs/vue3';
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
@@ -229,9 +230,6 @@
                                 <p class="text-white font-medium">{{ event.dress_code }}</p>
                             </div>
                         </div>
-                        <AppButton href="#" variant="outline" size="md" class="w-full">
-                            Voir sur Google Maps
-                        </AppButton>
                     </div>
 
                     <!-- Ticketing Card -->
