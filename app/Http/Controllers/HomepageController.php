@@ -18,9 +18,8 @@ class HomepageController extends Controller
             ->get();
 
         $upcomingEvent = Event::published()
-            ->upcoming()
+            ->upcoming(includeOngoing: true)
             ->with('genres')
-            ->orderBy('date')
             ->first();
 
         return Inertia::render('Home', [

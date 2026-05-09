@@ -23,9 +23,9 @@
         return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
     };
 
-    const getOpeningHours = (startTime: string, endTime: string) => {
-        const start = new Date(`1970-01-01T${startTime}Z`);
-        const end = new Date(`1970-01-01T${endTime}Z`);
+    const getOpeningHours = (startAt: string, endAt: string) => {
+        const start = new Date(startAt);
+        const end = new Date(endAt);
 
         const options: Intl.DateTimeFormatOptions = {
             hour: '2-digit',
@@ -123,7 +123,7 @@
                     <div class="space-y-6">
                         <h2 class="font-chillax text-4xl text-white">À propos</h2>
                         <div class="prose prose-invert prose-lg max-w-none prose-headings:font-chillax prose-headings:font-normal prose-p:text-gray-400 prose-li:text-gray-400 prose-strong:text-white prose-em:text-gray-200"
-                            v-html="event.description">
+                            v-html="event.body">
                         </div>
                     </div>
 
@@ -212,8 +212,8 @@
                             </div>
                             <div class="space-y-1">
                                 <p class="text-[10px] font-bold tracking-[0.2em] text-[#51A687] uppercase">Heures</p>
-                                <p class="text-white font-medium">{{ getOpeningHours(event.start_time,
-                                    event.end_time) }}</p>
+                                <p class="text-white font-medium">{{ getOpeningHours(event.start_at,
+                                    event.end_at) }}</p>
                             </div>
                             <div class="space-y-1">
                                 <p class="text-[10px] font-bold tracking-[0.2em] text-[#51A687] uppercase">Lieu</p>

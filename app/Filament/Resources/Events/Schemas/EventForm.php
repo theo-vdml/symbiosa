@@ -4,7 +4,7 @@ namespace App\Filament\Resources\Events\Schemas;
 
 use App\Models\Sponsor;
 use Filament\Actions\Action;
-use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
@@ -98,31 +98,23 @@ class EventForm
                 ->collapsible($collapsible)
                 ->columnSpanFull()
                 ->schema([
-                    DatePicker::make('date')
-                        ->label('Date')
-                        ->prefixIcon(Heroicon::CalendarDays)
-                        ->placeholder('Sélectionnez la date de l\'événement')
-                        ->required()
-                        ->native(false)
-                        ->displayFormat('l j F Y'),
-
                     Grid::make(2)
                         ->schema([
-                            TimePicker::make('start_time')
-                                ->label('Heure de début')
-                                ->prefixIcon(Heroicon::Clock)
-                                ->placeholder('Sélectionnez l\'heure de début')
+                            DateTimePicker::make('start_at')
+                                ->label('Début')
+                                ->prefixIcon(Heroicon::CalendarDays)
+                                ->placeholder('Sélectionnez la date et l\'heure de début')
+                                ->required()
                                 ->native(false)
-                                ->seconds(false)
-                                ->displayFormat('H:i'),
+                                ->displayFormat('l j F Y H:i'),
 
-                            TimePicker::make('end_time')
+                            DateTimePicker::make('end_at')
+                                ->label('Fin')
                                 ->prefixIcon(Heroicon::Clock)
-                                ->label('Heure de fin')
-                                ->placeholder('Sélectionnez l\'heure de fin')
+                                ->placeholder('Sélectionnez la date et l\'heure de fin')
+                                ->required()
                                 ->native(false)
-                                ->seconds(false)
-                                ->displayFormat('H:i'),
+                                ->displayFormat('l j F Y H:i'),
                         ]),
                 ]),
         ];

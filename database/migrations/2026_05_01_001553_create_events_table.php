@@ -15,9 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('slug')->unique();
-            $table->date('date');
-            $table->time('start_time')->nullable();
-            $table->time('end_time')->nullable();
+            $table->timestamp('start_at');
+            $table->timestamp('end_at');
             $table->string('city');
             $table->string('country');
             $table->text('address')->nullable();

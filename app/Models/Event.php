@@ -6,6 +6,7 @@ use App\Traits\InteractsWithFiles;
 use App\Enums\PublicationStatus;
 use App\Traits\HasPublication;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -22,9 +23,8 @@ class Event extends Model
         'slug',
         'status',
         'published_at',
-        'date',
-        'start_time',
-        'end_time',
+        'start_at',
+        'end_at',
         'city',
         'country',
         'address',
@@ -34,14 +34,30 @@ class Event extends Model
         'background',
     ];
 
-    protected $appends = ['min_price'];
+    protected $appends = ['min_price', 'date', 'start_time', 'end_time'];
 
     protected $casts = [
-        'date' => 'date',
+        'start_at' => 'datetime',
+        'end_at' => 'datetime',
         'faq' => 'array',
         'status' => PublicationStatus::class,
         'published_at' => 'datetime',
     ];
+
+    protected function date(): Attribute
+    {
+        return Attribute::get(fn() => $this->start_at?->copy()->startOfDay());
+    }
+
+    protected function startTime(): Attribute
+    {
+        return Attribute::get(fn() => $this->start_at?->format('H:i'));
+    }
+
+    protected function endTime(): Attribute
+    {
+        return Attribute::get(fn() => $this->end_at?->format('H:i'));
+    }
 
     public function getMinPriceAttribute()
     {
@@ -113,9 +129,20 @@ class Event extends Model
         return $this->issuedTickets()->where('is_attendee', true)->count();
     }
 
-    public function scopeUpcoming(Builder $query)
+    public function scopeUpcoming(Builder $query, bool $includeOngoing = false)
     {
-        $query->where('date', '>=', now()->toDateString())
-            ->orderBy('date', 'asc');
+        if ($includeOngoing) {
+            return $query->where('end_at', '>=', now())
+                ->orderBy('start_at', 'asc');
+        }
+
+        return $query->where('start_at', '>=', now())
+            ->orderBy('start_at', 'asc');
+    }
+
+    public function scopeNotFinished(Builder $query)
+    {
+        return $query->where('end_at', '>=', now())
+            ->orderBy('start_at', 'asc');
     }
 }

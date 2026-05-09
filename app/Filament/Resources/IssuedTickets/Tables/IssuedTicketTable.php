@@ -23,7 +23,7 @@ class IssuedTicketTable
                         return $record->event->date->format('d/m/Y');
                     })
                     ->searchable()
-                    ->sortable(['date'])
+                    ->sortable(['events.start_at'])
                     ->hidden(!$withEvent),
 
                 TextColumn::make('type')

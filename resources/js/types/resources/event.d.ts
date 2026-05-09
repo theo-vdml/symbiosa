@@ -11,6 +11,8 @@ interface Event {
     id: number;
     title: string;
     slug: string;
+    start_at: string;
+    end_at: string;
     date: string;
     start_time: string;
     end_time: string;
@@ -20,6 +22,7 @@ interface Event {
     dress_code: string;
     minimum_age: number;
     description: string;
+    body: string;
     background: string;
     poster: string;
     created_at: string;

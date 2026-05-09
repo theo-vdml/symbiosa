@@ -35,9 +35,9 @@ class EventsTable
                     ->icon(fn($record) => $record->status->getDynamicIcon($record->published_at))
                     ->sortable(),
 
-                TextColumn::make('date')
+                TextColumn::make('start_at')
                     ->label('Date de l\'event')
-                    ->date()
+                    ->dateTime()
                     ->sortable(),
 
                 TextColumn::make('city')
