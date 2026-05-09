@@ -13,7 +13,12 @@ class ListCategories extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()
+                ->label('Ajouter une catégorie')
+                ->modalHeading('Créer une nouvelle catégorie')
+                ->modalDescription('Remplissez les détails de votre nouvelle catégorie ci-dessous.')
+                ->modalSubmitActionLabel('Créer la catégorie')
+                ->createAnother(false),
         ];
     }
 }

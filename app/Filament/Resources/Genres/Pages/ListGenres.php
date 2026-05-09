@@ -13,7 +13,12 @@ class ListGenres extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()
+                ->label('Ajouter un genre')
+                ->modalHeading('Créer un nouveau genre')
+                ->modalDescription('Remplissez les détails de votre nouveau genre ci-dessous.')
+                ->modalSubmitActionLabel('Créer le genre')
+                ->createAnother(false),
         ];
     }
 }

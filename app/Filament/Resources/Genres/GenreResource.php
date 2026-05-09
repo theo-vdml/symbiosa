@@ -2,8 +2,6 @@
 
 namespace App\Filament\Resources\Genres;
 
-use App\Filament\Resources\Genres\Pages\CreateGenre;
-use App\Filament\Resources\Genres\Pages\EditGenre;
 use App\Filament\Resources\Genres\Pages\ListGenres;
 use App\Filament\Resources\Genres\Schemas\GenreForm;
 use App\Filament\Resources\Genres\Tables\GenresTable;
@@ -37,19 +35,10 @@ class GenreResource extends Resource
         return GenresTable::configure($table);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
     public static function getPages(): array
     {
         return [
             'index' => ListGenres::route('/'),
-            'create' => CreateGenre::route('/create'),
-            'edit' => EditGenre::route('/{record}/edit'),
         ];
     }
 }

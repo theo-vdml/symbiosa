@@ -48,15 +48,7 @@ class PostForm
                                     ->relationship('category', 'name')
                                     ->preload()
                                     ->searchable()
-                                    ->createOptionForm([
-                                        TextInput::make('name')
-                                            ->required()
-                                            ->live(onBlur: true)
-                                            ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state))),
-                                        TextInput::make('slug')
-                                            ->required()
-                                            ->unique('categories', 'slug'),
-                                    ]),
+                                    ->quickAdd(label: "Nouvelle catégorie: {search}", resetSearch: true),
 
                                 TextInput::make('title')
                                     ->label('Titre')

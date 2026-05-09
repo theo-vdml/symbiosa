@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Model;
-use Str;
 
 class Genre extends Model
 {
+    use HasSlug;
+
+    protected $slugSource = 'name';
+
     protected $fillable = [
         'name',
         'slug',
@@ -15,27 +19,5 @@ class Genre extends Model
     public function events()
     {
         return $this->belongsToMany(Event::class);
-    }
-
-    protected static function booted()
-    {
-        static::saving(function ($genre) {
-            if (empty($genre->slug)) {
-                $slug = Str::slug($genre->name);
-                $genre->slug = static::generateUniqueSlug($slug, $genre->id);
-            }
-        });
-    }
-
-    private static function generateUniqueSlug(string $slug, ?int $id): string
-    {
-        $originalSlug = $slug;
-        $count = 1;
-
-        while (static::where('slug', $slug)->where('id', '!=', $id)->exists()) {
-            $slug = $originalSlug . '-' . $count++;
-        }
-
-        return $slug;
     }
 }
