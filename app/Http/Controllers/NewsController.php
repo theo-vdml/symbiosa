@@ -11,7 +11,7 @@ class NewsController extends Controller
     public function index()
     {
         $posts = Post::published()->latest('published_at')->get();
-        $categories = $posts->pluck('category')->flatten()->unique('id')->values();
+        $categories = $posts->pluck('category')->filter()->unique('id')->values();
 
         return Inertia::render('News/Index', [
             'posts' => $posts,

@@ -15,7 +15,7 @@
             created_at: string
             updated_at: string
             published_at: string
-            category_id: number
+            category_id: number | null
         }
     }>();
 
@@ -32,7 +32,7 @@
 
 <template>
 
-    <Head title="Actualité - Dans les coulisses de EDEN 2026" />
+    <Head :title="`Actualité - ${post.title}`" />
 
     <Header />
 
@@ -44,15 +44,14 @@
         <div class="pointer-events-none absolute inset-0 bg-[url('/noise.png')] opacity-[0.04] mix-blend-soft-light">
         </div>
 
-        <main class="relative z-10 mx-auto max-w-6xl px-6 pb-24 pt-32 md:px-10 lg:px-14">
-            <section class="mx-auto mb-16 max-w-4xl">
-                <div
-                    class="relative overflow-hidden rounded-xl bg-black/40 shadow-[0_30px_80px_rgba(0,0,0,0.45)] ring-1 ring-white/10">
-                    <img :src="`/storage/${post.thumbnail}`" :alt="post.title" class="h-full w-full object-cover" />
-                    <div class="pointer-events-none absolute inset-0 bg-black/18"></div>
-                </div>
-            </section>
+        <!-- Hero Section -->
+        <section class="relative h-[45vh] w-full overflow-hidden md:h-[65vh]">
+            <img :src="`/storage/${post.thumbnail}`" :alt="post.title"
+                class="h-full w-full object-cover transition-transform duration-1000" />
+            <div class="absolute inset-0 bg-linear-to-t from-black via-transparent to-black/20"></div>
+        </section>
 
+        <main class="relative z-10 mx-auto max-w-6xl px-6 pb-24 pt-16 md:px-10 lg:px-14">
             <section class="mx-auto mb-10 max-w-4xl space-y-5 text-center md:text-left">
                 <p class="text-sm font-medium text-gray-400">
                     {{ formatDate(post.published_at) }}

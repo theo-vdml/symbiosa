@@ -37,7 +37,8 @@ class PostsTable
                 TextColumn::make('category.name')
                     ->label('Catégorie')
                     ->badge()
-                    ->sortable(),
+                    ->sortable()
+                    ->placeholder('Sans catégorie'),
                 TextColumn::make('published_at')
                     ->label('Publié le')
                     ->dateTime()

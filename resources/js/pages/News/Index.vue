@@ -16,7 +16,7 @@
             created_at: string
             updated_at: string
             published_at: string
-            category_id: number
+            category_id: number | null
         }[]
         categories: {
             id: number
@@ -36,7 +36,7 @@
             return props.posts;
         }
         return props.posts.filter((item) =>
-            selectedCategories.value.includes(item.category_id),
+            item.category_id !== null && selectedCategories.value.includes(item.category_id),
         );
     });
 
@@ -121,9 +121,9 @@
                         <img :src="news.thumbnail" :alt="news.title"
                             class="h-full w-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110" />
                         <div class="absolute inset-0 bg-linear-to-t from-black/60 to-transparent"></div>
-                        <span
+                        <span v-if="news.category_id"
                             class="absolute left-4 top-4 rounded-full border border-[#51A687]/60 bg-[#51A687]/30 px-3 py-1 text-[10px] font-bold tracking-[0.18em] text-white uppercase backdrop-blur-sm">
-                            {{props.categories.find((cat) => cat.id === news.category_id)?.name || 'Sans catégorie'}}
+                            {{ props.categories.find((cat) => cat.id === news.category_id)?.name }}
                         </span>
                     </div>
 

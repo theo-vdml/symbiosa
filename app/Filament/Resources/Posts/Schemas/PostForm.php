@@ -46,7 +46,6 @@ class PostForm
                                 Select::make('category_id')
                                     ->label('Catégorie')
                                     ->relationship('category', 'name')
-                                    ->required()
                                     ->preload()
                                     ->searchable()
                                     ->createOptionForm([
