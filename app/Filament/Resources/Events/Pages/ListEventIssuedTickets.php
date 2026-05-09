@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Events\Pages;
 
+use App\Enums\EventNavigationGroups;
 use App\Filament\Resources\Events\EventResource;
 use App\Filament\Resources\IssuedTickets\Schemas\IssuedTicketInfolist;
 use App\Filament\Resources\IssuedTickets\Tables\IssuedTicketTable;
@@ -22,7 +23,7 @@ class ListEventIssuedTickets extends ManageRelatedRecords
 
     protected static ?string $breadcrumb = 'Tickets';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Billetterie';
+    protected static string|UnitEnum|null $navigationGroup = EventNavigationGroups::Ticketing;
 
     public function getTitle(): string|Htmlable
     {

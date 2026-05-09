@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Genres;
 
+use App\Enums\NavigationGroups;
 use App\Filament\Resources\Genres\Pages\ListGenres;
 use App\Filament\Resources\Genres\Schemas\GenreForm;
 use App\Filament\Resources\Genres\Tables\GenresTable;
@@ -21,7 +22,7 @@ class GenreResource extends Resource
 
     protected static ?int $navigationSort = 4;
 
-    protected static string|UnitEnum|null $navigationGroup = "Gestion des événements";
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroups::Events;
 
     protected static ?string $recordTitleAttribute = 'name';
 

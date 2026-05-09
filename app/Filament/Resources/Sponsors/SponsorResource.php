@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Sponsors;
 
+use App\Enums\NavigationGroups;
 use App\Filament\Resources\Sponsors\Pages\CreateSponsor;
 use App\Filament\Resources\Sponsors\Pages\EditSponsor;
 use App\Filament\Resources\Sponsors\Pages\ListSponsors;
@@ -23,7 +24,7 @@ class SponsorResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Gestion des événements';
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroups::Events;
 
     protected static ?string $modelLabel = 'Sponsor';
     protected static ?string $pluralModelLabel = 'Sponsors';

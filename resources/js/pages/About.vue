@@ -3,26 +3,15 @@
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
 
-    const manifestoNodes = [
-        {
-            id: '01',
-            title: "L'Origine",
-            image: "/photo_06.jpg",
-            content: "Symbiosa est née d'une nécessité absolue : celle de s'extirper des formats pré-établis. Nous sommes un collectif rassemblé autour d'une idée simple mais radicale : l'expérience doit primer sur tout le reste.<br><br>Notre ASBL n'a pas été créée pour cocher des cases ou rentrer dans un moule. Elle a été fondée pour offrir une plateforme d'expression totale, où les musiques électroniques rencontrent la scénographie immersive et où la frontière entre le public et les artistes s'efface définitivement."
-        },
-        {
-            id: '02',
-            title: "L'Approche",
-            image: "/photo_09.jpg",
-            content: "Chaque événement est pensé comme un organisme vivant. Nous investissons des lieux singuliers, des espaces oubliés ou bruts, pour les transformer en écosystèmes éphémères. Chez nous, le son n'est pas juste écouté, il est physiquement ressenti. La lumière ne décore pas, elle guide et désoriente."
-        },
-        {
-            id: '03',
-            title: "Le Collectif",
-            image: "/photo_01.jpg",
-            content: "Nous collaborons exclusivement avec ceux qui partagent cette quête d'absolu. Symbiosa grandit avec sa communauté : des esprits indépendants, exigeants et dédiés à la pureté du moment présent. L'objectif n'est pas l'accumulation, mais la création d'une empreinte viscérale et mémorable."
-        }
-    ];
+    interface Section {
+        title: string;
+        content: string;
+        image: string;
+    }
+
+    defineProps<{
+        sections: Section[];
+    }>();
 </script>
 
 <template>
@@ -56,12 +45,14 @@
                 </div>
 
                 <div class="relative space-y-32 md:space-y-0">
-                    <article v-for="(node, index) in manifestoNodes" :key="node.id" class="relative">
+                    <article v-for="(node, index) in sections" :key="index" class="relative">
 
                         <!-- Timeline Node Anchor -->
                         <div class="absolute top-1/2 left-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 md:block">
                             <div class="flex flex-col items-center justify-center bg-black py-4">
-                                <span class="font-mono text-xs text-[#51A687]">{{ node.id }}</span>
+                                <span class="font-mono text-xs text-[#51A687]">
+                                    {{ (index + 1).toString().padStart(2, '0') }}
+                                </span>
                             </div>
                         </div>
 
@@ -70,7 +61,7 @@
                             <!-- Visual Column -->
                             <div :class="index % 2 === 0 ? 'md:order-1 md:pr-12' : 'md:order-2 md:pl-12'"
                                 class="flex justify-center">
-                                <div class="relative w-full aspect-[4/5] flex items-center justify-center">
+                                <div class="relative w-full aspect-4/5 flex items-center justify-center">
                                     <!-- Stain Mask using external PNG -->
                                     <div class="absolute inset-0" :style="{
                                         '-webkit-mask-image': 'url(/mask.png)',
@@ -83,7 +74,7 @@
                                         'mask-position': 'center',
                                         'transform': `rotate(${index % 2 === 0 ? 0 : 180}deg) scaleX(${index === 2 ? -1 : 1})`
                                     }">
-                                        <img :src="node.image" alt=""
+                                        <img :src="`/storage/${node.image}`" alt=""
                                             class="h-full w-full object-cover grayscale opacity-80"
                                             :style="{ transform: `scaleX(${index === 2 ? -1.1 : 1.1}) scaleY(1.1) rotate(${index % 2 === 0 ? 0 : -180}deg)` }" />
                                         <div
@@ -102,7 +93,7 @@
                                     {{ node.title }}
                                 </h2>
 
-                                <div class="prose prose-invert font-synonym max-w-none
+                                <div class="prose prose-invert font-synonym max-w-none whitespace-pre-line
                                     prose-p:text-gray-400 prose-p:text-lg prose-p:leading-relaxed prose-p:font-light prose-p:tracking-wide
                                     prose-strong:text-white prose-strong:font-normal"
                                     :class="index % 2 !== 0 ? 'md:text-right text-left' : 'text-left'"

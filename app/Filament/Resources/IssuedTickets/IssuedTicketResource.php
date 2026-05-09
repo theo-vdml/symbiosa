@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\IssuedTickets;
 
+use App\Enums\NavigationGroups;
 use App\Filament\Resources\IssuedTickets\Pages\ListIssuedTickets;
 use App\Filament\Resources\IssuedTickets\Schemas\IssuedTicketInfolist;
 use App\Filament\Resources\IssuedTickets\Tables\IssuedTicketTable;
@@ -19,7 +20,7 @@ class IssuedTicketResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::QrCode;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Billetterie';
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroups::Ticketing;
 
     protected static ?string $navigationLabel = 'Tickets';
 

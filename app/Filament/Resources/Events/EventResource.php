@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Events;
 
+use App\Enums\NavigationGroups;
 use App\Filament\Resources\Events\Pages\CreateEvent;
 use App\Filament\Resources\Events\Pages\EditEvent;
 use App\Filament\Resources\Events\Pages\EditEventAddons;
@@ -9,7 +10,6 @@ use App\Filament\Resources\Events\Pages\EditEventCopywritting;
 use App\Filament\Resources\Events\Pages\EditEventDetails;
 use App\Filament\Resources\Events\Pages\EditEventFaq;
 use App\Filament\Resources\Events\Pages\EditEventLineup;
-use App\Filament\Resources\Events\Pages\EditEventPublication;
 use App\Filament\Resources\Events\Pages\EditEventSponsors;
 use App\Filament\Resources\Events\Pages\EditEventTicketing;
 use App\Filament\Resources\Events\Pages\EditEventVisuals;
@@ -37,7 +37,7 @@ class EventResource extends Resource
 
     protected static ?int $navigationSort = 0;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Gestion des événements';
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroups::Events;
     protected static string|null $modelLabel = 'Événement';
     protected static string|null $pluralModelLabel = 'Événements';
 
@@ -73,7 +73,6 @@ class EventResource extends Resource
             'index' => ListEvents::route('/'),
             'create' => CreateEvent::route('/create'),
             'edit' => EditEvent::route('/{record}/edit'),
-            'publication' => EditEventPublication::route('/{record}/publication'),
             'details' => EditEventDetails::route('/{record}/details'),
             'copywritting' => EditEventCopywritting::route('/{record}/copywritting'),
             'visuals' => EditEventVisuals::route('/{record}/visuals'),
@@ -91,7 +90,6 @@ class EventResource extends Resource
     {
         return $page->generateNavigationItems([
             EditEvent::class,
-            EditEventPublication::class,
             EditEventDetails::class,
             EditEventCopywritting::class,
             EditEventVisuals::class,

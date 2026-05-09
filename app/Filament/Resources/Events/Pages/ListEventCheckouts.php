@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Events\Pages;
 
+use App\Enums\EventNavigationGroups;
 use App\Filament\Resources\Checkouts\Schemas\CheckoutInfolist;
 use App\Filament\Resources\Checkouts\Tables\CheckoutsTable;
 use App\Filament\Resources\Events\EventResource;
@@ -22,7 +23,7 @@ class ListEventCheckouts extends ManageRelatedRecords
 
     protected static ?string $breadcrumb = 'Commandes';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Billetterie';
+    protected static string|UnitEnum|null $navigationGroup = EventNavigationGroups::Ticketing;
 
     public function getTitle(): string|Htmlable
     {

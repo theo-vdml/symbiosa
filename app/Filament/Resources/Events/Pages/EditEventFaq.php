@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Events\Pages;
 
+use App\Enums\EventNavigationGroups;
 use App\Filament\Resources\Events\EventResource;
 use App\Filament\Resources\Events\Schemas\EventForm;
 use BackedEnum;
@@ -9,10 +10,13 @@ use Filament\Resources\Pages\EditRecord;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
+use UnitEnum;
 
 class EditEventFaq extends EditRecord
 {
     protected static string $resource = EventResource::class;
+
+    protected static string|UnitEnum|null $navigationGroup = EventNavigationGroups::Copywriting;
 
     protected static ?string $navigationLabel = 'Foire aux questions';
 

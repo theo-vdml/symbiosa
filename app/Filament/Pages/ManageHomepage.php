@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Enums\NavigationGroups;
 use App\Settings\HomepageSettings;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -16,11 +17,12 @@ use UnitEnum;
 
 class ManageHomepage extends SettingsPage
 {
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::HomeModern;
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroups::Pages;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedHome;
     protected static ?string $navigationLabel = "Homepage";
-    protected static string|UnitEnum|null $navigationGroup = "Pages";
+    protected static ?int $navigationSort = 1;
     protected ?string $heading = "Homepage";
-    protected ?string $subheading = "Modifier la page d'acceuil du site";
+    protected ?string $subheading = "Modifier la page d'accueil du site";
 
 
     protected static string $settings = HomepageSettings::class;

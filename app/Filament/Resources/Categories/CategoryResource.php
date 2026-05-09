@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Categories;
 
+use App\Enums\NavigationGroups;
 use App\Filament\Resources\Categories\Pages\ListCategories;
 use App\Filament\Resources\Categories\Schemas\CategoryForm;
 use App\Filament\Resources\Categories\Tables\CategoriesTable;
@@ -19,7 +20,7 @@ class CategoryResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Actualités';
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroups::News;
 
     protected static ?string $modelLabel = 'Catégorie';
     protected static ?string $pluralModelLabel = 'Catégories';

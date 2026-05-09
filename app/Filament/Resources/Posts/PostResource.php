@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Posts;
 
+use App\Enums\NavigationGroups;
 use App\Filament\Resources\Posts\Pages\CreatePost;
 use App\Filament\Resources\Posts\Pages\EditPost;
 use App\Filament\Resources\Posts\Pages\ListPosts;
@@ -23,7 +24,7 @@ class PostResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNewspaper;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Actualités';
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroups::News;
 
     protected static ?string $modelLabel = 'Article';
 

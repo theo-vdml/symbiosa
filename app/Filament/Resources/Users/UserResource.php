@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users;
 
+use App\Enums\NavigationGroups;
 use App\Filament\Resources\Users\Pages\CreateUser;
 use App\Filament\Resources\Users\Pages\EditUser;
 use App\Filament\Resources\Users\Pages\ListUsers;
@@ -14,7 +15,6 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
-use Override;
 
 class UserResource extends Resource
 {
@@ -22,15 +22,10 @@ class UserResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::UserGroup;
 
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroups::Admin;
+
     protected static ?string $recordTitleAttribute = 'name';
 
-    #[Override]
-    public static function getNavigationGroup(): string|UnitEnum|null
-    {
-        return 'Administration';
-    }
-
-    #[Override]
     public static function getModelLabel(): string
     {
         return 'Utilisateur';

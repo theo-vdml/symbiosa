@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Checkouts;
 
+use App\Enums\NavigationGroups;
 use App\Filament\Resources\Checkouts\Pages\ListCheckouts;
 use App\Filament\Resources\Checkouts\Schemas\CheckoutInfolist;
 use App\Filament\Resources\Checkouts\Tables\CheckoutsTable;
@@ -16,7 +17,7 @@ class CheckoutResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-shopping-cart';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Billetterie';
+    protected static string|\UnitEnum|null $navigationGroup = NavigationGroups::Ticketing;
 
     protected static string|null $modelLabel = 'Commande';
     protected static string|null $pluralModelLabel = 'Commandes';
