@@ -14,17 +14,22 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('slug')->unique();
             $table->date('date');
-            $table->time('start_time');
-            $table->time('end_time');
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
             $table->string('city');
             $table->string('country');
-            $table->text('address');
+            $table->text('address')->nullable();
             $table->string('dress_code')->nullable();
             $table->integer('minimum_age')->nullable();
             $table->text('description');
+            $table->text('body')->nullable();
             $table->string('background')->nullable();
-            $table->string('poster');
+            $table->string('poster')->nullable();
+            $table->json('faq')->nullable();
+            $table->string('status')->default('draft');
+            $table->timestamp('published_at')->nullable();
             $table->timestamps();
         });
     }
