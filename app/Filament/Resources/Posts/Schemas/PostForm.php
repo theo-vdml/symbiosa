@@ -105,6 +105,13 @@ class PostForm
                                     ->hidden(fn($record) => $record === null)
                                     ->verticalAlignment('start'),
                             ]),
+
+                        \App\Filament\Shared\Schemas\SeoSchema::make([
+                            'title' => 'title',
+                            'description' => 'excerpt',
+                            'image' => 'thumbnail',
+                        ])
+                            ->columnSpanFull(),
                     ]),
             ]);
     }

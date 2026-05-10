@@ -11,6 +11,7 @@ interface Event {
     id: number;
     title: string;
     slug: string;
+    seo?: import('@/types/seo').Seo;
     start_at: string;
     end_at: string;
     date: string;

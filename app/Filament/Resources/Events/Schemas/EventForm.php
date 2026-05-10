@@ -444,6 +444,17 @@ class EventForm
         ];
     }
 
+    public static function getSeoSchema(): array
+    {
+        return [
+            \App\Filament\Shared\Schemas\SeoSchema::make([
+                'title' => 'title',
+                'description' => 'description',
+                'image' => 'poster',
+            ]),
+        ];
+    }
+
     public static function getArtistFormSchema(): array
     {
         return [

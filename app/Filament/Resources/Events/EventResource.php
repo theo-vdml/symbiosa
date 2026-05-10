@@ -11,6 +11,7 @@ use App\Filament\Resources\Events\Pages\EditEventDetails;
 use App\Filament\Resources\Events\Pages\EditEventFaq;
 use App\Filament\Resources\Events\Pages\EditEventLineup;
 use App\Filament\Resources\Events\Pages\EditEventSponsors;
+use App\Filament\Resources\Events\Pages\EditEventSeo;
 use App\Filament\Resources\Events\Pages\EditEventTicketing;
 use App\Filament\Resources\Events\Pages\EditEventTicketingConfig;
 use App\Filament\Resources\Events\Pages\EditEventVisuals;
@@ -77,6 +78,7 @@ class EventResource extends Resource
             'details' => EditEventDetails::route('/{record}/details'),
             'copywritting' => EditEventCopywritting::route('/{record}/copywritting'),
             'visuals' => EditEventVisuals::route('/{record}/visuals'),
+            'seo' => EditEventSeo::route('/{record}/seo'),
             'faq' => EditEventFaq::route('/{record}/faq'),
             'sponsors' => EditEventSponsors::route('/{record}/sponsors'),
             'lineup' => EditEventLineup::route('/{record}/lineup'),
@@ -95,6 +97,7 @@ class EventResource extends Resource
             EditEventDetails::class,
             EditEventCopywritting::class,
             EditEventVisuals::class,
+            EditEventSeo::class,
             EditEventLineup::class,
             EditEventFaq::class,
             EditEventSponsors::class,

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasSEO;
 use App\Traits\InteractsWithFiles;
 use App\Enums\PublicationStatus;
 use App\Traits\HasPublication;
@@ -16,6 +17,7 @@ class Event extends Model
 {
     use InteractsWithFiles;
     use HasPublication;
+    use HasSEO;
 
     protected $fillable = [
         'title',

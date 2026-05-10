@@ -65,6 +65,12 @@ class ManageHomepage extends SettingsPage
                             ->helperText('Activer pour afficher ce bloc sur la page d\'accueil.')
                             ->default(true),
                     ]),
+
+                \App\Filament\Shared\Schemas\SeoSchema::make([
+                    'title' => fn() => 'Symbiosa - Accueil',
+                    'description' => fn() => "Collectif d'événementiel techno à Gembloux. Découvrez nos prochains événements et l'actualité de la scène.",
+                ], withRelationship: false, prefix: 'seo')
+                    ->columnSpanFull(),
             ]);
     }
 }
