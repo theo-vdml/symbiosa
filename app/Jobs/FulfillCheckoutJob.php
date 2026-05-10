@@ -55,7 +55,7 @@ class FulfillCheckoutJob implements ShouldQueue
             $pdf = $pdfService->generate($event, $issuedTickets);
 
             Mail::to($this->checkout->customer_email)->send(
-                new OrderTicketsMail($this->checkout, $event, $pdf)
+                new OrderTicketsMail($this->checkout, $event, $pdf, $event->ticket_email_content)
             );
         });
     }

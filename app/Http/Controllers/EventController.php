@@ -34,6 +34,11 @@ class EventController extends Controller
             ->with('ticketTypes', 'ticketTypes.prices', 'addons')
             ->firstOrFail();
 
+        if ($event->ticketing_status !== 'open') {
+            return redirect()->route('events.show', $event->slug)
+                ->with('error', 'La billetterie n\'est pas accessible pour le moment.');
+        }
+
         return Inertia::render('Events/Ticketing', [
             'event' => $event,
         ]);

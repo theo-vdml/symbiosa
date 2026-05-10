@@ -29,6 +29,13 @@ return new class extends Migration
             $table->json('faq')->nullable();
             $table->string('status')->default('draft');
             $table->timestamp('published_at')->nullable();
+
+            $table->timestamp('ticketing_starts_at')->nullable();
+            $table->timestamp('ticketing_ends_at')->nullable();
+            $table->text('ticket_email_content')->nullable();
+            $table->text('ticket_pdf_content')->nullable();
+            $table->json('stripe_metadata')->nullable();
+
             $table->timestamps();
         });
     }

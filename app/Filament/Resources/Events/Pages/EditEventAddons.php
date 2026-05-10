@@ -10,6 +10,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -37,6 +38,13 @@ class EditEventAddons extends EditRecord
     {
         return $schema
             ->components([
+                Callout::make('ticketing_config_warning')
+                    ->columnSpanFull()
+                    ->warning()
+                    ->heading('Action requise : module de billetterie désactivé')
+                    ->description('Définissez une date d\'ouverture pour activer le module de billetterie. Tant que cette date n\'est pas renseignée, les options d\'achat de billets ne seront pas visibles par les utilisateurs.')
+                    ->visible(fn() => !$this->record->ticketing_starts_at),
+
                 Section::make('Extras')
                     ->description('Gérez les différents extras disponibles pour cet événement, leurs prix, capacités et disponibilités.')
                     ->columnSpanFull()

@@ -89,7 +89,7 @@
 
                     <!-- CTAs -->
                     <div class="flex flex-col sm:flex-row justify-center gap-6 pt-4 w-full">
-                        <AppButton :href="events.ticketing(event.slug).url" variant="primary" size="lg"
+                        <AppButton v-if="event.ticketing_status === 'open'" :href="events.ticketing(event.slug).url" variant="primary" size="lg"
                             class="w-full sm:w-auto border-[#51A687]/50 bg-[#51A687]/10 backdrop-blur-xl hover:bg-[#51A687]/20">
                             Réserver mes places
                         </AppButton>

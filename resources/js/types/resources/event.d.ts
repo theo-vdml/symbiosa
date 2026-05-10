@@ -25,6 +25,13 @@ interface Event {
     body: string;
     background: string;
     poster: string;
+    ticketing_starts_at: string | null;
+    ticketing_ends_at: string | null;
+    ticket_email_content: string | null;
+    ticket_pdf_content: string | null;
+    stripe_metadata: Record<string, string> | null;
+    is_ticketing_open: boolean;
+    ticketing_status: 'none' | 'coming_soon' | 'open' | 'closed';
     created_at: string;
     updated_at: string;
     min_price: number;

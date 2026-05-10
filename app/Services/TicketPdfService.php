@@ -40,6 +40,7 @@ class TicketPdfService
             'tickets'  => $tickets,
             'event'    => $event,
             'backgroundImage' => $backgroundImage,
+            'customContent' => $event->ticket_pdf_content,
         ])->setPaper('a4', 'portrait');
     }
 }

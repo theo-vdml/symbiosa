@@ -32,9 +32,14 @@ class Event extends Model
         'faq',
         'poster',
         'background',
+        'ticketing_starts_at',
+        'ticketing_ends_at',
+        'ticket_email_content',
+        'ticket_pdf_content',
+        'stripe_metadata',
     ];
 
-    protected $appends = ['min_price', 'date', 'start_time', 'end_time'];
+    protected $appends = ['min_price', 'date', 'start_time', 'end_time', 'is_ticketing_open', 'ticketing_status'];
 
     protected $casts = [
         'start_at' => 'datetime',
@@ -42,7 +47,36 @@ class Event extends Model
         'faq' => 'array',
         'status' => PublicationStatus::class,
         'published_at' => 'datetime',
+        'ticketing_starts_at' => 'datetime',
+        'ticketing_ends_at' => 'datetime',
+        'stripe_metadata' => 'array',
     ];
+
+    protected function ticketingStatus(): Attribute
+    {
+        return Attribute::get(function () {
+            $now = now();
+
+            if ($this->ticketing_starts_at === null) {
+                return 'none';
+            }
+
+            if ($this->ticketing_starts_at > $now) {
+                return 'coming_soon';
+            }
+
+            if ($this->ticketing_ends_at === null) {
+                return $now < $this->start_at ? 'open' : 'closed';
+            }
+
+            return $now <= $this->ticketing_ends_at ? 'open' : 'closed';
+        });
+    }
+
+    protected function isTicketingOpen(): Attribute
+    {
+        return Attribute::get(fn() => $this->ticketing_status === 'open');
+    }
 
     protected function date(): Attribute
     {

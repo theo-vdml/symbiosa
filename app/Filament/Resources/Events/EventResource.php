@@ -12,6 +12,7 @@ use App\Filament\Resources\Events\Pages\EditEventFaq;
 use App\Filament\Resources\Events\Pages\EditEventLineup;
 use App\Filament\Resources\Events\Pages\EditEventSponsors;
 use App\Filament\Resources\Events\Pages\EditEventTicketing;
+use App\Filament\Resources\Events\Pages\EditEventTicketingConfig;
 use App\Filament\Resources\Events\Pages\EditEventVisuals;
 use App\Filament\Resources\Events\Pages\ListEventCheckouts;
 use App\Filament\Resources\Events\Pages\ListEventIssuedTickets;
@@ -80,6 +81,7 @@ class EventResource extends Resource
             'sponsors' => EditEventSponsors::route('/{record}/sponsors'),
             'lineup' => EditEventLineup::route('/{record}/lineup'),
             'ticketing' => EditEventTicketing::route('/{record}/ticketing'),
+            'ticketing-config' => EditEventTicketingConfig::route('/{record}/ticketing-config'),
             'addons' => EditEventAddons::route('/{record}/addons'),
             'checkouts' => ListEventCheckouts::route('/{record}/checkouts'),
             'issued-tickets' => ListEventIssuedTickets::route('/{record}/issued-tickets'),
@@ -96,6 +98,7 @@ class EventResource extends Resource
             EditEventLineup::class,
             EditEventFaq::class,
             EditEventSponsors::class,
+            EditEventTicketingConfig::class,
             EditEventTicketing::class,
             EditEventAddons::class,
             ListEventCheckouts::class,

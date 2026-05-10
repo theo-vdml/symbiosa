@@ -104,6 +104,9 @@ class CheckoutController extends Controller
 
         $lineItems = $this->getLineItems($checkout);
 
+        $event = $checkout->event;
+        $eventMetadata = $event->stripe_metadata ?? [];
+
         $session = Session::create([
             'payment_method_types' => ['card', 'bancontact'],
             'line_items' => $lineItems,
@@ -113,13 +116,13 @@ class CheckoutController extends Controller
             'customer_email' => $checkout->customer_email,
             'client_reference_id' => $checkout->uuid,
             'expires_at' => now()->addMinutes(30)->timestamp,
-            'metadata' => [
+            'metadata' => array_merge([
                 'checkout_uuid' => $checkout->uuid,
-            ],
+            ], $eventMetadata),
             'payment_intent_data' => [
-                'metadata' => [
+                'metadata' => array_merge([
                     'checkout_uuid' => $checkout->uuid,
-                ],
+                ], $eventMetadata),
             ],
         ]);
 

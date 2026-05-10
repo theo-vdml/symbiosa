@@ -10,7 +10,8 @@
         }
 
         * {
-            font-family: 'Helvetica', sans-serif !important;
+            font-family: 'Helvetica', Arial, sans-serif !important;
+            box-sizing: border-box;
         }
 
         body {
@@ -18,13 +19,22 @@
             padding: 0;
             color: #111;
             line-height: 1.1;
+            background: #fff;
+            width: 100%;
         }
 
-        .page {
+        .page-break {
             page-break-after: always;
         }
 
-        /* Header avec overlay dégradé */
+        /* --- TICKET DESIGN --- */
+        .ticket-wrapper {
+            width: 100%;
+            height: 297mm;
+            position: relative;
+            overflow: hidden;
+        }
+
         .header {
             width: 100%;
             height: 450px;
@@ -41,73 +51,73 @@
             top: 50%;
             left: 50%;
             transform: translateY(-50%) translateX(-50%);
-            /* Centre l'image */
-            opacity: 0.75;
+            opacity: 0.8;
         }
 
         .header-overlay {
             position: absolute;
-            bottom: 0;
+            top: 0;
             left: 0;
             right: 0;
-            height: 100%;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%);
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 0.9) 100%);
         }
 
         .header-text {
             position: absolute;
-            bottom: 40px;
+            bottom: 45px;
             left: 50px;
             right: 50px;
         }
 
-        .event-title {
-            color: #fff;
-            font-size: 65px;
-            text-transform: uppercase;
-            margin: 0;
-            letter-spacing: -3px;
-            line-height: 0.9;
-        }
-
-        .ticket-category {
-            background: #51A687;
-            /* Vert émeraude moderne */
-            color: #fff;
-            display: inline-block;
-            padding: 8px 15px;
-            font-size: 14px;
+        .category {
+            color: #51A687;
+            font-size: 16px;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
-        /* Main Layout */
-        .main-table {
+        .sub-category {
+            color: #999;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 5px;
+        }
+
+        .title {
+            color: #fff;
+            font-size: 55px;
+            text-transform: uppercase;
+            margin: 0;
+            letter-spacing: -2px;
+            line-height: 0.9;
+        }
+
+        .main-content {
             width: 100%;
             border-collapse: collapse;
-            table-layout: fixed;
         }
 
         .col-left {
             width: 60%;
-            padding: 50px 0 50px 50px;
+            padding: 50px 0 0 50px;
             vertical-align: top;
         }
 
         .col-right {
             width: 40%;
             padding: 50px 40px;
-            border-left: 2px dashed #e0e0e0;
+            border-left: 1px solid #eee;
             text-align: center;
             vertical-align: top;
         }
 
-        /* Blocks */
-        .section-row {
-            margin-bottom: 35px;
-            padding-bottom: 15px;
+        .data-group {
+            margin-bottom: 25px;
         }
 
         .label {
@@ -115,56 +125,110 @@
             color: #999;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             display: block;
         }
 
         .value {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             color: #000;
-            text-transform: capitalize;
         }
 
-        .sub-value {
-            font-size: 14px;
-            color: #666;
-            margin-top: 5px;
-            font-weight: normal;
-        }
-
-        /* Stub elements */
         .qr-box {
-            background: #fff;
             padding: 10px;
-            display: inline-block;
             border: 1px solid #eee;
-            margin-bottom: 15px;
+            display: inline-block;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            background: #fff;
         }
 
-        .id-text {
-            font-family: 'Courier', monospace;
-            font-size: 10px;
-            color: #aaa;
+        .id-mono {
+            font-family: monospace !important;
+            font-size: 9px;
+            color: #bbb;
             word-break: break-all;
-        }
-
-        .order-box {
-            margin-top: 60px;
-            text-align: left;
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 4px;
         }
 
         .footer {
             position: absolute;
             bottom: 40px;
             left: 50px;
-            right: 40%;
             font-size: 9px;
             color: #ccc;
-            line-height: 1.4;
+        }
+
+        /* --- CONTENT PAGE DESIGN (ANTI-OVERFLOW) --- */
+        .info-page {
+            padding: 15mm;
+            /* On laisse de l'air autour du cadre */
+            width: 210mm;
+            /* Largeur fixe A4 */
+        }
+
+        .info-frame {
+            border: 1px solid #ddd;
+            padding: 20px;
+            /* Ne surtout pas mettre width: 100% ici avec DomPDF si on a un border */
+            display: block;
+            width: calc(100% - 40px - 30mm);
+            /* Largeur calculée (210mm - 30mm de padding info-page) */
+        }
+
+        .rich-text {
+            font-size: 9px;
+            line-height: 1.2;
+            color: #333;
+            width: 100%;
+        }
+
+        .rich-text h1 {
+            font-size: 14px;
+            margin: 0 0 6px 0;
+            text-transform: uppercase;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 3px;
+        }
+
+        .rich-text h2 {
+            font-size: 11px;
+            margin: 10px 0 4px 0;
+            text-transform: uppercase;
+        }
+
+        .rich-text h3 {
+            font-size: 10px;
+            margin: 6px 0 2px 0;
+            font-weight: bold;
+        }
+
+        .rich-text p {
+            margin: 0 0 5px 0;
+            text-align: justify;
+        }
+
+        .rich-text ul,
+        .rich-text ol {
+            margin: 0 0 5px 0;
+            padding-left: 20px;
+        }
+
+        .rich-text li {
+            margin-bottom: 2px;
+        }
+
+        .rich-text img {
+            max-width: 100%;
+            height: auto;
+            margin: 5px 0;
+            display: block;
+        }
+
+        .rich-text hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 10px 0;
         }
     </style>
 </head>
@@ -172,90 +236,107 @@
 <body>
 
     @foreach ($tickets as $ticket)
-        <div class="header">
-            @if ($backgroundImage)
-                <img src="{{ $backgroundImage }}" class="header-img">
-            @endif
-            <div class="header-overlay"></div>
-            <div class="header-text">
-                <div class="ticket-category">{{ $ticket->reservable->name }}</div>
-                <h1 class="event-title">{{ $event->title }}</h1>
+        <div class="ticket-wrapper {{ !$loop->last || $customContent ? 'page-break' : '' }}">
+            <div class="header">
+                @if ($backgroundImage)
+                    <img src="{{ $backgroundImage }}" class="header-img">
+                @endif
+                <div class="header-overlay"></div>
+                <div class="header-text">
+                    <h1 class="title">{{ $event->title }}</h1>
+                </div>
             </div>
-        </div>
 
-        <table class="main-table">
-            <tr>
-                <td class="col-left">
-                    <div class="section-row">
-                        <span class="label">Acheteur</span>
-                        <span class="value">{{ $ticket->checkout->customer_name }}</span>
-                    </div>
+            <table class="main-content">
+                <tr>
+                    <td class="col-left">
+                        <div class="data-group">
+                            <span class="label">Acheteur</span>
+                            <span class="value">{{ $ticket->checkout->customer_name }}</span>
+                        </div>
 
-                    <div class="section-row">
-                        <table style="width: 100%;">
+                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
                             <tr>
-                                <td style="width: 55%;">
-                                    <span class="label">Date de l'événement</span>
+                                <td style="width: 50%; vertical-align: top;">
+                                    <span class="label">Date</span>
                                     <span class="value">{{ $event->date->translatedFormat('d F Y') }}</span>
                                 </td>
-                                <td>
-                                    <span class="label">Ouverture</span>
-                                    <span class="value">
-                                        {{ \Carbon\Carbon::parse($event->start_time)->format('H:i') }}
-                                        @if ($event->end_time)
-                                            — {{ \Carbon\Carbon::parse($event->end_time)->format('H:i') }}
-                                        @endif
-                                    </span>
-                                </td>
+                                @if ($event->start_time)
+                                    <td style="vertical-align: top;">
+                                        <span class="label">Ouverture</span>
+                                        <span class="value">
+                                            {{ \Carbon\Carbon::parse($event->start_time)->format('H:i') }}
+                                            @if ($event->end_time)
+                                                — {{ \Carbon\Carbon::parse($event->end_time)->format('H:i') }}
+                                            @endif
+                                        </span>
+                                    </td>
+                                @endif
                             </tr>
                         </table>
-                    </div>
 
-                    <div class="section-row">
-                        <span class="label">Lieu</span>
-                        <div class="value">{{ $event->address }}</div>
-                    </div>
+                        @if ($event->address)
+                            <div class="data-group">
+                                <span class="label">Lieu</span>
+                                <div class="value" style="font-size: 15px; font-weight: normal; line-height: 1.2;">
+                                    {{ $event->address }}</div>
+                            </div>
+                        @endif
 
-                    <table style="width: 100%;">
-                        <tr>
-                            <td style="width: 55%;">
-                                <span class="label">Montant payé</span>
-                                <span class="value">{{ number_format($ticket->price_paid / 100, 2, ',', ' ') }}
-                                    €</span>
-                            </td>
-                            <td>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 50%; vertical-align: top;">
+                                    <span class="label">Montant</span>
+                                    <span class="value">{{ number_format($ticket->price_paid / 100, 2, ',', ' ') }}
+                                        €</span>
+                                </td>
                                 @if ($event->minimum_age)
-                                    <span class="label">Contrôle d'âge</span>
-                                    <span class="value">{{ $event->minimum_age }} ans +</span>
+                                    <td style="vertical-align: top;">
+                                        <span class="label">Restriction</span>
+                                        <span class="value">{{ $event->minimum_age }} ans +</span>
+                                    </td>
                                 @endif
-                            </td>
-                        </tr>
-                    </table>
-                </td>
+                            </tr>
+                        </table>
+                    </td>
 
-                <td class="col-right">
-                    <div class="qr-box">
-                        <img src="data:image/png;base64, {!! base64_encode(
-                            \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(180)->margin(0)->generate($ticket->public_id),
-                        ) !!}" style="width: 160px; height: 160px;">
-                    </div>
-                    <div class="id-text">{{ $ticket->public_id }}</div>
+                    <td class="col-right">
+                        <div class="category">{{ $ticket->reservable->name }}</div>
+                        @if ($ticket->ticketPrice)
+                            <div class="sub-category">{{ $ticket->ticketPrice->name }}</div>
+                        @endif
+                        <div class="qr-box">
+                            <img src="data:image/png;base64, {!! base64_encode(
+                                \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(180)->margin(0)->generate($ticket->public_id),
+                            ) !!}"
+                                style="width: 150px; height: 150px;">
+                        </div>
+                        <div class="id-mono" style="margin-bottom: 25px;">{{ $ticket->public_id }}</div>
 
-                    <div class="order-box">
-                        <span class="label">Référence commande</span>
-                        <div class="id-text">{{ $ticket->checkout->uuid }}</div>
-                    </div>
-                </td>
-            </tr>
-        </table>
+                        <div style="text-align: left; background: #fafafa; padding: 12px; border: 1px solid #eee;">
+                            <span class="label">Référence</span>
+                            <div class="id-mono" style="color: #666;">{{ $ticket->checkout->uuid }}</div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
 
-        <div class="footer">
-            <div style="color: #000; font-weight: bold; margin-bottom: 5px; font-size: 11px;">Powered by Symbiosa</div>
-            Ce document est votre titre d'accès officiel. Ne le partagez avec personne.
-            L'organisateur se réserve le droit d'entrée.
-            Généré le {{ date('d/m/Y à H:i') }}.
+            <div class="footer">
+                <strong style="color: #111;">Symbiosa</strong> &bull; Support: symbiosa.be &bull; Généré le
+                {{ date('d/m/Y à H:i') }}
+            </div>
         </div>
     @endforeach
+
+    @if ($customContent)
+        <div class="info-page">
+            <div class="info-frame">
+                <div class="rich-text">
+                    {!! $customContent !!}
+                </div>
+            </div>
+        </div>
+    @endif
 
 </body>
 

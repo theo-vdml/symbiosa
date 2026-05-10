@@ -46,6 +46,13 @@
         <div class="content">
             <p>Bonjour {{ $checkout->customer_name }},</p>
             <p>Votre paiement a été validé avec succès pour l'événement <strong>{{ $event->title }}</strong>.</p>
+
+            @if($customContent)
+                <div style="margin-top: 20px; margin-bottom: 20px;">
+                    {!! $customContent !!}
+                </div>
+            @endif
+
             <p>Vous trouverez en pièces jointes vos billets et options réservés.</p>
             <p><strong>Référence de commande :</strong> {{ $checkout->uuid }}</p>
             <p>À très vite !</p>

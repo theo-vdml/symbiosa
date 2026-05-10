@@ -22,7 +22,8 @@ class OrderTicketsMail extends Mailable
     public function __construct(
         public Checkout $checkout,
         public Event $event,
-        public PDF $pdfs
+        public PDF $pdfs,
+        public ?string $customContent = null
     ) {}
 
     /**

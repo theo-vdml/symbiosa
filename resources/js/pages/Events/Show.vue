@@ -110,7 +110,7 @@
         <!-- Main Content -->
         <main class="relative z-10 mx-auto max-w-7xl px-6 pb-24 md:px-10 lg:px-14">
             <!-- Action Bar -->
-            <div class="relative -translate-y-1/2 z-20 flex justify-center px-4">
+            <div v-if="event.ticketing_status === 'open'" class="relative -translate-y-1/2 z-20 flex justify-center px-4">
                 <AppButton :href="events.ticketing(event.slug).url" variant="primary" size="lg"
                     class="w-full sm:w-auto border-[#51A687]/50 bg-[#51A687]/10 backdrop-blur-xl hover:bg-[#51A687]/20">
                     Réserver mes places
@@ -233,19 +233,28 @@
                     </div>
 
                     <!-- Ticketing Card -->
-                    <div class="sticky top-32 rounded-3xl border border-white/10 bg-white/5 p-8 space-y-8 shadow-2xl">
+                    <div v-if="event.ticketing_status !== 'none'" class="sticky top-32 rounded-3xl border border-white/10 bg-white/5 p-8 space-y-8 shadow-2xl">
                         <div class="space-y-1">
                             <h3 class="font-chillax text-2xl text-white uppercase tracking-wider">Billetterie</h3>
                         </div>
 
-                        <div class="space-y-2">
-                            <p class="text-[10px] font-bold tracking-[0.2em] text-[#51A687] uppercase">À partir de</p>
-                            <p class="text-3xl font-chillax text-white">{{ event.min_price }}€</p>
+                        <div v-if="event.ticketing_status === 'open'">
+                            <AppButton :href="events.ticketing(event.slug).url" variant="outline" size="md" class="w-full">
+                                Acheter ma place
+                            </AppButton>
                         </div>
 
-                        <AppButton :href="events.ticketing(event.slug).url" variant="outline" size="md" class="w-full">
-                            Acheter ma place
-                        </AppButton>
+                        <div v-else-if="event.ticketing_status === 'coming_soon'" class="text-center">
+                            <p class="text-gray-400 text-sm">
+                                La billetterie n'est pas encore ouverte.
+                            </p>
+                        </div>
+
+                        <div v-else-if="event.ticketing_status === 'closed'" class="text-center">
+                            <p class="text-gray-400 text-sm">
+                                La billetterie est désormais fermée.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </section>

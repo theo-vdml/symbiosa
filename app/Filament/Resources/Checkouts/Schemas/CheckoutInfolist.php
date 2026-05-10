@@ -143,7 +143,8 @@ class CheckoutInfolist
                                             TextEntry::make('public_id')
                                                 ->label(function ($record) {
                                                     $reservable = $record->reservable;
-                                                    return $reservable->name;
+                                                    $ticketPrice = $record->ticketPrice;
+                                                    return $reservable->name . ($ticketPrice ? " - {$ticketPrice->name}" : '');
                                                 })
                                                 ->copyable()
                                                 ->weight(FontWeight::Bold)
