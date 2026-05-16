@@ -18,7 +18,7 @@ Route::get('/events/{slug}/ticketing', [\App\Http\Controllers\EventController::c
 Route::inertia('/archives', 'Archives')->name('archives');
 
 Route::get('/about', \App\Http\Controllers\AboutController::class)->name('about');
-Route::inertia('/contact', 'Contact')->name('contact');
+Route::get('/contact', \App\Http\Controllers\ContactController::class)->name('contact');
 
 Route::get('/news', [\App\Http\Controllers\NewsController::class, 'index'])
     ->name('news.index');

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "02a374fefd0759b29db711a034066aa8",
+    "content-hash": "99b0c02771ce1226960e9ad13fe81360",
     "packages": [
         {
             "name": "azgasim/filament-unsaved-changes-modal",
@@ -12922,7 +12922,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.3"
+        "php": "^8.4"
     },
     "platform-dev": {},
     "plugin-api-version": "2.6.0"
