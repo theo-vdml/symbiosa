@@ -18,7 +18,7 @@ use Str;
 
 class PostForm
 {
-    public static function configure(Schema $schema): Schema
+    public static function configure(Schema $schema, bool $withSeo = true): Schema
     {
         return $schema
             ->components([
@@ -106,11 +106,8 @@ class PostForm
                                     ->verticalAlignment('start'),
                             ]),
 
-                        \App\Filament\Shared\Schemas\SeoSchema::make([
-                            'title' => 'title',
-                            'description' => 'excerpt',
-                            'image' => 'thumbnail',
-                        ])
+                        \App\Filament\Shared\Schemas\SeoSchema::make()
+                            ->visible($withSeo)
                             ->columnSpanFull(),
                     ]),
             ]);

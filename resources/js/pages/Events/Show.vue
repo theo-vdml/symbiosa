@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { computed } from 'vue';
-    import { Head, Link } from '@inertiajs/vue3';
+    import { Link } from '@inertiajs/vue3';
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
     import AppButton from '@/components/AppButton.vue';
@@ -8,6 +8,7 @@
     import EventFaq from '@/components/EventFaq.vue';
     import { Calendar, MapPin } from '@lucide/vue';
     import events from '@/routes/events';
+    import SeoMeta from '@/components/SeoMeta.vue';
     import { Seo } from '@/types/seo';
 
     const props = defineProps<{
@@ -44,27 +45,7 @@
 </script>
 
 <template>
-
-    <Head>
-        <title>{{ seo.title }}</title>
-        <meta v-if="seo.description" name="description" :content="seo.description" />
-        <meta v-if="seo.keywords" name="keywords" :content="seo.keywords" />
-        <meta v-if="seo.robots" name="robots" :content="seo.robots" />
-        <link v-if="seo.canonical_url" rel="canonical" :href="seo.canonical_url" />
-
-        <!-- Open Graph -->
-        <meta property="og:title" :content="seo.og_title" />
-        <meta v-if="seo.og_description" property="og:description" :content="seo.og_description" />
-        <meta v-if="seo.og_image" property="og:image" :content="`/storage/${seo.og_image}`" />
-        <meta property="og:type" :content="seo.og_type" />
-
-        <!-- Twitter -->
-        <meta name="twitter:card" :content="seo.twitter_card" />
-        <meta name="twitter:title" :content="seo.twitter_title" />
-        <meta v-if="seo.twitter_description" name="twitter:description" :content="seo.twitter_description" />
-        <meta v-if="seo.twitter_image" name="twitter:image" :content="`/storage/${seo.twitter_image}`" />
-        <component :is="'script'" v-if="seo.json_ld" type="application/ld+json" v-html="seo.json_ld" />
-    </Head>
+    <SeoMeta :seo="seo" />
 
     <Header />
 
@@ -131,7 +112,8 @@
         <!-- Main Content -->
         <main class="relative z-10 mx-auto max-w-7xl px-6 pb-24 md:px-10 lg:px-14">
             <!-- Action Bar -->
-            <div v-if="event.ticketing_status === 'open'" class="relative -translate-y-1/2 z-20 flex justify-center px-4">
+            <div v-if="event.ticketing_status === 'open'"
+                class="relative -translate-y-1/2 z-20 flex justify-center px-4">
                 <AppButton :href="events.ticketing(event.slug).url" variant="primary" size="lg"
                     class="w-full sm:w-auto border-[#51A687]/50 bg-[#51A687]/10 backdrop-blur-xl hover:bg-[#51A687]/20">
                     Réserver mes places
@@ -254,13 +236,15 @@
                     </div>
 
                     <!-- Ticketing Card -->
-                    <div v-if="event.ticketing_status !== 'none'" class="sticky top-32 rounded-3xl border border-white/10 bg-white/5 p-8 space-y-8 shadow-2xl">
+                    <div v-if="event.ticketing_status !== 'none'"
+                        class="sticky top-32 rounded-3xl border border-white/10 bg-white/5 p-8 space-y-8 shadow-2xl">
                         <div class="space-y-1">
                             <h3 class="font-chillax text-2xl text-white uppercase tracking-wider">Billetterie</h3>
                         </div>
 
                         <div v-if="event.ticketing_status === 'open'">
-                            <AppButton :href="events.ticketing(event.slug).url" variant="outline" size="md" class="w-full">
+                            <AppButton :href="events.ticketing(event.slug).url" variant="outline" size="md"
+                                class="w-full">
                                 Acheter ma place
                             </AppButton>
                         </div>

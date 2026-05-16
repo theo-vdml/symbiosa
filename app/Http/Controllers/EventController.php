@@ -26,22 +26,7 @@ class EventController extends Controller
 
         return Inertia::render('Events/Show', [
             'event' => $event,
-            'seo' => [
-                'title' => $event->seo?->title ?? $event->title,
-                'description' => $event->seo?->description ?? $event->description,
-                'keywords' => implode(', ', $event->seo?->keywords ?? []),
-                'robots' => $event->seo?->robots ?? 'index, follow',
-                'canonical_url' => $event->seo?->canonical_url,
-                'og_title' => $event->seo?->og_title ?? $event->seo?->title ?? $event->title,
-                'og_description' => $event->seo?->og_description ?? $event->seo?->description ?? $event->description,
-                'og_image' => $event->seo?->og_image ?? $event->poster,
-                'og_type' => $event->seo?->og_type ?? 'website',
-                'twitter_card' => $event->seo?->twitter_card ?? 'summary_large_image',
-                'twitter_title' => $event->seo?->twitter_title ?? $event->seo?->title ?? $event->title,
-                'twitter_description' => $event->seo?->twitter_description ?? $event->seo?->description ?? $event->description,
-                'twitter_image' => $event->seo?->twitter_image ?? $event->seo?->og_image ?? $event->poster,
-                'json_ld' => $event->seo?->json_ld ? json_encode($event->seo->json_ld) : null,
-            ]
+            'seo' => $event->getSeoData(),
         ]);
     }
     public function ticketing(string $slug)

@@ -66,10 +66,7 @@ class ManageHomepage extends SettingsPage
                             ->default(true),
                     ]),
 
-                \App\Filament\Shared\Schemas\SeoSchema::make([
-                    'title' => fn() => 'Symbiosa - Accueil',
-                    'description' => fn() => "Collectif d'événementiel techno à Gembloux. Découvrez nos prochains événements et l'actualité de la scène.",
-                ], withRelationship: false, prefix: 'seo')
+                \App\Filament\Shared\Schemas\SeoSchema::make(withRelationship: false, prefix: 'seo')
                     ->columnSpanFull(),
             ]);
     }

@@ -69,10 +69,7 @@ class ManageAboutPage extends SettingsPage
                             ])
                     ]),
 
-                \App\Filament\Shared\Schemas\SeoSchema::make([
-                    'title' => fn() => 'Symbiosa - À Propos',
-                    'description' => fn() => "Découvrez l'histoire et la vision de Symbiosa, votre collectif événementiel techno.",
-                ], withRelationship: false, prefix: 'seo')
+                \App\Filament\Shared\Schemas\SeoSchema::make(withRelationship: false, prefix: 'seo')
                     ->columnSpanFull(),
             ]);
     }

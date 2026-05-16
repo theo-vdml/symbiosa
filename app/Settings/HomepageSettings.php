@@ -2,9 +2,7 @@
 
 namespace App\Settings;
 
-use Spatie\LaravelSettings\Settings;
-
-class HomepageSettings extends Settings
+class HomepageSettings extends PageSettings
 {
     public ?string $spotify_playlist_heading;
 
@@ -12,23 +10,24 @@ class HomepageSettings extends Settings
 
     public bool $show_spotify_playlist;
 
-    public ?string $seo_title;
-    public ?string $seo_description;
-    public ?array $seo_keywords;
-    public ?string $seo_robots;
-    public ?string $seo_canonical_url;
-    public ?string $seo_og_title;
-    public ?string $seo_og_description;
-    public ?string $seo_og_image;
-    public ?string $seo_og_type;
-    public ?string $seo_twitter_card;
-    public ?string $seo_twitter_title;
-    public ?string $seo_twitter_description;
-    public ?string $seo_twitter_image;
-    public ?array $seo_json_ld;
-
     public static function group(): string
     {
         return 'homepage';
+    }
+
+    public function getSeoFallbacks(): array
+    {
+        return [
+            'og_title' => ['seo_title'],
+            'twitter_title' => ['seo_title'],
+        ];
+    }
+
+    public function getSeoDefaults(): array
+    {
+        return [
+            'title' => 'Symbiosa - Accueil',
+            'description' => "Collectif d'événementiel techno à Gembloux. Découvrez nos prochains événements et l'actualité de la scène.",
+        ];
     }
 }

@@ -17,7 +17,7 @@ return new class extends Migration
             
             $table->string('title')->nullable();
             $table->text('description')->nullable();
-            $table->string('keywords')->nullable();
+            $table->json('keywords')->nullable();
             $table->string('robots')->nullable();
             $table->string('canonical_url')->nullable();
 

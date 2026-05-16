@@ -40,4 +40,24 @@ class Post extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function getSeoDefaults(): array
+    {
+        return [
+            "title" => "Un article symbiosa",
+            "twitter_card" => "summary_large_image",
+        ];
+    }
+
+    public function getSeoFallbacks(): array
+    {
+        return [
+            "title" => ["title", "slug"],
+            "description" => ["excerpt", "title"],
+            "og_title" => ["title", "slug"],
+            "og_description" => ["excerpt", "title"],
+            "og_image" => 'thumbnail',
+        ];
+    }
+
 }

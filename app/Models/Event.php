@@ -34,6 +34,8 @@ class Event extends Model
         'faq',
         'poster',
         'background',
+        'minimum_age',
+        'dress_code',
         'ticketing_starts_at',
         'ticketing_ends_at',
         'ticket_email_content',
@@ -180,5 +182,24 @@ class Event extends Model
     {
         return $query->where('end_at', '>=', now())
             ->orderBy('start_at', 'asc');
+    }
+
+    public function getSeoDefaults(): array
+    {
+        return [
+            "title" => "Un évènement symbiosa",
+            "twitter_card" => "summary_large_image",
+        ];
+    }
+
+    public function getSeoFallbacks(): array
+    {
+        return [
+            "title" => ["title", "slug"],
+            "description" => ["description", "title"],
+            "og_title" => ["title", "slug"],
+            "og_description" => ["description", "title"],
+            "og_image" => 'background',
+        ];
     }
 }

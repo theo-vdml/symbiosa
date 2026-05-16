@@ -12,4 +12,5 @@ export interface Seo {
     twitter_title?: string;
     twitter_description?: string;
     twitter_image?: string;
+    json_ld?: string;
 }

@@ -61,6 +61,6 @@ trait HasStock
     public function hasStockFor(int $requestedQty): bool
     {
         if (!$this->capacity) return true;
-        return $requestedQty <= ($this->capacity - $this->reserved_stock);
+        return $requestedQty <= $this->available_stock;
     }
 }
