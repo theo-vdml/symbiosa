@@ -18,13 +18,16 @@ Route::get('/events/{slug}/ticketing', [\App\Http\Controllers\EventController::c
 Route::inertia('/archives', 'Archives')->name('archives');
 
 Route::get('/about', \App\Http\Controllers\AboutController::class)->name('about');
-Route::inertia('/contact', 'Contact')->name('contact');
+Route::get('/contact', \App\Http\Controllers\ContactController::class)->name('contact');
 
 Route::get('/news', [\App\Http\Controllers\NewsController::class, 'index'])
     ->name('news.index');
 
 Route::get('/news/{slug}', [\App\Http\Controllers\NewsController::class, 'show'])
     ->name('news.show');
+
+Route::get('/legal/{slug}', [\App\Http\Controllers\LegalPageController::class, 'show'])
+    ->name('legal.show');
 
 Route::post('/events/{event:slug}/checkout', [\App\Http\Controllers\CheckoutController::class, 'store'])
     ->name('events.checkout.store');

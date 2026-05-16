@@ -40,6 +40,7 @@ class Checkout extends Model
         'customer_email',
         'customer_name',
         'stripe_session_id',
+        'accepted_legal_pages',
         'expires_at',
         'completed_at',
         'cancelled_at',
@@ -49,6 +50,7 @@ class Checkout extends Model
         'expires_at' => 'datetime',
         'completed_at' => 'datetime',
         'cancelled_at' => 'datetime',
+        'accepted_legal_pages' => 'array',
     ];
 
     // --- Relations ---

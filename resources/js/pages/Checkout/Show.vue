@@ -9,13 +9,26 @@
 
     const props = defineProps<{
         checkout: any;
+        legalPages: any[];
     }>();
 
-    const form = useForm({
-        email: props.checkout.customer_email || '',
-        name: props.checkout.customer_name || '',
-        accept_cgv: false,
-        accept_rgpd: false,
+    const getFormFields = () => {
+        const fields: any = {
+            email: props.checkout.customer_email || '',
+            name: props.checkout.customer_name || '',
+        };
+
+        props.legalPages.forEach(page => {
+            fields['accept_' + page.slug.replace(/-/g, '_')] = false;
+        });
+
+        return fields;
+    }
+
+    const form = useForm(getFormFields());
+
+    const allLegalAccepted = computed(() => {
+        return props.legalPages.every(page => (form as any)['accept_' + page.slug.replace(/-/g, '_')]);
     });
 
     const timeLeft = ref('');
@@ -187,75 +200,43 @@
                         <div class="p-8 space-y-8">
 
                             <div class="space-y-6">
-                                <!-- CGV Checkbox -->
-                                <div class="space-y-2">
+                                <!-- Dynamic Legal Checkboxes -->
+                                <div v-for="page in legalPages" :key="page.id" class="space-y-2">
                                     <label class="flex items-start gap-4 cursor-pointer group/legal">
                                         <div class="relative flex items-center justify-center mt-0.5 shrink-0">
-                                            <input v-model="form.accept_cgv" type="checkbox" class="peer sr-only" />
-                                            <div
-                                                class="w-5 h-5 rounded-md border-2 border-white/10 bg-white/5 transition-all duration-300 peer-checked:bg-[#51A687] peer-checked:border-[#51A687]"
-                                                :class="{ 'border-red-500/50': form.errors.accept_cgv }">
+                                            <input v-model="form['accept_' + page.slug.replace(/-/g, '_')]" type="checkbox"
+                                                class="peer sr-only" />
+                                            <div class="w-5 h-5 rounded-md border-2 border-white/10 bg-white/5 transition-all duration-300 peer-checked:bg-[#51A687] peer-checked:border-[#51A687]"
+                                                :class="{ 'border-red-500/50': form.errors['accept_' + page.slug.replace(/-/g, '_')] }">
                                             </div>
                                             <svg class="absolute w-3 h-3 text-black opacity-0 transition-opacity peer-checked:opacity-100"
                                                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
                                                 <path d="M5 13l4 4L19 7" />
                                             </svg>
                                         </div>
-                                        <span
-                                            class="text-[10px] text-white/40 uppercase tracking-widest leading-relaxed">
-                                            J'ai lu et j'accepte les <a href="#"
-                                                class="text-white hover:text-[#51A687] underline underline-offset-4 transition-colors">conditions
-                                                générales de vente</a>.
+                                        <span class="text-[10px] text-white/40 uppercase tracking-widest leading-relaxed">
+                                            J'ai lu et j'accepte <a :href="`/legal/${page.slug}`" target="_blank"
+                                                class="text-white hover:text-[#51A687] underline underline-offset-4 transition-colors">{{
+                                                    page.title }}</a>.
                                         </span>
                                     </label>
-                                    <p v-if="form.errors.accept_cgv"
+                                    <p v-if="form.errors['accept_' + page.slug.replace(/-/g, '_')]"
                                         class="text-[10px] text-red-400 font-bold uppercase tracking-widest ml-9">
-                                        {{ form.errors.accept_cgv }}
-                                    </p>
-                                </div>
-
-                                <!-- RGPD Checkbox -->
-                                <div class="space-y-2">
-                                    <label class="flex items-start gap-4 cursor-pointer group/legal">
-                                        <div class="relative flex items-center justify-center mt-0.5 shrink-0">
-                                            <input v-model="form.accept_rgpd" type="checkbox" class="peer sr-only" />
-                                            <div
-                                                class="w-5 h-5 rounded-md border-2 border-white/10 bg-white/5 transition-all duration-300 peer-checked:bg-[#51A687] peer-checked:border-[#51A687]"
-                                                :class="{ 'border-red-500/50': form.errors.accept_rgpd }">
-                                            </div>
-                                            <svg class="absolute w-3 h-3 text-black opacity-0 transition-opacity peer-checked:opacity-100"
-                                                fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
-                                                <path d="M5 13l4 4L19 7" />
-                                            </svg>
-                                        </div>
-                                        <span
-                                            class="text-[10px] text-white/40 uppercase tracking-widest leading-relaxed">
-                                            J'accepte que mes données soient utilisées pour le traitement de ma
-                                            commande
-                                            conformément à la <a href="#"
-                                                class="text-white hover:text-[#51A687] underline underline-offset-4 transition-colors">politique
-                                                de confidentialité</a>.
-                                        </span>
-                                    </label>
-                                    <p v-if="form.errors.accept_rgpd"
-                                        class="text-[10px] text-red-400 font-bold uppercase tracking-widest ml-9">
-                                        {{ form.errors.accept_rgpd }}
+                                        {{ form.errors['accept_' + page.slug.replace(/-/g, '_')] }}
                                     </p>
                                 </div>
                             </div>
 
                             <div class="space-y-4">
-                                <button @click="handleSubmit" :disabled="!form.accept_cgv || !form.accept_rgpd"
+                                <button @click="handleSubmit" :disabled="!allLegalAccepted"
                                     class="relative w-full h-16 rounded-2xl bg-[#635BFF] hover:bg-[#7a73ff] disabled:bg-white/10 disabled:cursor-not-allowed transition-all duration-300 overflow-hidden shadow-[0_4px_12px_rgba(99,91,255,0.2)] hover:shadow-[0_4px_20px_rgba(99,91,255,0.4)] disabled:shadow-none">
                                     <div class="flex items-center justify-center h-full">
                                         <span
                                             class="text-sm font-bold uppercase tracking-widest text-white transition-opacity duration-300"
-                                            :class="{ 'opacity-20': !form.accept_cgv || !form.accept_rgpd }">Payer
+                                            :class="{ 'opacity-20': !allLegalAccepted }">Payer
                                             avec</span>
-                                        <img src="/stripe.svg"
-                                            class="h-8 brightness-0 invert transition-all duration-300"
-                                            :class="{ 'opacity-20': !form.accept_cgv || !form.accept_rgpd }"
-                                            alt="Stripe" />
+                                        <img src="/stripe.svg" class="h-8 brightness-0 invert transition-all duration-300"
+                                            :class="{ 'opacity-20': !allLegalAccepted }" alt="Stripe" />
                                     </div>
                                 </button>
 

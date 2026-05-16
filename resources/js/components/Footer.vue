@@ -1,5 +1,9 @@
 <script setup lang="ts">
-    import { Link } from '@inertiajs/vue3';
+    import { Link, usePage } from '@inertiajs/vue3';
+    import { computed } from 'vue';
+
+    const page = usePage();
+    const footerLegalPages = computed(() => page.props.footerLegalPages as Array<{ title: string, slug: string }>);
 </script>
 
 <template>
@@ -17,11 +21,11 @@
                     </Link>
                     <Link href="/contact" class="text-base cursor-pointer transition-colors hover:underline">Contact
                     </Link>
-                    <Link href="/status" class="text-base cursor-pointer transition-colors hover:underline">Status ASBL
+
+                    <Link v-for="legalPage in footerLegalPages" :key="legalPage.slug" :href="`/legal/${legalPage.slug}`"
+                        class="text-base cursor-pointer transition-colors hover:underline">
+                    {{ legalPage.title }}
                     </Link>
-                    <Link href="/legal" class="text-base cursor-pointer transition-colors hover:underline">Mentions
-                        Légales</Link>
-                    <Link href="/roi" class="text-base cursor-pointer transition-colors hover:underline">R.O.I</Link>
                 </div>
 
                 <!-- Middle Column: Info -->
