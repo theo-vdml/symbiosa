@@ -1,146 +1,83 @@
 <script setup lang="ts">
-    import AppButton from '@/components/AppButton.vue';
-    import { Link } from '@inertiajs/vue3';
     import { computed } from 'vue';
+    import { Link } from '@inertiajs/vue3';
+    import { ArrowRight } from '@lucide/vue';
+    import AppButton from '@/components/AppButton.vue';
+    import newsRoute from '@/routes/news';
+    import NewsSectionCard from './NewsSectionCard.vue';
 
-    interface NewsItem {
+    interface Post {
         id: number;
         title: string;
-        description: string;
-        image: string;
-        date: string;
-        category: string;
+        slug: string;
+        excerpt: string;
+        thumbnail: string;
+        published_at: string;
+        category?: { id: number; name: string };
     }
 
-    const newsList: NewsItem[] = [
-        {
-            id: 1,
-            title: "Le festival EDEN 2026 : Ce qu'il faut savoir sur cette édition exceptionnelle",
-            description: "Plongez au cœur de l'expérience Symbiosa pour cette édition exceptionnelle à Gembloux. Découvrez la programmation complète et les nouveautés de cette année qui s'annonce mémorable pour tous les passionnés de musique électronique.",
-            image: "/photo_07.jpg",
-            date: "Mars 2026",
-            category: "Annonce"
-        },
-        {
-            id: 2,
-            title: "Nouveau Soundsystem Révolutionnaire",
-            description: "Une immersion sonore inédite grâce à notre nouveau partenariat technique avec les plus grands ingénieurs du son actuels pour une clarté absolue.",
-            image: "/photo_08.jpg",
-            date: "Février 2026",
-            category: "Technique"
-        },
-        {
-            id: 3,
-            title: "Aftermovie 2025 disponible maintenant",
-            description: "Revivez les meilleurs moments de l'édition précédente en vidéo haute définition avec des interviews exclusives des artistes.",
-            image: "/photo_09.jpg",
-            date: "Janvier 2026",
-            category: "Média"
-        }
-    ];
+    const props = defineProps<{ posts: Post[] }>();
 
-    const mainNews = computed(() => newsList[0]);
-    const secondaryNews = computed(() => newsList.slice(1));
+    const isHorizontal = computed(() => props.posts.length <= 2);
+
+    const formatDate = (dateString: string) => {
+        return new Intl.DateTimeFormat('fr-FR', {
+            month: 'long',
+            year: 'numeric',
+        }).format(new Date(dateString));
+    };
 </script>
 
 <template>
-    <section class="relative bg-black py-24 px-12 lg:px-32">
+    <section class="relative bg-black py-24 px-12 xl:px-32">
         <div class="max-w-7xl mx-auto">
-            <!-- Header -->
+
+            <!-- Header Section -->
             <div class="flex items-end justify-between mb-16">
                 <div class="space-y-4">
                     <div class="flex items-center gap-4">
                         <div class="h-px w-8 bg-[#51A687]"></div>
-                        <span class="text-[#51A687] text-sm font-bold tracking-[0.3em] uppercase">
-                            Actualités
-                        </span>
+                        <span class="text-[#51A687] text-sm font-bold tracking-[0.3em] uppercase">Actualités</span>
                     </div>
-                    <h2 class="text-5xl font-chillax font-bold text-white uppercase italic">
-                        News & Stories
-                    </h2>
+                    <h2 class="text-5xl font-chillax  text-white uppercase italic">News & Stories</h2>
                 </div>
-
                 <div class="hidden md:block">
-                    <AppButton href="/news" variant="ghost" size="md" className="text-gray-400 hover:text-white">
+                    <AppButton :href="newsRoute.index.url()" variant="ghost" size="md"
+                        className="text-gray-400 hover:text-white">
                         Toutes les actualités
                         <template #right-icon>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor" class="w-5 h-5 transition-transform group-hover:translate-x-1">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                            </svg>
+                            <ArrowRight class="w-5 h-5 transition-transform group-hover:translate-x-1" />
                         </template>
                     </AppButton>
                 </div>
             </div>
 
-            <!-- News Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
-                <!-- Main News -->
-                <div v-if="mainNews"
-                    class="lg:col-span-8 group cursor-pointer relative p-6 -m-6 rounded-[2rem] transition-all duration-500 border border-transparent hover:border-white/20 hover:bg-white/[0.05] hover:shadow-[0_0_50px_rgba(200,10,69,0.15)]">
-                    <div
-                        class="relative overflow-hidden rounded-2xl aspect-[16/9] mb-8 border border-white/5 shadow-2xl">
-                        <img :src="mainNews.image" :alt="mainNews.title"
-                            class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:brightness-110" />
-                        <div class="absolute top-6 left-6">
-                            <span
-                                class="px-4 py-1.5 bg-[#06402B] text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-lg">
-                                {{ mainNews.category }}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="space-y-4">
-                        <span class="text-gray-500 text-sm font-medium">{{ mainNews.date }}</span>
-                        <h3
-                            class="text-3xl md:text-4xl font-chillax font-bold text-white group-hover:text-[#51A687] transition-colors duration-300 leading-tight text-balance">
-                            {{ mainNews.title }}
-                        </h3>
-                        <p class="text-gray-400 leading-relaxed max-w-2xl line-clamp-3">
-                            {{ mainNews.description }}
-                        </p>
-                    </div>
-                </div>
+            <!-- Content Grid -->
+            <div :class="isHorizontal ? 'flex flex-col gap-8' : 'grid grid-cols-1 xl:grid-cols-12 gap-8'">
 
-                <!-- Secondary News -->
-                <div class="lg:col-span-4 flex flex-col gap-10">
-                    <div v-for="news in secondaryNews" :key="news.id"
-                        class="group cursor-pointer flex flex-col sm:flex-row lg:flex-col gap-6 relative p-6 -m-6 rounded-[2rem] transition-all duration-500 border border-transparent hover:border-white/20 hover:bg-white/[0.05] hover:shadow-[0_0_30px_rgba(200,10,69,0.1)]">
-                        <div
-                            class="relative overflow-hidden rounded-xl aspect-video sm:w-48 lg:w-full border border-white/5 flex-shrink-0 shadow-xl">
-                            <img :src="news.image" :alt="news.title"
-                                class="w-full h-auto object-cover transition-all duration-700 group-hover:scale-110 group-hover:brightness-110" />
-                            <div class="absolute top-3 left-3">
-                                <span
-                                    class="px-3 py-1 bg-[#06402B] text-white text-[10px] font-bold uppercase tracking-wider rounded-full shadow-lg">
-                                    {{ news.category }}
-                                </span>
-                            </div>
-                        </div>
-                        <div class="space-y-3">
-                            <span class="text-gray-500 text-xs font-medium">{{ news.date }}</span>
-                            <h4
-                                class="text-xl font-chillax font-bold text-white group-hover:text-[#51A687] transition-colors duration-300 leading-snug text-balance">
-                                {{ news.title }}
-                            </h4>
-                            <p class="text-gray-400 text-sm line-clamp-2 leading-relaxed">
-                                {{ news.description }}
-                            </p>
-                        </div>
+                <!-- Layout Logic -->
+                <template v-if="isHorizontal">
+                    <NewsSectionCard v-for="post in posts" :key="post.id" :post="post" layout="horizontal" />
+                </template>
+
+                <template v-else>
+                    <!-- Featured Post (Left / Large) -->
+                    <div class="xl:col-span-8">
+                        <NewsSectionCard :post="posts[0]" layout="featured" />
                     </div>
-                </div>
+                    <!-- Sidebar Posts (Right / Small) -->
+                    <div class="xl:col-span-4 flex flex-col gap-8">
+                        <NewsSectionCard v-for="post in posts.slice(1)" :key="post.id" :post="post" layout="sidebar" />
+                    </div>
+                </template>
             </div>
 
             <!-- Mobile CTA -->
             <div class="mt-12 flex justify-center md:hidden">
-                <AppButton href="/news" variant="primary" size="md" className="w-full">
+                <AppButton :href="newsRoute.index.url()" variant="primary" size="md" className="w-full">
                     Toutes les actualités
                     <template #right-icon>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                            stroke="currentColor" class="w-5 h-5 transition-transform group-hover:translate-x-1">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                        </svg>
+                        <ArrowRight class="w-5 h-5 transition-transform group-hover:translate-x-1" />
                     </template>
                 </AppButton>
             </div>

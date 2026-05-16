@@ -4,151 +4,61 @@
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
 
-    interface NewsItem {
-        id: number;
-        slug: string;
-        title: string;
-        description: string;
-        image: string;
-        date: string;
-        category: string;
+    interface NewsProps {
+        posts: {
+            id: number
+            title: string
+            slug: string
+            status: string
+            content: string
+            excerpt: string
+            thumbnail: string
+            created_at: string
+            updated_at: string
+            published_at: string
+            category_id: number | null
+        }[]
+        categories: {
+            id: number
+            name: string
+            slug: string
+            created_at: string
+            updated_at: string
+        }[]
     }
 
-    const newsList: NewsItem[] = [
-        {
-            id: 1,
-            slug: 'eden-2026-edition-exceptionnelle',
-            title: "Le festival EDEN 2026 : Ce qu'il faut savoir sur cette édition exceptionnelle",
-            description: "Plongez au cœur de l'expérience Symbiosa pour cette édition exceptionnelle à Gembloux. Découvrez la programmation complète et les nouveautés de cette année qui s'annonce mémorable pour tous les passionnés de musique électronique.",
-            image: '/photo_07.jpg',
-            date: 'Mars 2026',
-            category: 'Annonce',
-        },
-        {
-            id: 2,
-            slug: 'nouveau-soundsystem-revolutionnaire',
-            title: 'Nouveau Soundsystem Révolutionnaire',
-            description: "Une immersion sonore inédite grâce à notre nouveau partenariat technique avec les plus grands ingénieurs du son actuels pour une clarté absolue.",
-            image: '/photo_08.jpg',
-            date: 'Février 2026',
-            category: 'Technique',
-        },
-        {
-            id: 3,
-            slug: 'aftermovie-2025-disponible',
-            title: 'Aftermovie 2025 disponible maintenant',
-            description: "Revivez les meilleurs moments de l'édition précédente en vidéo haute définition avec des interviews exclusives des artistes.",
-            image: '/photo_09.jpg',
-            date: 'Janvier 2026',
-            category: 'Média',
-        },
-        {
-            id: 4,
-            slug: 'eden-2025-retour-nuit-inoubliable',
-            title: 'EDEN 2025 : Retour sur une nuit inoubliable',
-            description: "Retour en images sur l'édition 2025 qui a réuni plus de 2000 personnes à Gembloux. Une nuit de son, de lumière et d'émotion collective.",
-            image: '/photo_00.jpg',
-            date: 'Décembre 2025',
-            category: 'Recap',
-        },
-        {
-            id: 5,
-            slug: 'lineup-eden-2026-premiers-noms',
-            title: 'Lineup EDEN 2026 — Les premiers noms dévoilés',
-            description: "Découvrez les premiers artistes confirmés pour l'édition 2026 de EDEN. Une sélection pointue entre techno sombre et house atmosphérique.",
-            image: '/photo_01.jpg',
-            date: 'Novembre 2025',
-            category: 'Annonce',
-        },
-        {
-            id: 6,
-            slug: 'interview-sound-designers-symbiosa',
-            title: 'Interview : dans la tête de nos sound designers',
-            description: "Rencontre avec l'équipe technique derrière le son de Symbiosa. Ils nous expliquent comment ils sculptent chaque fréquence pour une expérience totale.",
-            image: '/photo_02.jpg',
-            date: 'Octobre 2025',
-            category: 'Technique',
-        },
-        {
-            id: 7,
-            slug: 'eden-closing-ritual-recap-photos',
-            title: 'EDEN Closing Ritual — Le recap en photos',
-            description: "118 photos, une nuit de clôture de saison exceptionnelle. Galerie complète de la soirée EDEN Closing Ritual à Gembloux.",
-            image: '/photo_03.jpg',
-            date: 'Octobre 2025',
-            category: 'Média',
-        },
-        {
-            id: 8,
-            slug: 'coulisses-collectif-symbiosa',
-            title: "Symbiosa : les coulisses d'un collectif en pleine expansion",
-            description: "Comment Symbiosa est passé d'un collectif de quelques passionnés à l'un des organisateurs les plus suivis de Belgique en moins de trois ans.",
-            image: '/photo_04.jpg',
-            date: 'Septembre 2025',
-            category: 'Communauté',
-        },
-        {
-            id: 9,
-            slug: 'eden-sunset-garden-aftermovie',
-            title: 'EDEN Sunset Garden — Aftermovie disponible',
-            description: "L'aftermovie de notre soirée Open Air à Wavre est en ligne. Retrouvez l'ambiance unique de cette édition ensoleillée dans toute sa splendeur.",
-            image: '/photo_05.jpg',
-            date: 'Juillet 2025',
-            category: 'Média',
-        },
-        {
-            id: 10,
-            slug: 'rencontre-mina-lune',
-            title: "Rencontre avec Mina Lune — l'étoile montante de la scène techno belge",
-            description: "Portrait exclusif de Mina Lune, headliner du Closing Ritual 2025. Elle nous parle de ses influences, de sa vision de la nuit et de ses projets à venir.",
-            image: '/photo_06.jpg',
-            date: 'Juin 2025',
-            category: 'Communauté',
-        },
-        {
-            id: 11,
-            slug: 'partenariat-symbiosa-studio-nebula',
-            title: 'Partenariat Symbiosa × Studio Nebula',
-            description: "Symbiosa s'associe à Studio Nebula pour la direction artistique de toutes les prochaines éditions. Une collaboration visuelle qui redéfinit l'identité du collectif.",
-            image: '/photo_07.jpg',
-            date: 'Avril 2025',
-            category: 'Annonce',
-        },
-        {
-            id: 12,
-            slug: 'guide-preparer-nuit-eden',
-            title: 'Guide : comment préparer votre nuit EDEN',
-            description: "Tout ce qu'il faut savoir avant de venir : transport, vestiaire, accès, lineup, conseils pratiques. Votre soirée parfaite commence ici.",
-            image: '/photo_08.jpg',
-            date: 'Mars 2025',
-            category: 'Guide',
-        },
-    ];
+    const props = defineProps<NewsProps>();
 
-    const categories = ['Annonce', 'Technique', 'Média', 'Recap', 'Communauté', 'Guide'];
-    const selectedCategories = ref<string[]>([]);
+    const selectedCategories = ref<number[]>([]);
 
     const filteredNews = computed(() => {
         if (selectedCategories.value.length === 0) {
-            return newsList;
+            return props.posts;
         }
-        return newsList.filter((item) =>
-            selectedCategories.value.includes(item.category),
+        return props.posts.filter((item) =>
+            item.category_id !== null && selectedCategories.value.includes(item.category_id),
         );
     });
 
-    function toggleCategory(cat: string) {
+    function toggleCategory(cat: number) {
         const idx = selectedCategories.value.indexOf(cat);
         if (idx === -1) {
             selectedCategories.value.push(cat);
         } else {
             selectedCategories.value.splice(idx, 1);
         }
-        // Si toutes les catégories sont sélectionnées = aucun filtre
-        if (selectedCategories.value.length === categories.length) {
+        if (selectedCategories.value.length === props.categories.length) {
             selectedCategories.value = [];
         }
     }
+
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return new Intl.DateTimeFormat('fr-FR', {
+            month: 'long',
+            year: 'numeric',
+        }).format(date);
+    };
 </script>
 
 <template>
@@ -181,7 +91,7 @@
             </section>
 
             <!-- Category filters -->
-            <div class="mb-10 flex flex-wrap items-center gap-1.5">
+            <div class="mb-10 flex flex-wrap items-center gap-1.5" v-if="props.categories.length > 1">
                 <span class="mr-1 text-[10px] font-bold tracking-[0.2em] text-gray-500 uppercase">Catégorie</span>
                 <button type="button" @click="selectedCategories = []" :class="[
                     'cursor-pointer rounded-full border px-2.5 py-1 text-[10px] font-bold tracking-[0.18em] uppercase transition-colors',
@@ -191,13 +101,14 @@
                 ]">
                     All
                 </button>
-                <button v-for="cat in categories" :key="cat" type="button" @click="toggleCategory(cat)" :class="[
-                    'cursor-pointer rounded-full border px-2.5 py-1 text-[10px] font-bold tracking-[0.18em] uppercase transition-colors',
-                    selectedCategories.includes(cat)
-                        ? 'border-[#51A687] bg-[#51A687]/20 text-white'
-                        : 'border-white/15 bg-white/5 text-gray-300 hover:border-white/30',
-                ]">
-                    {{ cat }}
+                <button v-for="cat in props.categories" :key="cat.id" type="button" @click="toggleCategory(cat.id)"
+                    :class="[
+                        'cursor-pointer rounded-full border px-2.5 py-1 text-[10px] font-bold tracking-[0.18em] uppercase transition-colors',
+                        selectedCategories.includes(cat.id)
+                            ? 'border-[#51A687] bg-[#51A687]/20 text-white'
+                            : 'border-white/15 bg-white/5 text-gray-300 hover:border-white/30',
+                    ]">
+                    {{ cat.name }}
                 </button>
             </div>
 
@@ -207,27 +118,28 @@
                     class="group relative flex flex-col overflow-hidden rounded-2xl border border-white/8 bg-white/2 transition-all duration-300 hover:border-white/18 hover:bg-white/5 hover:shadow-[0_0_40px_rgba(200,10,69,0.1)]">
                     <!-- Image -->
                     <div class="relative aspect-16/10 overflow-hidden">
-                        <img :src="news.image" :alt="news.title"
+                        <img :src="news.thumbnail" :alt="news.title"
                             class="h-full w-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110" />
                         <div class="absolute inset-0 bg-linear-to-t from-black/60 to-transparent"></div>
-                        <span
+                        <span v-if="news.category_id"
                             class="absolute left-4 top-4 rounded-full border border-[#51A687]/60 bg-[#51A687]/30 px-3 py-1 text-[10px] font-bold tracking-[0.18em] text-white uppercase backdrop-blur-sm">
-                            {{ news.category }}
+                            {{ props.categories.find((cat) => cat.id === news.category_id)?.name }}
                         </span>
                     </div>
 
                     <!-- Content -->
                     <div class="flex flex-1 flex-col gap-3 p-5">
-                        <span class="text-[11px] font-medium text-gray-500">{{ news.date }}</span>
+                        <span class="text-[11px] font-medium text-gray-500 capitalize">{{ formatDate(news.published_at)
+                            }}</span>
                         <h3
-                            class="font-chillax text-lg leading-snug text-white transition-colors duration-300 group-hover:text-[#06402B] md:text-xl">
+                            class="font-chillax text-lg leading-snug text-white transition-colors duration-300 group-hover:text-[#51A687] md:text-xl">
                             {{ news.title }}
                         </h3>
                         <p class="line-clamp-3 text-sm leading-relaxed text-gray-400">
-                            {{ news.description }}
+                            {{ news.excerpt }}
                         </p>
                         <p
-                            class="mt-auto pt-2 text-[10px] font-bold tracking-[0.14em] text-[#06402B] uppercase opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                            class="mt-auto pt-2 text-[10px] font-bold tracking-[0.14em] text-[#51A687] uppercase opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                             Lire la suite →
                         </p>
                     </div>
