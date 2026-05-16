@@ -13,6 +13,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\HtmlString;
 
 class CheckoutInfolist
 {
@@ -71,6 +72,49 @@ class CheckoutInfolist
                                         ->icon(Heroicon::Clipboard)
                                 ),
                         ]),
+
+                    Section::make('Acceptation des conditions')
+                        ->icon('heroicon-m-shield-check')
+                        ->schema([
+                            RepeatableEntry::make('accepted_legal_pages')
+                                ->hiddenLabel()
+                                ->state(function ($record) {
+                                    if (empty($record->accepted_legal_pages)) return [];
+                                    return collect($record->accepted_legal_pages)->map(function ($page) {
+                                        return [
+                                            'slug' => $page['slug'],
+                                            'version_number' => $page['version_number'],
+                                            'url' => route('legal.show', ['slug' => $page['slug'], 'version' => $page['version_number']]),
+                                        ];
+                                    })->toArray();
+                                })
+                                ->schema([
+                                    Grid::make(3)
+                                        ->schema([
+                                            TextEntry::make('slug')
+                                                ->label('Page')
+                                                ->formatStateUsing(function ($state) {
+                                                    static $titles = [];
+                                                    if (!isset($titles[$state])) {
+                                                        $titles[$state] = \App\Models\LegalPage::where('slug', $state)->value('title') ?? $state;
+                                                    }
+                                                    return $titles[$state];
+                                                }),
+                                            TextEntry::make('version_number')
+                                                ->label('Version')
+                                                ->formatStateUsing(fn($state) => "v{$state}"),
+                                            TextEntry::make('url')
+                                                ->label('')
+                                                ->formatStateUsing(fn() => 'Voir la page')
+                                                ->color('primary')
+                                                ->icon('heroicon-m-arrow-top-right-on-square')
+                                                ->url(fn($state) => $state)
+                                                ->openUrlInNewTab(),
+                                        ]),
+                                ])
+                                ->grid(1),
+                        ])
+                        ->visible(fn($record) => !empty($record->accepted_legal_pages)),
 
                     Section::make('Contenu du panier')
                         ->icon('heroicon-m-shopping-bag')

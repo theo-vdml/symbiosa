@@ -45,6 +45,7 @@ class HandleInertiaRequests extends Middleware
                 'message' => $request->session()->get('message'),
                 'error' => $request->session()->get('error'),
             ],
+            'footerLegalPages' => \App\Models\LegalPage::inFooter()->get(['title', 'slug']),
         ];
     }
 }

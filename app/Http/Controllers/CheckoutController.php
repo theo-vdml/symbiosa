@@ -74,19 +74,28 @@ class CheckoutController extends Controller
                 ->with('error', 'Votre session a expiré. Veuillez recommencer votre sélection.');
         }
 
+        $legalPages = \App\Models\LegalPage::requiresAcceptance()->get();
+
         return Inertia::render('Checkout/Show', [
             'checkout' => $checkout->load('reservations.reservable.event'),
+            'legalPages' => $legalPages,
         ]);
     }
 
     public function checkout(Request $request, Checkout $checkout)
     {
-        $request->validate([
+        $legalPagesRequiringAcceptance = \App\Models\LegalPage::requiresAcceptance()->with('latestVersion')->get();
+
+        $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'accept_cgv' => 'accepted',
-            'accept_rgpd' => 'accepted',
-        ]);
+        ];
+
+        foreach ($legalPagesRequiringAcceptance as $page) {
+            $rules['accept_' . str_replace('-', '_', $page->slug)] = 'accepted';
+        }
+
+        $request->validate($rules);
 
         if ($checkout->expires_at->isPast() || $checkout->completed_at || $checkout->cancelled_at) {
             return redirect()->route('events.ticketing', $checkout->event->slug)
@@ -97,9 +106,19 @@ class CheckoutController extends Controller
             return redirect()->back()->with('error', 'Une session de paiement est déjà en cours.');
         }
 
+        $acceptedVersions = [];
+        foreach ($legalPagesRequiringAcceptance as $page) {
+            $acceptedVersions[] = [
+                'legal_page_id' => $page->id,
+                'slug' => $page->slug,
+                'version_number' => $page->latestVersion?->version_number,
+            ];
+        }
+
         $checkout->update([
             'customer_name' => $request->name,
             'customer_email' => $request->email,
+            'accepted_legal_pages' => $acceptedVersions,
         ]);
 
         $lineItems = $this->getLineItems($checkout);
