@@ -17,270 +17,21 @@
         recapLink: string;
     }
 
-    const archivedEvents: ArchiveEvent[] = [
-        {
-            id: 1,
-            title: 'EDEN Closing Ritual',
-            type: 'Festival',
-            genres: ['House', 'Techno'],
-            isoDate: '2025-10-18T22:00:00+02:00',
-            location: 'Gembloux, Belgique',
-            image: '/eden_poster_light.png',
-            lineup: ['Mina Lune', 'Krys A', 'Noah V', 'Mira K'],
-            photoCount: 118,
-            recapLink: '/events/eden-closing-ritual',
-        },
-        {
-            id: 2,
-            title: 'EDEN Warehouse Night',
-            type: 'DJ Set',
-            genres: ['Techno'],
-            isoDate: '2025-08-09T23:00:00+02:00',
-            location: 'Namur, Belgique',
-            image: '/eden_poster_light.png',
-            lineup: ['Aster', 'Velin', 'Darya'],
-            photoCount: 86,
-            recapLink: '/events/eden-warehouse-night',
-        },
-        {
-            id: 3,
-            title: 'EDEN Sunset Garden',
-            type: 'Open Air',
-            genres: ['House'],
-            isoDate: '2025-06-14T18:00:00+02:00',
-            location: 'Wavre, Belgique',
-            image: '/eden_poster_light.png',
-            lineup: ['Rami', 'Aya Sol', 'Nox'],
-            photoCount: 73,
-            recapLink: '/events/eden-sunset-garden',
-        },
-        {
-            id: 4,
-            title: 'EDEN Midnight Motion',
-            type: 'DJ Set',
-            genres: ['Hardstyle', 'Techno'],
-            isoDate: '2025-03-01T23:30:00+01:00',
-            location: 'Liege, Belgique',
-            image: '/eden_poster_light.png',
-            lineup: ['Kael', 'Tyno', 'Selva'],
-            photoCount: 95,
-            recapLink: '/events/eden-midnight-motion',
-        },
-        {
-            id: 5,
-            title: 'EDEN Winter Archive',
-            type: 'Festival',
-            genres: ['House', 'Hardstyle'],
-            isoDate: '2024-12-20T21:00:00+01:00',
-            location: 'Bruxelles, Belgique',
-            image: '/eden_poster_light.png',
-            lineup: ['Kove', 'Nia', 'Renz', 'Silo'],
-            photoCount: 132,
-            recapLink: '/events/eden-winter-archive',
-        },
-        {
-            id: 6,
-            title: 'EDEN First Signal',
-            type: 'Open Air',
-            genres: ['House', 'Techno'],
-            isoDate: '2024-09-07T17:00:00+02:00',
-            location: 'Gembloux, Belgique',
-            image: '/eden_poster_light.png',
-            lineup: ['Lio', 'Mira K', 'Aster'],
-            photoCount: 64,
-            recapLink: '/events/eden-first-signal',
-        },
-        {
-            id: 7,
-            title: 'EDEN Neon Pulse',
-            type: 'DJ Set',
-            genres: ['Techno', 'House'],
-            isoDate: '2024-07-22T22:30:00+02:00',
-            location: 'Charleroi, Belgique',
-            image: '/eden_poster_light.png',
-            lineup: ['Syn', 'Vox', 'Keev'],
-            photoCount: 56,
-            recapLink: '/events/eden-neon-pulse',
-        },
-        {
-            id: 8,
-            title: 'EDEN Abyss Deep',
-            type: 'Festival',
-            genres: ['Hardstyle'],
-            isoDate: '2024-05-31T21:00:00+02:00',
-            location: 'Mons, Belgique',
-            image: '/eden_poster_light.png',
-            lineup: ['Raw Force', 'Sonic Boom', 'Titan'],
-            photoCount: 154,
-            recapLink: '/events/eden-abyss-deep',
-        },
-        {
-            id: 9,
-            title: 'EDEN Ethereal Waves',
-            type: 'Open Air',
-            genres: ['House', 'Techno'],
-            isoDate: '2024-04-13T18:30:00+02:00',
-            location: 'Liege, Belgique',
-            image: '/eden_poster_light.png',
-            lineup: ['Luna', 'Echo', 'Vera'],
-            photoCount: 82,
-            recapLink: '/events/eden-ethereal-waves',
-        },
-        {
-            id: 10,
-            title: 'EDEN Crystal Nights',
-            type: 'DJ Set',
-            genres: ['House'],
-            isoDate: '2024-03-09T23:00:00+01:00',
-            location: 'Tournai, Belgique',
-            image: '/eden_poster_light.png',
-            lineup: ['Crystal', 'Sol', 'Tara'],
-            photoCount: 71,
-            recapLink: '/events/eden-crystal-nights',
-        },
-        {
-            id: 11,
-            title: 'EDEN Inferno Fest',
-            type: 'Festival',
-            genres: ['Hardstyle', 'Techno'],
-            isoDate: '2024-02-17T20:00:00+01:00',
-            location: 'Antwerp, Belgique',
-            image: '/eden_poster_light.png',
-            lineup: ['Inferno', 'Blaze', 'Surge', 'Volt'],
-            photoCount: 189,
-            recapLink: '/events/eden-inferno-fest',
-        },
-        {
-            id: 12,
-            title: 'EDEN Silent Echo',
-            type: 'DJ Set',
-            genres: ['Techno'],
-            isoDate: '2023-12-02T22:00:00+01:00',
-            location: 'Brussels, Belgique',
-            image: '/eden_poster_light.png',
-            lineup: ['Echo', 'Silence', 'Lux'],
-            photoCount: 45,
-            recapLink: '/events/eden-silent-echo',
-        },
-        {
-            id: 13,
-            title: 'EDEN Aurora Lights',
-            type: 'Open Air',
-            genres: ['House'],
-            isoDate: '2023-10-21T19:00:00+02:00',
-            location: 'Waterloo, Belgique',
-            image: '/eden_poster_light.png',
-            lineup: ['Aurora', 'Zephyr', 'Stella'],
-            photoCount: 93,
-            recapLink: '/events/eden-aurora-lights',
-        },
-        {
-            id: 14,
-            title: 'EDEN Shadow Dance',
-            type: 'Festival',
-            genres: ['House', 'Techno'],
-            isoDate: '2023-09-09T21:30:00+02:00',
-            location: 'Gent, Belgique',
-            image: '/eden_poster_light.png',
-            lineup: ['Shadow', 'Dancer', 'Noir', 'Lume'],
-            photoCount: 156,
-            recapLink: '/events/eden-shadow-dance',
-        },
-        {
-            id: 15,
-            title: 'EDEN Rhythm Storm',
-            type: 'DJ Set',
-            genres: ['Hardstyle', 'Techno'],
-            isoDate: '2023-08-15T23:30:00+02:00',
-            location: 'Bruges, Belgique',
-            image: '/eden_poster_light.png',
-            lineup: ['Storm', 'Rhythm', 'Pulse'],
-            photoCount: 67,
-            recapLink: '/events/eden-rhythm-storm',
-        },
-        {
-            id: 16,
-            title: 'EDEN Velvet Dreams',
-            type: 'Open Air',
-            genres: ['House'],
-            isoDate: '2023-07-08T18:00:00+02:00',
-            location: 'Mechelen, Belgique',
-            image: '/eden_poster_light.png',
-            lineup: ['Velvet', 'Dreamz', 'Silk'],
-            photoCount: 78,
-            recapLink: '/events/eden-velvet-dreams',
-        },
-        {
-            id: 17,
-            title: 'EDEN Golden Hour',
-            type: 'Festival',
-            genres: ['House', 'Techno'],
-            isoDate: '2023-06-03T20:00:00+02:00',
-            location: 'Louvain, Belgique',
-            image: '/eden_poster_light.png',
-            lineup: ['Golden', 'Hour', 'Sunny', 'Ray'],
-            photoCount: 142,
-            recapLink: '/events/eden-golden-hour',
-        },
-        {
-            id: 18,
-            title: 'EDEN Void Echoes',
-            type: 'DJ Set',
-            genres: ['Techno'],
-            isoDate: '2023-05-12T22:00:00+02:00',
-            location: 'Namur, Belgique',
-            image: '/eden_poster_light.png',
-            lineup: ['Void', 'Echo', 'Abyss'],
-            photoCount: 54,
-            recapLink: '/events/eden-void-echoes',
-        },
-        {
-            id: 19,
-            title: 'EDEN Phoenix Rising',
-            type: 'Festival',
-            genres: ['Hardstyle', 'House'],
-            isoDate: '2023-04-29T19:30:00+02:00',
-            location: 'Gembloux, Belgique',
-            image: '/eden_poster_light.png',
-            lineup: ['Phoenix', 'Rise', 'Fire', 'Wing'],
-            photoCount: 167,
-            recapLink: '/events/eden-phoenix-rising',
-        },
-        {
-            id: 20,
-            title: 'EDEN Midnight Eclipse',
-            type: 'Open Air',
-            genres: ['Techno', 'House'],
-            isoDate: '2023-03-18T21:00:00+01:00',
-            location: 'Liege, Belgique',
-            image: '/eden_poster_light.png',
-            lineup: ['Eclipse', 'Night', 'Luna', 'Star'],
-            photoCount: 98,
-            recapLink: '/events/eden-midnight-eclipse',
-        },
-    ];
+    const props = defineProps<{
+        events: ArchiveEvent[];
+    }>();
 
     const search = ref('');
     const pageSize = 12;
     const visibleCount = ref(pageSize);
 
-    const pastEvents = computed(() => {
-        const now = new Date();
-        return [...archivedEvents]
-            .filter((event) => new Date(event.isoDate) < now)
-            .sort(
-                (a, b) =>
-                    new Date(b.isoDate).getTime() - new Date(a.isoDate).getTime(),
-            );
-    });
-
     const filteredPastEvents = computed(() => {
         const term = search.value.trim().toLowerCase();
         if (!term) {
-            return pastEvents.value;
+            return props.events;
         }
 
-        return pastEvents.value.filter((event) => {
+        return props.events.filter((event) => {
             return event.title.toLowerCase().includes(term);
         });
     });
@@ -301,9 +52,12 @@
         const groups = new Map<string, ArchiveEvent[]>();
 
         visiblePastEvents.value.forEach((event) => {
+            const date = new Date(event.isoDate);
+            if (isNaN(date.getTime())) return;
+
             const year = new Intl.DateTimeFormat('fr-BE', {
                 year: 'numeric',
-            }).format(new Date(event.isoDate));
+            }).format(date);
             const current = groups.get(year) ?? [];
             current.push(event);
             groups.set(year, current);
@@ -316,12 +70,15 @@
     });
 
     function formatDate(isoDate: string) {
+        const date = new Date(isoDate);
+        if (isNaN(date.getTime())) return 'DATE INCONNUE';
+
         return new Intl.DateTimeFormat('fr-BE', {
             day: '2-digit',
             month: 'short',
             year: 'numeric',
         })
-            .format(new Date(isoDate))
+            .format(date)
             .replace('.', '')
             .toUpperCase();
     }

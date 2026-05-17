@@ -1,12 +1,12 @@
 <script setup lang="ts">
-    import { computed } from 'vue';
+    import { computed, ref } from 'vue';
     import { Link } from '@inertiajs/vue3';
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
     import AppButton from '@/components/AppButton.vue';
     import SponsorMarquee from '@/components/SponsorMarquee.vue';
     import EventFaq from '@/components/EventFaq.vue';
-    import { Calendar, MapPin } from '@lucide/vue';
+    import { Calendar, MapPin, X, ChevronLeft, ChevronRight, Download } from '@lucide/vue';
     import events from '@/routes/events';
     import SeoMeta from '@/components/SeoMeta.vue';
     import { Seo } from '@/types/seo';
@@ -41,6 +41,78 @@
     const getPerformanceTime = (time: string) => {
         return time.substring(0, 5).replace(':', 'h');
     };
+
+    // Lightbox State
+    const selectedImageIndex = ref<number | null>(null);
+    const isLightboxOpen = computed(() => selectedImageIndex.value !== null);
+    const loadedImages = ref<Set<number>>(new Set());
+    const isLightboxImageLoaded = ref(false);
+
+    const handleImageLoad = (id: number) => {
+        loadedImages.value.add(id);
+    };
+
+    const openLightbox = (index: number) => {
+        isLightboxImageLoaded.value = false;
+        selectedImageIndex.value = index;
+        if (typeof document !== 'undefined') {
+            document.body.style.overflow = 'hidden';
+        }
+    };
+
+    const closeLightbox = () => {
+        selectedImageIndex.value = null;
+        if (typeof document !== 'undefined') {
+            document.body.style.overflow = '';
+        }
+    };
+
+    const nextImage = () => {
+        if (selectedImageIndex.value === null || !props.event.gallery_urls) return;
+        isLightboxImageLoaded.value = false;
+        selectedImageIndex.value = (selectedImageIndex.value + 1) % props.event.gallery_urls.length;
+    };
+
+    const prevImage = () => {
+        if (selectedImageIndex.value === null || !props.event.gallery_urls) return;
+        isLightboxImageLoaded.value = false;
+        selectedImageIndex.value = (selectedImageIndex.value - 1 + props.event.gallery_urls.length) % props.event.gallery_urls.length;
+    };
+
+    const downloadImage = async () => {
+        if (selectedImageIndex.value === null || !props.event.gallery_urls) return;
+        
+        try {
+            const imageUrl = props.event.gallery_urls[selectedImageIndex.value].url;
+            const response = await fetch(imageUrl);
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `symbiosa-event-${props.event.slug}-${selectedImageIndex.value + 1}.jpg`;
+            document.body.appendChild(link);
+            link.click();
+            
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Download failed:', error);
+            // Fallback to opening in new tab if fetch fails (e.g. CORS)
+            const imageUrl = props.event.gallery_urls[selectedImageIndex.value].url;
+            window.open(imageUrl, '_blank');
+        }
+    };
+
+    // Keyboard navigation
+    if (typeof window !== 'undefined') {
+        window.addEventListener('keydown', (e) => {
+            if (!isLightboxOpen.value) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') nextImage();
+            if (e.key === 'ArrowLeft') prevImage();
+        });
+    }
 
 </script>
 
@@ -113,7 +185,7 @@
         <!-- Main Content -->
         <main class="relative z-10 mx-auto max-w-7xl px-6 pb-24 md:px-10 lg:px-14">
             <!-- Action Bar -->
-            <div v-if="event.ticketing_status === 'open'"
+            <div v-if="event.ticketing_status === 'open' && !event.is_visible_in_archives"
                 class="relative -translate-y-1/2 z-20 flex justify-center px-4">
                 <AppButton :href="events.ticketing(event.slug).url" variant="primary" size="lg"
                     class="w-full sm:w-auto border-[#51A687]/50 bg-[#51A687]/10 backdrop-blur-xl hover:bg-[#51A687]/20">
@@ -123,7 +195,7 @@
 
             <section class="mt-12 grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
                 <!-- Description & Lineup -->
-                <div class="lg:col-span-8 space-y-16">
+                <div :class="[event.is_visible_in_archives ? 'lg:col-span-12' : 'lg:col-span-8', 'space-y-16']">
                     <div class="space-y-6">
                         <h2 class="font-chillax text-4xl text-white">À propos</h2>
                         <div class="prose prose-invert prose-lg max-w-none prose-headings:font-chillax prose-headings:font-normal prose-p:text-gray-400 prose-li:text-gray-400 prose-strong:text-white prose-em:text-gray-200"
@@ -205,7 +277,7 @@
                 </div>
 
                 <!-- Sidebar / Practical Info -->
-                <div class="lg:col-span-4 space-y-6 relative">
+                <div v-if="!event.is_visible_in_archives" class="lg:col-span-4 space-y-6 relative">
                     <!-- Practical Info Card -->
                     <div class="rounded-3xl border border-white/10 bg-white/5 p-8 space-y-8">
                         <h3 class="font-chillax text-2xl text-white uppercase tracking-wider">Infos Pratiques</h3>
@@ -265,6 +337,91 @@
                 </div>
             </section>
 
+            <!-- Gallery Section -->
+            <section v-if="event.is_visible_in_archives && event.gallery_urls?.length" class="mt-32 space-y-12">
+                <div class="space-y-4">
+                    <p class="text-xs font-bold tracking-[0.35em] text-[#51A687] uppercase">
+                        Souvenirs
+                    </p>
+                    <h2 class="font-chillax text-4xl md:text-5xl text-white">
+                        Galerie Photo
+                    </h2>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div v-for="(image, index) in event.gallery_urls" :key="image.id"
+                        @click="openLightbox(index)"
+                        class="aspect-square overflow-hidden rounded-2xl bg-white/5 border border-white/10 group cursor-zoom-in relative">
+                        <!-- Skeleton Placeholder -->
+                        <div class="absolute inset-0 bg-[#51A687]/5 animate-pulse"
+                            :class="{ 'opacity-0': loadedImages.has(image.id) }"></div>
+
+                        <img :src="image.thumb"
+                            @load="handleImageLoad(image.id)"
+                            class="h-full w-full object-cover transition-all duration-700 group-hover:scale-110 relative z-10"
+                            :class="loadedImages.has(image.id) ? 'opacity-100' : 'opacity-0'"
+                            loading="lazy" alt="Event gallery image" />
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lightbox -->
+            <Teleport to="body">
+                <Transition enter-active-class="transition duration-300 ease-out" enter-from-class="opacity-0"
+                    enter-to-class="opacity-100" leave-active-class="transition duration-200 ease-in"
+                    leave-from-class="opacity-100" leave-to-class="opacity-0">
+                    <div v-if="isLightboxOpen" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 px-4">
+                        <!-- Close button -->
+                        <button @click="closeLightbox"
+                            class="absolute top-6 right-6 z-[110] rounded-full bg-white/10 p-3 text-white backdrop-blur-md transition-colors hover:bg-white/20">
+                            <X class="h-6 w-6" />
+                        </button>
+
+                        <!-- Download button -->
+                        <button @click="downloadImage"
+                            class="absolute top-6 right-24 z-[110] flex items-center gap-2 rounded-full bg-[#51A687] px-4 py-2.5 text-xs font-bold tracking-widest text-white uppercase transition-transform hover:scale-105 active:scale-95">
+                            <Download class="h-4 w-4" />
+                            <span>Télécharger</span>
+                        </button>
+
+                        <!-- Navigation -->
+                        <button @click.stop="prevImage"
+                            class="absolute left-6 z-[110] rounded-full bg-white/5 p-4 text-white backdrop-blur-md transition-colors hover:bg-white/10 hidden md:block">
+                            <ChevronLeft class="h-8 w-8" />
+                        </button>
+
+                        <button @click.stop="nextImage"
+                            class="absolute right-6 z-[110] rounded-full bg-white/5 p-4 text-white backdrop-blur-md transition-colors hover:bg-white/10 hidden md:block">
+                            <ChevronRight class="h-8 w-8" />
+                        </button>
+
+                        <!-- Image Container -->
+                        <div class="relative max-h-[85vh] max-w-5xl" @click.stop>
+                            <!-- Lightbox Loading State -->
+                            <div v-if="!isLightboxImageLoaded"
+                                class="absolute inset-0 flex items-center justify-center">
+                                <div class="h-12 w-12 animate-spin rounded-full border-4 border-[#51A687]/20 border-t-[#51A687]"></div>
+                            </div>
+
+                            <img v-if="event.gallery_urls" :src="event.gallery_urls[selectedImageIndex!].url"
+                                @load="isLightboxImageLoaded = true"
+                                class="max-h-[85vh] w-full object-contain shadow-2xl transition-opacity duration-300"
+                                :class="isLightboxImageLoaded ? 'opacity-100' : 'opacity-0'"
+                                alt="" />
+                            
+                            <!-- Counter -->
+                            <div class="absolute -bottom-10 left-1/2 -translate-x-1/2 text-white/50 text-sm font-medium">
+                                {{ selectedImageIndex! + 1 }} / {{ event.gallery_urls?.length }}
+                            </div>
+                        </div>
+
+                        <!-- Mobile navigation overlay -->
+                        <div class="absolute inset-y-0 left-0 w-1/4 md:hidden" @click="prevImage"></div>
+                        <div class="absolute inset-y-0 right-0 w-1/4 md:hidden" @click="nextImage"></div>
+                    </div>
+                </Transition>
+            </Teleport>
+
             <!-- Sponsors Section -->
             <section class="mt-32 space-y-10">
                 <p class="text-center text-[10px] font-bold tracking-[0.3em] text-white/40 uppercase">
@@ -275,7 +432,7 @@
             </section>
 
             <!-- FAQ Section -->
-            <EventFaq :faq="event.faq" />
+            <EventFaq v-if="!event.is_visible_in_archives" :faq="event.faq" />
         </main>
     </div>
 

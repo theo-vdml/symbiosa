@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * @property array<int, array{question: string, answer: string}> $faq
@@ -31,6 +32,19 @@ class Event extends Model implements HasMedia
             ->singleFile()
             ->withResponsiveImages()
             ->useDisk('r2');
+
+        $this->addMediaCollection('gallery')
+            ->useDisk('r2');
+    }
+
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->width(600)
+            ->height(600)
+            ->sharpen(10)
+            ->nonQueued()
+            ->performOnCollections('gallery');
     }
 
     protected $fillable = [
@@ -38,6 +52,7 @@ class Event extends Model implements HasMedia
         'description',
         'slug',
         'status',
+        'is_visible_in_archives',
         'published_at',
         'start_at',
         'end_at',
@@ -55,7 +70,7 @@ class Event extends Model implements HasMedia
         'stripe_metadata',
     ];
 
-    protected $appends = ['min_price', 'date', 'start_time', 'end_time', 'is_ticketing_open', 'ticketing_status', 'poster_url', 'background_url', 'background_responsive'];
+    protected $appends = ['min_price', 'date', 'start_time', 'end_time', 'is_ticketing_open', 'ticketing_status', 'poster_url', 'background_url', 'background_responsive', 'gallery_urls'];
 
     protected $casts = [
         'start_at' => 'datetime',
@@ -63,6 +78,7 @@ class Event extends Model implements HasMedia
         'faq' => 'array',
         'status' => PublicationStatus::class,
         'published_at' => 'datetime',
+        'is_visible_in_archives' => 'boolean',
         'ticketing_starts_at' => 'datetime',
         'ticketing_ends_at' => 'datetime',
         'stripe_metadata' => 'array',
@@ -85,6 +101,19 @@ class Event extends Model implements HasMedia
             'src' => $media->getUrl(),
             'srcset' => $media->getSrcset(),
         ] : [];
+    }
+
+    public function getGalleryUrlsAttribute(): array
+    {
+        return $this->getMedia('gallery')->map(fn($media) => [
+            'id' => $media->id,
+            'url' => $media->getUrl(),
+            'thumb' => $media->getUrl('thumb'),
+            'responsive' => [
+                'src' => $media->getUrl(),
+                'srcset' => $media->getSrcset(),
+            ],
+        ])->toArray();
     }
 
     protected function ticketingStatus(): Attribute
