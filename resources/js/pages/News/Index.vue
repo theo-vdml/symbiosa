@@ -124,14 +124,14 @@
                         <div class="absolute inset-0 bg-linear-to-t from-black/60 to-transparent"></div>
                         <span v-if="news.category_id"
                             class="absolute left-4 top-4 rounded-full border border-[#51A687]/60 bg-[#51A687]/30 px-3 py-1 text-[10px] font-bold tracking-[0.18em] text-white uppercase backdrop-blur-sm">
-                            {{ props.categories.find((cat) => cat.id === news.category_id)?.name }}
+                            {{props.categories.find((cat) => cat.id === news.category_id)?.name}}
                         </span>
                     </div>
 
                     <!-- Content -->
                     <div class="flex flex-1 flex-col gap-3 p-5">
                         <span class="text-[11px] font-medium text-gray-500 capitalize">{{ formatDate(news.published_at)
-                            }}</span>
+                        }}</span>
                         <h3
                             class="font-chillax text-lg leading-snug text-white transition-colors duration-300 group-hover:text-[#51A687] md:text-xl">
                             {{ news.title }}
@@ -156,13 +156,6 @@
                     Essaie de désélectionner certains filtres.
                 </p>
             </section>
-
-        </main>
-    </div>
-
-    <Footer />
-</template>
-    </section>
 
         </main>
     </div>
