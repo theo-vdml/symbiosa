@@ -118,7 +118,7 @@
                             class="rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm flex flex-col items-center text-center space-y-6 hover:border-[#51A687]/50 transition-colors">
                             <div>
                                 <p class="mb-2 font-chillax text-white uppercase tracking-wider text-sm">{{ option.label
-                                    }}</p>
+                                }}</p>
                                 <a :href="`mailto:${option.email}`"
                                     class="font-synonym text-xl text-[#51A687] hover:underline">{{ option.email }}</a>
                             </div>
