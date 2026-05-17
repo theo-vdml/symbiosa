@@ -4,12 +4,10 @@ namespace App\Traits;
 
 use App\Models\Seo;
 use App\Services\SeoProcessor;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
  * @property Seo $seo
- * @mixin Model
  */
 trait HasSEO
 {

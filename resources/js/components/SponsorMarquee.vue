@@ -37,7 +37,7 @@
             <div ref="content" class="flex items-center shrink-0 gap-20 flex-nowrap" :class="{ 'pr-20': shouldScroll }">
                 <a v-for="(sponsor, index) in sponsors" :key="'s1-' + index" :href="sponsor.website" target="_blank"
                     class="shrink-0 transition-transform duration-300 hover:scale-110 p-2">
-                    <img :src="'/' + sponsor.logo"
+                    <img :src="sponsor.logo_url"
                         class="h-12 w-auto opacity-80 fill-white transition-all duration-300 hover:opacity-100"
                         alt="Sponsor Logo" />
                 </a>
@@ -47,7 +47,7 @@
             <div v-if="shouldScroll" class="flex items-center shrink-0 gap-20 flex-nowrap pr-20" aria-hidden="true">
                 <a v-for="(sponsor, index) in sponsors" :key="'s2-' + index" :href="sponsor.website" target="_blank"
                     class="shrink-0 transition-transform duration-300 hover:scale-110 p-2">
-                    <img :src="'/' + sponsor.logo"
+                    <img :src="sponsor.logo_url"
                         class="h-12 w-auto opacity-80 fill-white transition-all duration-300 hover:opacity-100"
                         alt="Sponsor Logo" />
                 </a>

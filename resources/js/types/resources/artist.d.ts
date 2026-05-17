@@ -1,7 +1,7 @@
 interface Artist {
     id: number;
     name: string;
-    thumbnail: string;
+    portrait_url: string;
     website: string;
     genres?: Genre[];
     biography: string;

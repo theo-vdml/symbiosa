@@ -4,14 +4,32 @@ namespace App\Models;
 
 use App\Enums\PublicationStatus;
 use App\Traits\HasPublication;
-use App\Traits\InteractsWithFiles;
 use App\Traits\HasSEO;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Post extends Model
+class Post extends Model implements HasMedia
 {
-    use HasPublication, InteractsWithFiles, HasSEO;
+    use HasPublication, HasSEO, InteractsWithMedia;
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('cover')
+            ->singleFile()
+            ->withResponsiveImages()
+            ->useDisk('r2');
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumbnail')
+            ->width(600)
+            ->sharpen(10)
+            ->performOnCollections('cover');
+    }
 
     protected $fillable = [
         'category_id',
@@ -19,7 +37,6 @@ class Post extends Model
         'slug',
         'content',
         'excerpt',
-        'thumbnail',
         'status',
         'published_at',
     ];
@@ -29,12 +46,31 @@ class Post extends Model
         'published_at' => 'datetime',
     ];
 
-    public function fileAttributes(): array
+    protected $appends = [
+        'cover_url',
+        'cover_responsive',
+        'thumbnail_url',
+    ];
+
+    public function getCoverUrlAttribute(): ?string
     {
-        return [
-            'thumbnail' => 'public',
-        ];
+        return $this->getFirstMediaUrl('cover');
     }
+
+    public function getCoverResponsiveAttribute(): array
+    {
+        $media = $this->getFirstMedia('cover');
+        return $media ? [
+            'src' => $media->getUrl(),
+            'srcset' => $media->getSrcset(),
+        ] : [];
+    }
+
+    public function getThumbnailUrlAttribute(): ?string
+    {
+        return $this->getFirstMediaUrl('cover', 'thumbnail');
+    }
+
 
     public function category(): BelongsTo
     {
@@ -56,8 +92,7 @@ class Post extends Model
             "description" => ["excerpt", "title"],
             "og_title" => ["title", "slug"],
             "og_description" => ["excerpt", "title"],
-            "og_image" => 'thumbnail',
+            "og_image" => 'cover_url',
         ];
     }
-
 }

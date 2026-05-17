@@ -5,9 +5,9 @@ namespace App\Filament\Resources\Artists\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use TinusG\FilamentHoverImageColumn\HoverImageColumn;
 
 class ArtistsTable
 {
@@ -15,9 +15,9 @@ class ArtistsTable
     {
         return $table
             ->columns([
-                HoverImageColumn::make('thumbnail')
-                    ->label('Photo')
-                    ->disk('public')
+                SpatieMediaLibraryImageColumn::make('portrait')
+                    ->label('Portrait')
+                    ->collection('portrait')
                     ->circular(),
 
                 TextColumn::make('name')

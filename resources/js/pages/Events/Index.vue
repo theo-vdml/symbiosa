@@ -75,12 +75,13 @@
                             <div :class="index % 2 === 0 ? 'md:order-1' : 'md:order-2'" class="flex justify-center">
                                 <div
                                     class="relative aspect-3/4 w-full overflow-hidden rounded-2xl border border-white/10 shadow-2xl md:max-w-md md:rounded-3xl">
-                                    <img v-if="event.poster" :src="event.poster" :alt="event.title"
+                                    <img v-if="event.poster_url" :src="event.poster_url" :alt="event.title"
                                         class="absolute inset-0 h-full w-full object-cover" />
 
                                     <!-- Fallback 1: Background Image (Atmospheric but clear) -->
-                                    <template v-else-if="event.background">
-                                        <img :src="'/' + event.background" :alt="event.title"
+                                    <template v-else-if="event.background_url">
+                                        <img :src="event.background_url" :srcset="event.background_responsive?.srcset"
+                                            sizes="(max-width: 768px) 100vw, 400px" :alt="event.title"
                                             class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 hover:scale-105" />
                                         <div
                                             class="absolute inset-0 bg-linear-to-t from-black/60 via-black/10 to-transparent">

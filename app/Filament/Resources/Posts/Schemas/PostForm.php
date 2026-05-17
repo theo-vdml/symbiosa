@@ -4,9 +4,9 @@ namespace App\Filament\Resources\Posts\Schemas;
 
 use App\Filament\Shared\Actions\PublicationActions;
 use App\Filament\Shared\Schemas\PublicationSchema;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Actions;
@@ -32,16 +32,19 @@ class PostForm
                             ])
 
                             ->schema([
-                                FileUpload::make('thumbnail')
-                                    ->label('Vignette')
+                                SpatieMediaLibraryFileUpload::make('cover')
+                                    ->label('Image de couverture')
+                                    ->collection('cover')
+                                    ->disk('r2')
+                                    ->visibility('public')
                                     ->columnSpanFull()
                                     ->image()
-                                    ->disk('public')
-                                    ->visibility('public')
-                                    ->directory('posts/thumbnails')
+                                    ->imageAspectRatio('16:9')
+                                    ->automaticallyOpenImageEditorForAspectRatio()
+                                    ->automaticallyResizeImagesToWidth('2048')
                                     ->imageEditor()
                                     ->imagePreviewHeight(600)
-                                    ->helperText('Image de couverture de l\'article. Recommandé : 1200x630px.'),
+                                    ->helperText('Image de couverture de l\'article. Recommandé : 16:9, max 2048px de large.'),
 
                                 Select::make('category_id')
                                     ->label('Catégorie')

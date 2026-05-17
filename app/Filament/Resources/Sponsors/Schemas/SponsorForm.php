@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Sponsors\Schemas;
 
-use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
@@ -19,12 +19,15 @@ class SponsorForm
                     ->placeholder('Ex : CocaCola')
                     ->prefixIcon(Heroicon::Briefcase)
                     ->required(),
-                FileUpload::make('logo')
+                SpatieMediaLibraryFileUpload::make('logo')
                     ->label('Logo du sponsor')
-                    ->image()
-                    ->disk('public')
-                    ->directory('sponsors/logos')
+                    ->collection('logo')
+                    ->disk('r2')
                     ->visibility('public')
+                    ->image()
+                    ->automaticallyResizeImagesMode('cover')
+                    ->automaticallyResizeImagesToWidth('800')
+                    ->automaticallyResizeImagesToHeight('800')
                     ->required(),
                 TextInput::make('website')
                     ->label('Site web')

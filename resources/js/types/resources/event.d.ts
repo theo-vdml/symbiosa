@@ -24,8 +24,9 @@ interface Event {
     minimum_age: number;
     description: string;
     body: string;
-    background: string;
-    poster: string;
+    background_url: string;
+    background_responsive?: { src: string, srcset: string };
+    poster_url: string;
     ticketing_starts_at: string | null;
     ticketing_ends_at: string | null;
     ticket_email_content: string | null;

@@ -5,10 +5,10 @@ namespace App\Filament\Resources\Events\Schemas;
 use App\Models\Sponsor;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
@@ -247,20 +247,26 @@ class EventForm
                 ->schema([
                     Grid::make(2)
                         ->schema([
-                            FileUpload::make('poster')
+                            SpatieMediaLibraryFileUpload::make('poster')
                                 ->label('Poster')
-                                ->image()
-                                ->directory('events/posters')
-                                ->disk('public')
+                                ->collection('poster')
+                                ->disk('r2')
                                 ->visibility('public')
+                                ->image()
+                                ->imageAspectRatio('3:4')
+                                ->automaticallyOpenImageEditorForAspectRatio()
+                                ->automaticallyResizeImagesToWidth('1080')
                                 ->imageEditor(),
 
-                            FileUpload::make('background')
+                            SpatieMediaLibraryFileUpload::make('background')
                                 ->label('Background')
-                                ->image()
-                                ->directory('events/backgrounds')
-                                ->disk('public')
+                                ->collection('background')
+                                ->disk('r2')
                                 ->visibility('public')
+                                ->image()
+                                ->imageAspectRatio('16:9')
+                                ->automaticallyOpenImageEditorForAspectRatio()
+                                ->automaticallyResizeImagesToWidth('2048')
                                 ->imageEditor(),
                         ]),
                 ])
@@ -330,12 +336,14 @@ class EventForm
                                     TextInput::make('name')
                                         ->label('Nom du sponsor')
                                         ->required(),
-                                    FileUpload::make('logo')
+                                    SpatieMediaLibraryFileUpload::make('logo')
                                         ->label('Logo du sponsor')
-                                        ->image()
-                                        ->disk('public')
+                                        ->collection('logo')
+                                        ->disk('r2')
                                         ->visibility('public')
-                                        ->directory('sponsors/logos')
+                                        ->image()
+                                        ->automaticallyResizeImagesMode('cover')
+                                        ->automaticallyResizeImagesToWidth('800')
                                         ->required(),
                                     TextInput::make('website')
                                         ->label('Site web')
@@ -350,12 +358,14 @@ class EventForm
                                     TextInput::make('name')
                                         ->label('Nom du sponsor')
                                         ->required(),
-                                    FileUpload::make('logo')
+                                    SpatieMediaLibraryFileUpload::make('logo')
                                         ->label('Logo du sponsor')
-                                        ->image()
-                                        ->disk('public')
+                                        ->collection('logo')
+                                        ->disk('r2')
                                         ->visibility('public')
-                                        ->directory('sponsors/logos')
+                                        ->image()
+                                        ->automaticallyResizeImagesMode('cover')
+                                        ->automaticallyResizeImagesToWidth('800')
                                         ->required(),
                                     TextInput::make('website')
                                         ->label('Site web')
@@ -457,12 +467,13 @@ class EventForm
             TextInput::make('name')
                 ->label('Nom de l\'artiste')
                 ->required(),
-            FileUpload::make('thumbnail')
-                ->label('Photo de l\'artiste')
-                ->image()
-                ->disk('public')
+            SpatieMediaLibraryFileUpload::make('portrait')
+                ->label('Portrait de l\'artiste')
+                ->collection('portrait')
+                ->disk('r2')
                 ->visibility('public')
-                ->directory('artists/thumbnails')
+                ->image()
+                ->automaticallyResizeImagesToWidth('1080')
                 ->required(),
             TextInput::make('website')
                 ->label('Site web / Instagram')

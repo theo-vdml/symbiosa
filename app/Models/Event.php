@@ -2,22 +2,36 @@
 
 namespace App\Models;
 
-use App\Traits\HasSEO;
-use App\Traits\InteractsWithFiles;
 use App\Enums\PublicationStatus;
 use App\Traits\HasPublication;
+use App\Traits\HasSEO;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 /**
  * @property array<int, array{question: string, answer: string}> $faq
  */
-class Event extends Model
+class Event extends Model implements HasMedia
 {
-    use InteractsWithFiles;
     use HasPublication;
     use HasSEO;
+    use InteractsWithMedia;
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('poster')
+            ->singleFile()
+            ->withResponsiveImages()
+            ->useDisk('r2');
+
+        $this->addMediaCollection('background')
+            ->singleFile()
+            ->withResponsiveImages()
+            ->useDisk('r2');
+    }
 
     protected $fillable = [
         'title',
@@ -32,8 +46,6 @@ class Event extends Model
         'address',
         'body',
         'faq',
-        'poster',
-        'background',
         'minimum_age',
         'dress_code',
         'ticketing_starts_at',
@@ -43,7 +55,7 @@ class Event extends Model
         'stripe_metadata',
     ];
 
-    protected $appends = ['min_price', 'date', 'start_time', 'end_time', 'is_ticketing_open', 'ticketing_status'];
+    protected $appends = ['min_price', 'date', 'start_time', 'end_time', 'is_ticketing_open', 'ticketing_status', 'poster_url', 'background_url', 'background_responsive'];
 
     protected $casts = [
         'start_at' => 'datetime',
@@ -55,6 +67,25 @@ class Event extends Model
         'ticketing_ends_at' => 'datetime',
         'stripe_metadata' => 'array',
     ];
+
+    public function getPosterUrlAttribute(): ?string
+    {
+        return $this->getFirstMediaUrl('poster');
+    }
+
+    public function getBackgroundUrlAttribute(): ?string
+    {
+        return $this->getFirstMediaUrl('background');
+    }
+
+    public function getBackgroundResponsiveAttribute(): array
+    {
+        $media = $this->getFirstMedia('background');
+        return $media ? [
+            'src' => $media->getUrl(),
+            'srcset' => $media->getSrcset(),
+        ] : [];
+    }
 
     protected function ticketingStatus(): Attribute
     {
@@ -199,7 +230,7 @@ class Event extends Model
             "description" => ["description", "title"],
             "og_title" => ["title", "slug"],
             "og_description" => ["description", "title"],
-            "og_image" => 'background',
+            "og_image" => 'background_url',
         ];
     }
 }

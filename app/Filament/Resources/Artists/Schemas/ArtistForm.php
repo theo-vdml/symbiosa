@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Artists\Schemas;
 
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Group;
@@ -55,12 +55,14 @@ class ArtistForm
                     ->description('Ajoutez une photo de l\'artiste pour une meilleure présentation.')
                     ->schema([
 
-                        FileUpload::make('thumbnail')
-                            ->label('Photo de l\'artiste')
-                            ->image()
-                            ->disk('public')
+                        SpatieMediaLibraryFileUpload::make('portrait')
+                            ->label('Portrait de l\'artiste')
+                            ->collection('portrait')
+                            ->disk('r2')
                             ->visibility('public')
-                            ->directory('artists/thumbnails')
+                            ->image()
+                            ->automaticallyResizeImagesMode('cover')
+                            ->automaticallyResizeImagesToWidth('1080')
                             ->nullable(),
 
                     ]),
