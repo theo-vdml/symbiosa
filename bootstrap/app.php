@@ -13,9 +13,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->validateCsrfTokens(except: [
+        $middleware->preventRequestForgery(except: [
             '/webhooks/stripe',
         ]);
+
+        $middleware->trustProxies(at: '*');
 
         $middleware->web(append: [
             HandleInertiaRequests::class,
