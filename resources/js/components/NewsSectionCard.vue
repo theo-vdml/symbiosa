@@ -60,7 +60,7 @@
     <Link :href="newsRoute.show.url(post.slug)" :class="cardClasses">
         <!-- Image Container -->
         <div :class="imageContainerClasses">
-            <img :src="post.thumbnail" :alt="post.title" :class="imageClasses" />
+            <img :src="post.thumbnail_url" :alt="post.title" :class="imageClasses" />
             <div class="absolute inset-0 bg-linear-to-t from-black/60 to-transparent"></div>
             <span :class="badgeClasses">
                 {{ post.category?.name || 'Sans catégorie' }}

@@ -7,8 +7,8 @@
 <div class="w-full">
     @if ($artist)
         <div class="relative overflow-hidden group bg-[#052519] transition-all duration-500 rounded-tl-[2rem] rounded-br-[2rem] h-48 shadow-lg">
-            @if($artist->thumbnail)
-                <img src="{{ asset('storage/' . $artist->thumbnail) }}" alt="{{ $artist->name }}"
+            @if($artist->portrait_url)
+                <img src="{{ $artist->portrait_url }}" alt="{{ $artist->name }}"
                     class="absolute inset-0 h-full w-full object-cover opacity-80" />
             @endif
 

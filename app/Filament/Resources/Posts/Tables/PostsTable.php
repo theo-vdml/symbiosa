@@ -7,11 +7,10 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use TinusG\FilamentHoverImageColumn\HoverImageColumn;
 
 class PostsTable
 {
@@ -19,9 +18,9 @@ class PostsTable
     {
         return $table
             ->columns([
-                HoverImageColumn::make('thumbnail')
+                SpatieMediaLibraryImageColumn::make('cover')
                     ->label('Vignette')
-                    ->disk('public')
+                    ->collection('cover')
                     ->square(),
                 TextColumn::make('title')
                     ->label('Titre')

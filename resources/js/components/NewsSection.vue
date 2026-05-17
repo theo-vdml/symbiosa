@@ -11,7 +11,9 @@
         title: string;
         slug: string;
         excerpt: string;
-        thumbnail: string;
+        cover_url: string;
+        cover_responsive?: { src: string, srcset: string };
+        thumbnail_url: string;
         published_at: string;
         category?: { id: number; name: string };
     }

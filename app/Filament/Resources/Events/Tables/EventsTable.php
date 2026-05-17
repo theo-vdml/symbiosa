@@ -6,10 +6,10 @@ use App\Enums\PublicationStatus;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use TinusG\FilamentHoverImageColumn\HoverImageColumn;
 
 class EventsTable
 {
@@ -17,8 +17,8 @@ class EventsTable
     {
         return $table
             ->columns([
-                HoverImageColumn::make('poster')
-                    ->disk('public')
+                SpatieMediaLibraryImageColumn::make('poster')
+                    ->collection('poster')
                     ->label('Affiche')
                     ->square(),
 

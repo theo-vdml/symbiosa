@@ -15,7 +15,7 @@ Route::get('/events/{slug}', [\App\Http\Controllers\EventController::class, 'sho
 Route::get('/events/{slug}/ticketing', [\App\Http\Controllers\EventController::class, 'ticketing'])
     ->name('events.ticketing');
 
-Route::inertia('/archives', 'Archives')->name('archives');
+Route::get('/archives', [\App\Http\Controllers\ArchiveController::class, 'index'])->name('archives');
 
 Route::get('/about', \App\Http\Controllers\AboutController::class)->name('about');
 Route::get('/contact', \App\Http\Controllers\ContactController::class)->name('contact');

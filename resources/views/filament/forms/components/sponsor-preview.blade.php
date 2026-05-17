@@ -9,8 +9,8 @@
         class="w-full h-32 flex items-center justify-center rounded-xl bg-gray-800 border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm">
         @if ($sponsor)
             {{-- Logo affiché sur fond neutre --}}
-            @if ($sponsor->logo)
-                <img src="{{ asset('storage/' . $sponsor->logo) }}" alt="Logo"
+            @if ($sponsor->logo_url)
+                <img src="{{ $sponsor->logo_url }}" alt="Logo"
                     class="h-24 w-auto max-w-[90%] object-contain drop-shadow-sm">
             @else
                 <div class="flex flex-col items-center gap-1 opacity-20">

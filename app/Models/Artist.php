@@ -4,14 +4,34 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Artist extends Model
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+
+class Artist extends Model implements HasMedia
 {
+    use InteractsWithMedia;
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('portrait')
+            ->singleFile()
+            ->useDisk('r2');
+    }
+
     protected $fillable = [
         'name',
-        'thumbnail',
         'website',
         'biography',
     ];
+
+    protected $appends = [
+        'portrait_url',
+    ];
+
+    public function getPortraitUrlAttribute(): ?string
+    {
+        return $this->getFirstMediaUrl('portrait');
+    }
 
     public function events()
     {

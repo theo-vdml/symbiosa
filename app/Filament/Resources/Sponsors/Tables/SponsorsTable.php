@@ -5,9 +5,9 @@ namespace App\Filament\Resources\Sponsors\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use TinusG\FilamentHoverImageColumn\HoverImageColumn;
 
 class SponsorsTable
 {
@@ -17,9 +17,9 @@ class SponsorsTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                HoverImageColumn::make('logo')
+                SpatieMediaLibraryImageColumn::make('logo')
                     ->label('Logo')
-                    ->disk('public'),
+                    ->collection('logo'),
                 TextColumn::make('website')
                     ->searchable(),
             ])

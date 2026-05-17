@@ -29,11 +29,8 @@ class TicketPdfService
 
         $backgroundImage = null;
 
-        if ($event->background) {
-            $path = \Illuminate\Support\Facades\Storage::disk('public')->path($event->background);
-            if (file_exists($path)) {
-                $backgroundImage = $path;
-            }
+        if ($event->hasMedia('background')) {
+            $backgroundImage = $event->getFirstMediaUrl('background');
         }
 
         return Pdf::loadView('pdfs.ticket', [

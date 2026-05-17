@@ -12,7 +12,8 @@
             status: string
             content: string
             excerpt: string
-            thumbnail: string
+            cover_url: string
+            thumbnail_url: string
             created_at: string
             updated_at: string
             published_at: string
@@ -118,7 +119,7 @@
                     class="group relative flex flex-col overflow-hidden rounded-2xl border border-white/8 bg-white/2 transition-all duration-300 hover:border-white/18 hover:bg-white/5 hover:shadow-[0_0_40px_rgba(200,10,69,0.1)]">
                     <!-- Image -->
                     <div class="relative aspect-16/10 overflow-hidden">
-                        <img :src="news.thumbnail" :alt="news.title"
+                        <img :src="news.thumbnail_url" :alt="news.title"
                             class="h-full w-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110" />
                         <div class="absolute inset-0 bg-linear-to-t from-black/60 to-transparent"></div>
                         <span v-if="news.category_id"
@@ -155,6 +156,13 @@
                     Essaie de désélectionner certains filtres.
                 </p>
             </section>
+
+        </main>
+    </div>
+
+    <Footer />
+</template>
+    </section>
 
         </main>
     </div>

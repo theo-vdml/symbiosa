@@ -26,7 +26,8 @@
         <!-- --- LAYER 0: SMART BACKGROUND --- -->
         <div class="absolute inset-0 z-0">
             <!-- Priority 1: Event Background -->
-            <img v-if="event.background" :src="'/' + event.background" class="h-full w-full object-cover" alt="" />
+            <img v-if="event.background_url" :src="event.background_url" :srcset="event.background_responsive?.srcset"
+                sizes="(max-width: 768px) 200vw, 100vw" class="h-full w-full object-cover" alt="" />
 
             <!-- Priority 2: Branded Deep Gradient -->
             <template v-else>
@@ -45,14 +46,15 @@
         <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 w-full">
             <div :class="[
                 'flex flex-col items-center gap-16 lg:gap-32 text-center',
-                event.poster ? 'lg:flex-row' : ''
+                event.poster_url ? 'lg:flex-row' : ''
             ]">
                 <!-- Left: The Poster (Optional) -->
-                <div v-if="event.poster" class="w-full lg:w-4/12 xl:w-5/12 shrink-0 flex justify-center">
+                <div v-if="event.poster_url" class="w-full lg:w-4/12 xl:w-5/12 shrink-0 flex justify-center">
                     <div class="relative group w-full max-w-sm lg:max-w-none">
                         <div
                             class="relative z-10 w-full aspect-3/4 overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
-                            <img :src="event.poster" :alt="event.title" class="h-full w-full object-cover" />
+                            <img :src="event.poster_url" :alt="event.title"
+                                class="h-full w-full object-cover" />
                         </div>
                     </div>
                 </div>
@@ -60,7 +62,7 @@
                 <!-- Right: The Content -->
                 <div :class="[
                     'w-full space-y-10 flex flex-col items-center',
-                    event.poster ? 'lg:w-7/12' : 'max-w-4xl mx-auto'
+                    event.poster_url ? 'lg:w-7/12' : 'max-w-4xl mx-auto'
                 ]">
                     <div class="space-y-6 flex flex-col items-center w-full">
                         <!-- Header: City & Date -->
@@ -75,7 +77,7 @@
 
                         <h2 :class="[
                             'font-chillax text-white leading-[0.85] tracking-tight uppercase',
-                            event.poster ? 'text-6xl md:text-8xl' : 'text-7xl md:text-9xl'
+                            event.poster_url ? 'text-6xl md:text-8xl' : 'text-7xl md:text-9xl'
                         ]">
                             {{ event.title }}
                         </h2>

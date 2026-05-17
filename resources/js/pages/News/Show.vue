@@ -12,7 +12,10 @@
             status: string
             content: string
             excerpt: string
-            thumbnail: string
+            cover_url: string
+            cover_responsive: {
+                srcset: string
+            } | null
             created_at: string
             updated_at: string
             published_at: string
@@ -47,10 +50,12 @@
 
         <!-- Hero Section -->
         <section class="relative h-[45vh] w-full overflow-hidden md:h-[65vh]">
-            <img :src="`/storage/${post.thumbnail}`" :alt="post.title"
+            <img :src="post.cover_url" :srcset="post.cover_responsive?.srcset"
+                sizes="(max-width: 768px) 200vw, 100vw" :alt="post.title"
                 class="h-full w-full object-cover transition-transform duration-1000" />
             <div class="absolute inset-0 bg-linear-to-t from-black via-transparent to-black/20"></div>
         </section>
+
 
         <main class="relative z-10 mx-auto max-w-6xl px-6 pb-24 pt-16 md:px-10 lg:px-14">
             <section class="mx-auto mb-10 max-w-4xl space-y-5 text-center md:text-left">
