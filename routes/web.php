@@ -45,11 +45,13 @@ Route::get('/checkout/{checkout:uuid}/cancel', [\App\Http\Controllers\CheckoutCo
     ->name('checkout.cancel_payment');
 
 Route::get('/checkin/{token}', [\App\Http\Controllers\CheckinController::class, 'publicShow'])->name('checkin.public');
+Route::get('/checkin/{token}/search', [\App\Http\Controllers\CheckinController::class, 'publicSearch'])->name('checkin.public_search');
 Route::post('/checkin/{token}/auth', [\App\Http\Controllers\CheckinController::class, 'authenticate'])->name('checkin.authenticate');
 Route::post('/checkin/{token}/scan', [\App\Http\Controllers\CheckinController::class, 'publicScan'])->name('checkin.public_scan');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/checkin/list/{checkinList}', [\App\Http\Controllers\CheckinController::class, 'show'])->name('checkin.show');
+    Route::get('/checkin/list/{checkinList}/search', [\App\Http\Controllers\CheckinController::class, 'search'])->name('checkin.search');
     Route::post('/checkin/list/{checkinList}/scan', [\App\Http\Controllers\CheckinController::class, 'scan'])->name('checkin.scan');
 });
 

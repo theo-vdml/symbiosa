@@ -51,26 +51,11 @@ class CheckinController extends Controller
     {
         $checkinList->load(['event']);
 
-        $query = $this->getTicketsQuery($checkinList)
-            ->with(['reservable', 'checkout', 'ticketPrice']);
-
-        $tickets = $query->get()->map(function ($ticket) {
-            return [
-                'id' => $ticket->id,
-                'public_id' => $ticket->public_id,
-                'buyer_name' => $ticket->checkout?->customer_name,
-                'buyer_email' => $ticket->checkout?->customer_email,
-                'reservable_name' => $ticket->reservable?->name,
-                'reservable_id' => $ticket->reservable_id,
-                'reservable_type' => str_replace('App\\Models\\', '', $ticket->reservable_type),
-                'price_name' => $ticket->ticketPrice?->name,
-                'checked_in_at' => $ticket->checked_in_at?->toIso8601String(),
-            ];
-        });
+        $query = $this->getTicketsQuery($checkinList);
 
         $stats = [
-            'total' => $tickets->count(),
-            'scanned' => $tickets->whereNotNull('checked_in_at')->count(),
+            'total' => $query->count(),
+            'scanned' => (clone $query)->whereNotNull('checked_in_at')->count(),
         ];
 
         return Inertia::render('Checkin/Index', [
@@ -80,7 +65,6 @@ class CheckinController extends Controller
                 'event_title' => $checkinList->event->title,
                 'public_url_token' => $checkinList->public_url_token,
             ],
-            'tickets' => $tickets,
             'stats' => $stats,
             'isPublic' => $isPublic,
             'scan_result' => session('scan_result'),
@@ -91,10 +75,66 @@ class CheckinController extends Controller
         ]);
     }
 
+    public function search(Request $request, CheckinList $checkinList)
+    {
+        $query = $request->input('q');
+
+        if (!$query || strlen($query) < 2) {
+            return response()->json([]);
+        }
+
+        $tickets = $this->getTicketsQuery($checkinList)
+            ->with(['reservable', 'checkout', 'ticketPrice'])
+            ->where(function ($q) use ($query) {
+                $q->whereHas('checkout', function ($sub) use ($query) {
+                    $sub->where('customer_name', 'like', "%{$query}%")
+                        ->orWhere('customer_email', 'like', "%{$query}%");
+                })->orWhere('public_id', 'like', "%{$query}%");
+            })
+            ->limit(50)
+            ->get()
+            ->map(function ($ticket) {
+                return [
+                    'id' => $ticket->id,
+                    'public_id' => $ticket->public_id,
+                    'buyer_name' => $ticket->checkout?->customer_name,
+                    'buyer_email' => $ticket->checkout?->customer_email,
+                    'reservable_name' => $ticket->reservable?->name,
+                    'reservable_id' => $ticket->reservable_id,
+                    'reservable_type' => str_replace('App\\Models\\', '', $ticket->reservable_type),
+                    'price_name' => $ticket->ticketPrice?->name,
+                    'checked_in_at' => $ticket->checked_in_at?->toIso8601String(),
+                ];
+            });
+
+        return response()->json($tickets);
+    }
+
+    public function publicSearch(Request $request, $token)
+    {
+        $checkinList = CheckinList::where('public_url_token', $token)->firstOrFail();
+
+        if ($checkinList->public_url_password && !session("checkin_auth_{$checkinList->id}")) {
+            return response()->json(['success' => false, 'message' => 'Non autorisé'], 401);
+        }
+
+        return $this->search($request, $checkinList);
+    }
+
     public function getTicketStatus(IssuedTicket $issuedTicket)
     {
+        $issuedTicket->load(['reservable', 'checkout', 'ticketPrice']);
+        
         return response()->json([
-            'checked_in_at' => $issuedTicket->checked_in_at,
+            'id' => $issuedTicket->id,
+            'public_id' => $issuedTicket->public_id,
+            'buyer_name' => $issuedTicket->checkout?->customer_name,
+            'buyer_email' => $issuedTicket->checkout?->customer_email,
+            'reservable_name' => $issuedTicket->reservable?->name,
+            'reservable_id' => $issuedTicket->reservable_id,
+            'reservable_type' => str_replace('App\\Models\\', '', $issuedTicket->reservable_type),
+            'price_name' => $issuedTicket->ticketPrice?->name,
+            'checked_in_at' => $issuedTicket->checked_in_at?->toIso8601String(),
         ]);
     }
 
@@ -110,23 +150,9 @@ class CheckinController extends Controller
         }
 
         if ($request->header('X-Inertia')) {
-            $ticketData = [
-                'id' => $issuedTicket->id,
-                'public_id' => $issuedTicket->public_id,
-                'buyer_name' => $issuedTicket->checkout?->customer_name,
-                'buyer_email' => $issuedTicket->checkout?->customer_email,
-                'reservable_name' => $issuedTicket->reservable?->name,
-                'reservable_id' => $issuedTicket->reservable_id,
-                'reservable_type' => str_replace('App\\Models\\', '', $issuedTicket->reservable_type),
-                'checked_in_at' => $issuedTicket->checked_in_at,
-            ];
-
-            // We don't have the CheckinList here easily without a bit more logic or passing it in the request.
-            // But usually, toggle is called from the search list or result card.
-            // Let's just return a success result.
             return back()->with('scan_result', [
                 'success' => true,
-                'status' => $issuedTicket->checked_in_at ? 'success' : 'unauthorized', // unauthorized used here as a placeholder for "cancelled"
+                'status' => $issuedTicket->checked_in_at ? 'success' : 'cancelled_checkin',
                 'message' => $issuedTicket->checked_in_at ? 'Billet validé' : 'Validation annulée',
                 'ticket' => [
                     'id' => $issuedTicket->id,
