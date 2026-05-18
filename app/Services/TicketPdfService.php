@@ -6,6 +6,7 @@ use App\Models\Event;
 use App\Models\IssuedTicket;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Support\Facades\Log;
 
 class TicketPdfService
 {
@@ -29,9 +30,11 @@ class TicketPdfService
 
         $backgroundImage = null;
 
-        if ($event->hasMedia('background')) {
-            $backgroundImage = $event->getFirstMediaUrl('background');
+        if ($event->background_url) {
+            $backgroundImage = $event->background_url;
         }
+
+        Log::info('Bg: ' . ($backgroundImage ?? 'none'));
 
         return Pdf::loadView('pdfs.ticket', [
             'tickets'  => $tickets,
