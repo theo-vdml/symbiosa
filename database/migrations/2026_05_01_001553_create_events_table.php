@@ -24,10 +24,9 @@ return new class extends Migration
             $table->integer('minimum_age')->nullable();
             $table->text('description');
             $table->text('body')->nullable();
-            $table->string('background')->nullable();
-            $table->string('poster')->nullable();
             $table->json('faq')->nullable();
             $table->string('status')->default('draft');
+            $table->boolean('is_visible_in_archives')->default(false);
             $table->timestamp('published_at')->nullable();
 
             $table->timestamp('ticketing_starts_at')->nullable();

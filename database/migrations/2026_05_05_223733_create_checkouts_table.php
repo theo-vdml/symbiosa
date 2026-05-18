@@ -15,10 +15,13 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->uuid('uuid')->unique();
-            $table->foreignId('event_id')->constrained();
+            $table->foreignId('event_id')->constrained()->cascadeOnDelete();
             $table->string('customer_email')->index()->nullable();
             $table->string('customer_name')->nullable();
             $table->string('stripe_session_id')->nullable();
+            $table->string('stripe_payment_intent_id')->nullable();
+            $table->string('stripe_customer_id')->nullable();
+            $table->json('accepted_legal_pages')->nullable();
             $table->timestamp('expires_at')->index();
             $table->timestamp('completed_at')->nullable();
             $table->timestamp('cancelled_at')->nullable();
