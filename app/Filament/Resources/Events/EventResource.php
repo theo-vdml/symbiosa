@@ -19,6 +19,7 @@ use App\Filament\Resources\Events\Pages\EditEventVisuals;
 use App\Filament\Resources\Events\Pages\ListEventCheckouts;
 use App\Filament\Resources\Events\Pages\ListEventIssuedTickets;
 use App\Filament\Resources\Events\Pages\ListEvents;
+use App\Filament\Resources\Events\Pages\EventDashboard;
 use App\Filament\Resources\Events\Schemas\EventForm;
 use App\Filament\Resources\Events\Schemas\EventInfolist;
 use App\Filament\Resources\Events\Tables\EventsTable;
@@ -73,6 +74,7 @@ class EventResource extends Resource
     public static function getPages(): array
     {
         return [
+            'dashboard' => EventDashboard::route('/{record}'),
             'index' => ListEvents::route('/'),
             'create' => CreateEvent::route('/create'),
             'edit' => EditEvent::route('/{record}/edit'),
@@ -95,6 +97,7 @@ class EventResource extends Resource
     public static function getRecordSubNavigation(Page $page): array
     {
         return $page->generateNavigationItems([
+            EventDashboard::class,
             EditEvent::class,
             EditEventDetails::class,
             EditEventCopywritting::class,
