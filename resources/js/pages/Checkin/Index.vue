@@ -5,7 +5,9 @@
         Search, X, Check, ChevronRight, Loader2, History, User, AlertCircle,
         CheckCircle2, XCircle, Scan, List, Clock, UserCheck, Ticket,
         Info,
-        TicketSlash
+        TicketCheck,
+        PackageCheck,
+        Package
     } from '@lucide/vue';
     import { Html5Qrcode } from "html5-qrcode";
 
@@ -144,7 +146,7 @@
             case 'success': return 'bg-green-500';
             case 'already_scanned': return 'bg-amber-500';
             case 'invalid': return 'bg-red-500';
-            default: return 'bg-zinc-500';
+            default: return 'bg-neutral-500';
         }
     };
 
@@ -174,127 +176,164 @@
 </script>
 
 <template>
-    <div class="fixed inset-0 bg-white text-zinc-900 font-sans antialiased overflow-hidden flex flex-col">
-        <!-- HEADER : Larger, with Integrated Progress -->
-        <header class="safe-top bg-white border-b border-zinc-100 z-50">
-            <div class="px-6 py-6 flex flex-col gap-4">
-                <div class="flex items-center justify-between gap-4">
-                    <div class="min-w-0">
-                        <p class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-0.5 truncate">{{
-                            props.checkinList.event_title }}</p>
-                        <h1 class="font-chillax text-2xl font-black truncate leading-tight">{{ props.checkinList.name }}
-                        </h1>
-                    </div>
-                    <div class="shrink-0 text-right">
-                        <span class="text-3xl font-black tabular-nums tracking-tighter">{{ scanPercentage }}%</span>
-                    </div>
+    <div class="fixed inset-0 bg-white text-neutral-900 font-sans antialiased overflow-hidden flex flex-col">
+        <!-- HEADER : Minimalist Dashboard with Circular Progress -->
+        <header class="safe-top bg-white border-b border-neutral-100 z-50 shadow-2xl">
+            <div class="px-6 py-6 flex items-center justify-between gap-6">
+                <div class="min-w-0 flex-1">
+                    <p class="text-lg font-black uppercase tracking-widest text-neutral-500">
+                        {{ props.checkinList.event_title }}
+                    </p>
+                    <h1 class="font-chillax text-2xl font-medium text-neutral-900 leading-tight truncate">
+                        {{ props.checkinList.name }}
+                    </h1>
                 </div>
 
-                <!-- Progress Bar Integrated in Header -->
-                <div class="flex flex-col gap-2">
-                    <div class="h-3 bg-zinc-50 rounded-full overflow-hidden border border-zinc-100/50">
-                        <div class="h-full bg-zinc-900 transition-all duration-1000 ease-out"
-                            :style="{ width: `${scanPercentage}%` }"></div>
-                    </div>
-                    <div
-                        class="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-zinc-400">
-                        <span>{{ localStats.scanned }} Validés</span>
-                        <span>Total: {{ localStats.total }}</span>
+                <!-- Circular Progress Indicator -->
+                <div class="relative w-20 h-20 shrink-0">
+                    <svg class="w-full h-full -rotate-90 transform" viewBox="0 0 36 36">
+                        <!-- Background Circle -->
+                        <circle cx="18" cy="18" r="16" fill="none" class="stroke-neutral-50" stroke-width="3.5">
+                        </circle>
+                        <!-- Progress Circle -->
+                        <circle cx="18" cy="18" r="16" fill="none"
+                            class="stroke-neutral-900 transition-all duration-1000 ease-out" stroke-width="3.5"
+                            stroke-dasharray="101" :stroke-dashoffset="101 - (scanPercentage || 0)"
+                            stroke-linecap="round"></circle>
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="text-xl font-black text-neutral-900 leading-none">{{ scanPercentage }}%</span>
                     </div>
                 </div>
             </div>
         </header>
 
         <!-- Main Content Area -->
-        <main class="flex-1 relative overflow-hidden bg-neutral-600">
-            <!-- Scanner Tab : Completely raw camera -->
+        <main class="flex-1 relative overflow-hidden bg-black">
+            <!-- Scanner Tab -->
             <div v-show="activeTab === 'scan'" class="absolute inset-0 flex flex-col bg-black">
                 <div id="reader" class="flex-1"></div>
             </div>
 
             <!-- History Tab -->
-            <div v-show="activeTab === 'history'" class="absolute inset-0 flex flex-col p-6 overflow-y-auto pt-safe">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="font-chillax text-2xl font-black">Historique</h2>
-                    <button @click="sessionHistory = []"
-                        class="text-[10px] font-black uppercase tracking-widest text-zinc-400">Effacer</button>
+            <div v-show="activeTab === 'history'"
+                class="absolute inset-0 flex flex-col p-6 overflow-y-auto bg-zinc-950">
+                <!-- Header Section -->
+                <div class="flex items-center justify-between mb-8">
+                    <div class="flex items-baseline gap-3">
+                        <h2 class="font-chillax text-3xl font-medium text-white">Historique</h2>
+                        <span v-if="sessionHistory.length > 0"
+                            class="text-xs font-black px-2 py-0.5 rounded-md bg-zinc-800 text-zinc-400">
+                            {{ sessionHistory.length }}
+                        </span>
+                    </div>
+                    <button v-if="sessionHistory.length > 0" @click="sessionHistory = []"
+                        class="text-xs font-bold uppercase tracking-widest text-zinc-400 hover:text-amber-500 bg-zinc-900 hover:bg-zinc-900/50 px-4 py-2 rounded-xl border border-zinc-800/80 transition-all active:scale-95">
+                        Effacer
+                    </button>
                 </div>
-                <div class="space-y-2">
+
+                <!-- History List -->
+                <div class="space-y-3">
                     <div v-for="item in sessionHistory" :key="item.id + item.scan_timestamp"
                         @click="openTicketDetails(item)"
-                        class="bg-white border border-zinc-200/50 rounded-2xl p-4 flex items-center gap-4 active:scale-95 transition-all shadow-sm">
+                        class="bg-zinc-900/40 hover:bg-zinc-900 border border-zinc-800/60 rounded-2xl p-4 flex items-center gap-4 active:scale-[0.99] transition-all shadow-lg backdrop-blur-sm group cursor-pointer">
+
+                        <!-- Status Icon Container -->
                         <div
-                            :class="[getStatusColor(item.scan_status), 'shrink-0 w-10 h-10 rounded-xl text-white flex items-center justify-center']">
-                            <component :is="getStatusIcon(item.scan_status)" :size="20" />
+                            :class="[getStatusColor(item.scan_status), 'shrink-0 w-12 h-12 rounded-xl text-white flex items-center justify-center shadow-lg transition-transform group-hover:scale-105']">
+                            <component :is="getStatusIcon(item.scan_status)" :size="22" stroke-width="2.5" />
                         </div>
+
+                        <!-- Content -->
                         <div class="flex-1 min-w-0">
-                            <h4 class="font-bold truncate text-sm leading-tight">{{ item.buyer_name }}</h4>
-                            <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-tight mt-0.5">
-                                {{ item.reservable_name }} <span class="mx-1">•</span> {{ new
-                                    Date(item.scan_timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                                }}
+                            <div class="flex items-center justify-between gap-2 mb-1">
+                                <h4 class="font-black text-white text-base truncate leading-snug">
+                                    {{ item.buyer_name }}
+                                </h4>
+                                <span class="shrink-0 font-mono text-xs font-bold text-zinc-500">
+                                    {{ new Date(item.scan_timestamp).toLocaleTimeString([], {
+                                        hour: '2-digit', minute:
+                                            '2-digit'
+                                    }) }}
+                                </span>
+                            </div>
+                            <p class="text-xs text-zinc-400 font-medium truncate flex items-center gap-1.5">
+                                <span class="inline-block w-1.5 h-1.5 rounded-full bg-zinc-700"></span>
+                                {{ item.reservable_name }}
                             </p>
                         </div>
                     </div>
-                    <div v-if="sessionHistory.length === 0" class="py-20 text-center text-zinc-300">
-                        <Clock class="mx-auto mb-4 opacity-10" :size="48" />
-                        <p class="font-black uppercase text-xs tracking-widest">Aucun scan récent</p>
+
+                    <!-- Empty State -->
+                    <div v-if="sessionHistory.length === 0"
+                        class="py-24 text-center flex flex-col items-center justify-center">
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-4 shadow-inner">
+                            <Clock class="text-zinc-600 opacity-60" :size="28" />
+                        </div>
+                        <p class="font-black uppercase text-xs tracking-widest text-zinc-500 mb-1">Aucun scan récent</p>
+                        <p class="text-sm text-zinc-600 max-w-[200px] mx-auto">Les billets scannés durant cette session
+                            apparaîtront ici.</p>
                     </div>
                 </div>
             </div>
 
             <!-- Search Tab : Redesigned List with Floating Bottom Input -->
             <div v-show="activeTab === 'search'" class="absolute inset-0 flex flex-col overflow-hidden">
-                <div class="flex-1 overflow-y-auto space-y-4 p-6 pb-64 custom-scrollbar">
+                <div class="flex-1 overflow-y-auto p-0 pb-64 custom-scrollbar bg-black">
                     <div v-for="ticket in filteredTickets" :key="ticket.id" @click="openTicketDetails(ticket)"
-                        class="bg-white border-2 border-zinc-900 rounded-[2.5rem] p-8 flex flex-col gap-6 active:scale-[0.98] transition-all shadow-xl">
-                        <!-- Badge ID & Category -->
-                        <div class="flex items-center justify-between">
-                            <span :class="[
-                                ticket.reservable_type === 'TicketType' ? 'bg-zinc-900 text-white' : 'bg-amber-400 text-black border border-amber-500',
-                                'px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest'
-                            ]">
-                                {{ ticket.reservable_type === 'TicketType' ? 'Billet' : 'Extra' }}
-                            </span>
-                            <span class="font-mono text-sm font-black text-zinc-400 tracking-widest">{{ ticket.public_id
-                                }}</span>
-                        </div>
+                        class="bg-white border-b-2 border-black p-8 flex flex-col gap-4 active:scale-[0.98] transition-all shadow-xl odd:bg-neutral-300">
 
                         <!-- Main Info -->
                         <div class="flex items-center gap-6">
                             <div
-                                :class="[ticket.checked_in_at ? 'bg-green-500 text-white shadow-lg shadow-green-500/20' : 'bg-zinc-100 text-zinc-300', 'shrink-0 w-20 h-20 rounded-3xl flex items-center justify-center transition-all']">
-                                <UserCheck v-if="ticket.checked_in_at" :size="40" stroke-width="2.5" />
-                                <User v-else :size="40" />
+                                :class="[ticket.checked_in_at ? 'bg-green-500 text-white shadow-lg shadow-green-500/20' : 'bg-neutral-100 text-neutral-300', 'shrink-0 w-20 h-20 rounded-3xl flex items-center justify-center transition-all']">
+                                <template v-if="ticket.reservable_type === 'TicketType'">
+                                    <TicketCheck v-if="ticket.checked_in_at" :size="40" stroke-width="2.5" />
+                                    <Ticket v-else :size="40" />
+                                </template>
+                                <template v-else>
+                                    <PackageCheck v-if="ticket.checked_in_at" :size="40" stroke-width="2.5" />
+                                    <Package v-else :size="40" />
+                                </template>
                             </div>
                             <div class="min-w-0 flex-1">
-                                <h4 class="font-black text-3xl leading-none truncate text-zinc-900 mb-2">{{
-                                    ticket.buyer_name }}</h4>
-                                <p class="text-zinc-500 font-bold text-lg truncate">{{ ticket.buyer_email }}</p>
+                                <h4 class="font-black text-3xl leading-none truncate text-neutral-900 mb-2">
+                                    {{ ticket.buyer_name }}
+                                </h4>
+                                <p class="text-neutral-500 font-bold text-lg truncate">{{ ticket.buyer_email }}</p>
                             </div>
                         </div>
 
-                        <!-- Data Grid -->
-                        <div class="grid grid-cols-1 gap-3">
-                            <div
-                                class="flex items-center justify-between bg-zinc-50 p-5 rounded-2xl border border-zinc-100">
-                                <span class="text-xs font-black uppercase tracking-widest text-zinc-400">Produit</span>
-                                <span class="text-xl font-black text-zinc-900">{{ ticket.reservable_name }}</span>
+                        <div
+                            class="bg-neutral-50/70 rounded-2xl p-4 flex items-center justify-between gap-4 border border-neutral-100">
+                            <div class="flex flex-col">
+                                <span class="text-lg font-black text-neutral-900">{{ ticket.reservable_name }}</span>
                             </div>
-                            <div v-if="ticket.price_name"
-                                class="flex items-center justify-between bg-zinc-50 p-5 rounded-2xl border border-zinc-100">
-                                <span class="text-xs font-black uppercase tracking-widest text-zinc-400">Tarif</span>
-                                <span class="text-xl font-black text-zinc-900">{{ ticket.price_name }}</span>
+                            <div v-if="ticket.price_name" class="flex flex-col items-end">
+                                <span
+                                    class="text-sm font-black uppercase tracking-widest text-neutral-700 bg-white px-2.5 py-1 rounded-lg border border-neutral-200 shadow-sm">
+                                    {{ ticket.price_name }}
+                                </span>
                             </div>
+                        </div>
+
+                        <div class="w-full py-4 bg-neutral-800 rounded-2xl text-center">
+                            <span class="font-mono text-base font-black text-white tracking-widest">
+                                {{ ticket.public_id }}
+                            </span>
                         </div>
 
                         <!-- Timestamp -->
                         <div v-if="ticket.checked_in_at"
-                            class="flex items-center justify-center gap-3 py-4 bg-green-50 rounded-2xl border border-green-100 text-green-700">
+                            class="flex items-center justify-center gap-3 py-4 bg-green-500 rounded-2xl border border-green-100 text-white">
                             <Clock :size="20" stroke-width="3" />
                             <span class="text-sm font-black uppercase tracking-widest">Validé à {{ new
-                                Date(ticket.checked_in_at).toLocaleTimeString([], { hour: '2-digit', minute:'2-digit'})
-                                }}</span>
+                                Date(ticket.checked_in_at).toLocaleTimeString([], {
+                                    hour: '2-digit', minute: '2-digit'
+                                })
+                            }}</span>
                         </div>
                     </div>
 
@@ -313,12 +352,12 @@
                 <div
                     class="absolute bottom-0 left-0 right-0 z-20 bg-linear-to-b from-transparent via-black/60 to-black p-6 py-12 rounded-t-lg">
                     <div class="relative group">
-                        <Search class="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-900 transition-colors"
+                        <Search class="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-900 transition-colors"
                             :size="24" />
                         <input v-model="searchQuery" type="text" placeholder="Rechercher id, nom, email, ..."
-                            class="w-full bg-white border-4 border-black rounded-[2.5rem] pl-16 pr-6 py-6 text-zinc-900 placeholder:text-zinc-500 focus:outline-none text-xl font-bold" />
+                            class="w-full bg-white border-4 border-black rounded-[2.5rem] pl-16 pr-6 py-6 text-neutral-900 placeholder:text-neutral-500 focus:outline-none text-xl font-bold" />
                         <button v-if="searchQuery" @click="searchQuery = ''"
-                            class="absolute right-6 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-900">
+                            class="absolute right-6 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-900">
                             <X :size="24" />
                         </button>
                     </div>
@@ -327,25 +366,25 @@
         </main>
 
         <!-- Bottom Navigation -->
-        <nav class="bg-white border-t border-zinc-100 px-8 pt-3 pb-safe z-50">
+        <nav class="bg-white border-t border-neutral-100 px-8 pt-3 pb-safe z-50">
             <div class="flex items-center justify-between max-w-lg mx-auto">
                 <button @click="activeTab = 'search'"
-                    :class="[activeTab === 'search' ? 'text-zinc-900' : 'text-zinc-300']"
+                    :class="[activeTab === 'search' ? 'text-black' : 'text-neutral-500']"
                     class="flex flex-col items-center gap-1.5 py-2 flex-1 transition-all">
                     <List :size="24" :stroke-width="activeTab === 'search' ? 3 : 2" />
-                    <span class="text-[9px] font-black uppercase tracking-[0.1em]">Liste</span>
+                    <span class="text-[9px] font-black uppercase tracking-widest">Liste</span>
                 </button>
 
                 <button @click="activeTab = 'scan'"
-                    class="mx-8 relative -top-6 bg-zinc-900 text-white p-6 rounded-[2.5rem] shadow-2xl shadow-zinc-900/40 active:scale-90 transition-all border-[8px] border-white">
+                    class="mx-8 relative -top-6 bg-neutral-900 text-white p-6 rounded-[2.5rem] shadow-2xl shadow-neutral-900/40 active:scale-90 transition-all border-8 border-white">
                     <Scan :size="32" stroke-width="3" />
                 </button>
 
                 <button @click="activeTab = 'history'"
-                    :class="[activeTab === 'history' ? 'text-zinc-900' : 'text-zinc-300']"
+                    :class="[activeTab === 'history' ? 'text-black' : 'text-neutral-500']"
                     class="flex flex-col items-center gap-1.5 py-2 flex-1 transition-all">
                     <Clock :size="24" :stroke-width="activeTab === 'history' ? 3 : 2" />
-                    <span class="text-[9px] font-black uppercase tracking-[0.1em]">Historique</span>
+                    <span class="text-[9px] font-black uppercase tracking-widest">Historique</span>
                 </button>
             </div>
         </nav>
@@ -354,7 +393,7 @@
         <Transition enter-active-class="transition duration-400 ease-out" enter-from-class="scale-125 opacity-0"
             enter-to-class="scale-100 opacity-100" leave-active-class="transition duration-200 ease-in"
             leave-from-class="scale-100 opacity-100" leave-to-class="scale-90 opacity-0">
-            <div v-if="lastScanResult" class="fixed inset-0 z-[100] flex flex-col p-8 overflow-hidden">
+            <div v-if="lastScanResult" class="fixed inset-0 z-100 flex flex-col p-8 overflow-hidden">
                 <div :class="[getStatusColor(lastScanResult.status), 'absolute inset-0']"></div>
                 <div class="relative flex-1 flex flex-col items-center justify-center text-white text-center">
                     <div class="mb-10 bg-white/20 p-10 rounded-[4rem] backdrop-blur-md">
@@ -377,7 +416,7 @@
                 </div>
                 <div class="relative mt-auto space-y-4">
                     <button @click="lastScanResult = null"
-                        class="w-full py-7 bg-white text-zinc-900 rounded-[3rem] text-2xl font-black uppercase tracking-[0.1em] shadow-2xl active:scale-95 transition-all">OK,
+                        class="w-full py-7 bg-white text-neutral-900 rounded-[3rem] text-2xl font-black uppercase tracking-widest shadow-2xl active:scale-95 transition-all">OK,
                         suivant</button>
                     <button v-if="lastScanResult.status === 'already_scanned' && lastScanResult.ticket"
                         @click="toggleTicketStatus(lastScanResult.ticket); lastScanResult = null"
@@ -388,70 +427,139 @@
         </Transition>
 
         <!-- TICKET DETAIL MODAL -->
-        <Transition enter-active-class="transition duration-300 ease-out" enter-from-class="translate-y-full"
-            enter-to-class="translate-y-0" leave-active-class="transition duration-200 ease-in"
-            leave-from-class="translate-y-0" leave-to-class="translate-y-full">
-            <div v-if="selectedTicket" class="fixed inset-0 z-[100] flex flex-col justify-end">
-                <div class="absolute inset-0 bg-zinc-900/60 backdrop-blur-sm" @click="selectedTicket = null"></div>
-                <div class="relative bg-white rounded-t-[4rem] p-10 pb-16 shadow-2xl flex flex-col max-h-[95vh]">
-                    <div class="w-16 h-2 bg-zinc-100 rounded-full mx-auto mb-10"></div>
-                    <div class="flex items-start justify-between mb-10">
-                        <div class="min-w-0 pr-6">
-                            <h2 class="text-4xl font-black text-zinc-900 leading-[0.9] mb-3">{{
-                                selectedTicket.buyer_name }}
-                            </h2>
-                            <p class="text-zinc-400 font-bold text-lg">{{ selectedTicket.buyer_email }}</p>
+        <div v-if="selectedTicket" class="fixed inset-0 z-100 flex flex-col justify-end">
+            <!-- Backdrop: Fades in/out independently -->
+            <Transition enter-active-class="transition duration-300 ease-out" enter-from-class="opacity-0"
+                enter-to-class="opacity-100" leave-active-class="transition duration-200 ease-in"
+                leave-from-class="opacity-100" leave-to-class="opacity-0" appear>
+                <div class="absolute inset-0 bg-neutral-900/80 backdrop-blur-md" @click="selectedTicket = null"></div>
+            </Transition>
+
+            <!-- Content: Slides up/down -->
+            <Transition enter-active-class="transition duration-400 cubic-bezier(0.16, 1, 0.3, 1)"
+                enter-from-class="translate-y-full" enter-to-class="translate-y-0"
+                leave-active-class="transition duration-300 ease-in" leave-from-class="translate-y-0"
+                leave-to-class="translate-y-full" appear>
+                <div
+                    class="relative bg-white rounded-t-[3.5rem] p-8 pb-12 shadow-2xl flex flex-col max-h-[92vh] border-t border-neutral-200">
+                    <!-- Close Header -->
+                    <div class="flex items-center justify-between mb-8">
+                        <button @click="selectedTicket = null"
+                            class="w-12 h-12 rounded-2xl bg-neutral-100 flex items-center justify-center text-neutral-900 active:scale-90 transition-all">
+                            <X :size="24" stroke-width="3" />
+                        </button>
+                        <div class="flex-1 text-center">
+                            <div class="w-12 h-1.5 bg-neutral-200 rounded-full mx-auto"></div>
                         </div>
-                        <div
-                            :class="[selectedTicket.checked_in_at ? 'bg-green-500 text-white shadow-lg shadow-green-500/20' : 'bg-zinc-50 text-zinc-200', 'p-6 rounded-[2.5rem] transition-all']">
-                            <UserCheck v-if="selectedTicket.checked_in_at" :size="40" />
-                            <User v-else :size="40" />
+                        <div class="w-12"></div>
+                    </div>
+
+                    <div class="flex-1 overflow-y-auto custom-scrollbar pr-1">
+                        <div class="flex items-start justify-between mb-10 mt-6">
+                            <div class="min-w-0 pr-6">
+                                <h2 class="text-4xl font-black text-neutral-900 leading-[0.9] mb-3 wrap-break-word">{{
+                                    selectedTicket.buyer_name }}</h2>
+                                <p class="text-neutral-500 font-bold text-lg break-all">{{ selectedTicket.buyer_email }}
+                                </p>
+                            </div>
+                            <div
+                                :class="[selectedTicket.checked_in_at ? 'bg-green-500 text-white' : 'bg-neutral-900 text-white', 'shrink-0 p-6 rounded-[2.5rem] transition-all scale-110']">
+                                <template v-if="selectedTicket.reservable_type === 'TicketType'">
+                                    <TicketCheck v-if="selectedTicket.checked_in_at" :size="40" stroke-width="2.5" />
+                                    <Ticket v-else :size="40" />
+                                </template>
+                                <template v-else>
+                                    <PackageCheck v-if="selectedTicket.checked_in_at" :size="40" stroke-width="2.5" />
+                                    <Package v-else :size="40" />
+                                </template>
+                            </div>
+                        </div>
+
+                        <div class="grid gap-4 mb-10">
+                            <div
+                                class="bg-neutral-50 rounded-[2.5rem] p-8 border-2 border-neutral-100 flex flex-col gap-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p
+                                            class="text-sm font-black uppercase tracking-[0.2em] text-neutral-400 mb-0.5">
+                                            {{ selectedTicket.reservable_type === 'TicketType' ? 'Billet' : 'Extra' }}
+                                        </p>
+                                        <p class="text-2xl font-black text-neutral-900 leading-tight">{{
+                                            selectedTicket.reservable_name }}</p>
+                                    </div>
+                                    <Ticket class="text-neutral-900" :size="32" stroke-width="2.5" />
+                                </div>
+
+                                <div v-if="selectedTicket.price_name"
+                                    class="pt-4 border-t border-neutral-200/50 flex items-center justify-between">
+                                    <div>
+                                        <p
+                                            class="text-sm font-black uppercase tracking-[0.2em] text-neutral-400 mb-0.5">
+                                            Tarif
+                                        </p>
+                                        <p class="text-lg font-bold text-neutral-700">{{ selectedTicket.price_name }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-neutral-900 rounded-[2.5rem] p-8 flex flex-col gap-1">
+                                <p class="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-100">
+                                    Identifiant Public
+                                </p>
+                                <p class="font-mono text-2xl font-black text-white tracking-[0.2em] mt-1">
+                                    {{ selectedTicket.public_id }}
+                                </p>
+                            </div>
+
+                            <div v-if="selectedTicket.checked_in_at"
+                                class="bg-green-50 rounded-[2.5rem] p-8 flex items-center gap-6 border-2 border-green-200">
+                                <div class="bg-green-500 text-white p-4 rounded-3xl shadow-lg shadow-green-500/20">
+                                    <Check :size="28" stroke-width="4" />
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="font-black text-green-900 uppercase text-sm tracking-tight">Ticket Validé
+                                    </p>
+                                    <p class="text-green-700 font-bold text-base mt-0.5">
+                                        {{
+                                            new Date(selectedTicket.checked_in_at).toLocaleDateString('fr-FR', {
+                                                day:
+                                                    'numeric',
+                                                month: 'long'
+                                            })
+                                        }} à {{
+                                            new Date(selectedTicket.checked_in_at).toLocaleTimeString('fr-FR', {
+                                                hour:
+                                                    '2-digit',
+                                                minute: '2-digit'
+                                            })
+                                        }}
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="grid gap-4 mb-12">
-                        <div
-                            class="bg-zinc-50 rounded-[2rem] p-8 border border-zinc-100 flex items-center justify-between">
-                            <div>
-                                <p class="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1">Produit
-                                </p>
-                                <p class="text-2xl font-black">{{ selectedTicket.reservable_name }}</p>
-                            </div>
-                            <Ticket class="text-zinc-200" :size="32" />
-                        </div>
-                        <div class="bg-zinc-900 rounded-[2rem] p-8 flex items-center justify-between shadow-xl">
-                            <div>
-                                <p class="text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-1">ID Public
-                                </p>
-                                <p class="font-mono text-2xl font-black text-white tracking-[0.2em]">{{
-                                    selectedTicket.public_id
-                                    }}</p>
-                            </div>
-                        </div>
-                        <div v-if="selectedTicket.checked_in_at"
-                            class="bg-green-50 rounded-[2rem] p-6 flex items-center gap-5 border border-green-100">
-                            <div class="bg-green-500 text-white p-3 rounded-2xl">
-                                <Check :size="24" stroke-width="4" />
-                            </div>
-                            <div>
-                                <p class="font-black text-green-900 uppercase text-xs tracking-tight">Ticket Validé</p>
-                                <p class="text-green-600/60 text-[11px] font-bold">Le {{ new
-                                    Date(selectedTicket.checked_in_at).toLocaleString('fr-FR', {
-                                        dateStyle: 'medium',
-                                        timeStyle:
-                                            'short'
-                                    }) }}</p>
-                            </div>
-                        </div>
+
+                    <div class="pt-6 border-t border-neutral-200">
+                        <button @click="toggleTicketStatus(selectedTicket); selectedTicket = null" :class="[
+                            'w-full py-7 rounded-[2.5rem] text-xl font-black uppercase tracking-widest transition-all active:scale-[0.98] flex items-center justify-center gap-3',
+                            selectedTicket.checked_in_at
+                                ? 'bg-red-500 text-white hover:bg-red-600'
+                                : 'bg-emerald-600 text-white hover:bg-emerald-700 '
+                        ]">
+                            <UserCheck v-if="!selectedTicket.checked_in_at" :size="24" />
+                            <History v-else :size="24" />
+                            {{ selectedTicket.checked_in_at ? 'Annuler Validation' : 'Valider Entrée' }}
+                        </button>
                     </div>
-                    <button @click="toggleTicketStatus(selectedTicket); selectedTicket = null"
-                        :class="['w-full py-7 rounded-[2.5rem] text-xl font-black uppercase tracking-widest transition-all active:scale-[0.98] shadow-2xl', selectedTicket.checked_in_at ? 'bg-zinc-100 text-zinc-400' : 'bg-zinc-900 text-white']">
-                        {{ selectedTicket.checked_in_at ? 'Annuler Validation' : 'Valider maintenant' }}
-                    </button>
-                    <button @click="selectedTicket = null"
-                        class="mt-6 text-zinc-300 text-[10px] font-black uppercase tracking-widest text-center">Fermer</button>
                 </div>
-            </div>
-        </Transition>
+            </Transition>
+        </div>
+
+        <!-- Global Loading -->
+        <div v-if="isLoading" class="fixed inset-0 z-200 flex items-center justify-center bg-white/40 backdrop-blur-xs">
+            <Loader2 class="animate-spin text-neutral-900" :size="48" />
+        </div>
     </div>
 </template>
 
