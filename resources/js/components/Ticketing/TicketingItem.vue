@@ -1,4 +1,5 @@
 <script setup lang="ts">
+    import { computed } from 'vue';
     import { Minus, Plus } from '@lucide/vue';
 
     const props = defineProps<{
@@ -10,6 +11,7 @@
         price: number;
         quantity: number;
         max_per_order?: number;
+        available_stock?: number | null;
         disabled?: boolean;
         disabled_reason?: string;
     }>();
@@ -18,15 +20,21 @@
         (e: 'update-quantity', details: { type: 'ticket' | 'addon', id: number, priceId?: number }, change: number, maxPerOrder?: number): void;
     }>();
 
+    const maxAllowed = computed(() => {
+        const maxPO = props.max_per_order ?? 10;
+        if (props.available_stock === null || props.available_stock === undefined) return maxPO;
+        return Math.min(props.available_stock, maxPO);
+    });
+
     const addItem = () => {
-        if (props.quantity < (props.max_per_order || 99)) {
-            emit('update-quantity', { type: props.type, id: props.id, priceId: props.priceId }, 1, props.max_per_order);
+        if (props.quantity < maxAllowed.value) {
+            emit('update-quantity', { type: props.type, id: props.id, priceId: props.priceId }, 1, maxAllowed.value);
         }
     };
 
     const removeItem = () => {
         if (props.quantity > 0) {
-            emit('update-quantity', { type: props.type, id: props.id, priceId: props.priceId }, -1, props.max_per_order);
+            emit('update-quantity', { type: props.type, id: props.id, priceId: props.priceId }, -1, maxAllowed.value);
         }
     };
 
@@ -46,6 +54,10 @@
                 </h4>
                 <p v-if="description" class="text-white/80 text-xs uppercase tracking-widest">
                     {{ description }}
+                </p>
+                <p v-if="available_stock !== null && available_stock !== undefined && available_stock < ((max_per_order ?? 10) * 2) && !disabled"
+                    class="text-orange-400 text-[10px] font-bold uppercase tracking-[0.2em] pt-1">
+                    Il ne reste plus que {{ available_stock }} places
                 </p>
             </div>
         </div>
@@ -68,10 +80,10 @@
                     </button>
                     <span class="w-6 text-center font-chillax text-2xl text-white">{{
                         quantity
-                    }}</span>
+                        }}</span>
                     <button @click="addItem"
                         class="h-10 w-10 flex items-center justify-center rounded-full bg-white/5 text-white hover:bg-[#51A687] hover:text-black transition-all duration-300 disabled:opacity-10"
-                        :disabled="quantity === (max_per_order || 99)">
+                        :disabled="quantity === maxAllowed">
                         <Plus class="w-4 h-4" />
                     </button>
                 </div>

@@ -33,7 +33,7 @@ class EventAddon extends Model implements Reservable
         'available_until' => 'datetime',
     ];
 
-    protected $appends = ['status', 'price_in_euro'];
+    protected $appends = ['status', 'price_in_euro', 'available_stock'];
 
     public function event(): BelongsTo
     {

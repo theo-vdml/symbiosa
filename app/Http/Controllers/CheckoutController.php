@@ -27,24 +27,30 @@ class CheckoutController extends Controller
             'items.*.priceId' => 'nullable|required_if:items.*.type,ticket|integer',
         ]);
 
-        $checkout = DB::transaction(function () use ($request, $event) {
+        try {
+            $checkout = DB::transaction(function () use ($request, $event) {
 
-            $checkout = Checkout::create([
-                'uuid' => (string) Str::uuid(),
-                'expires_at' => now()->addMinutes(15),
-                'event_id' => $event->id,
-            ]);
+                $checkout = Checkout::create([
+                    'uuid' => (string) Str::uuid(),
+                    'expires_at' => now()->addMinutes(15),
+                    'event_id' => $event->id,
+                ]);
 
-            foreach ($request->items as $item) {
-                if ($item['type'] === 'ticket') {
-                    $this->handleTicketReservation($checkout, $item);
-                } else {
-                    $this->handleAddonReservation($checkout, $item);
+                foreach ($request->items as $item) {
+                    if ($item['type'] === 'ticket') {
+                        $this->handleTicketReservation($checkout, $item);
+                    } else {
+                        $this->handleAddonReservation($checkout, $item);
+                    }
                 }
-            }
 
-            return $checkout;
-        });
+                return $checkout;
+            });
+        } catch (ValidationException $e) {
+            return redirect()->back()->with('error', collect($e->errors())->flatten()->first());
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Une erreur est survenue lors de la réservation.');
+        }
 
         return redirect()->route('checkout.show', $checkout->uuid);
     }
@@ -177,17 +183,18 @@ class CheckoutController extends Controller
         /** @var TicketType $ticketType */
         $ticketType = $price->ticketType;
 
-        if ($price->status !== ReservableStatus::OPEN) {
-            throw ValidationException::withMessages([
-                'cart' => "Le tarif pour '{$ticketType->name}' a changé ou n'est plus disponible."
-            ]);
-        }
-
         if (!$ticketType->hasStockFor($item['qty'])) {
             throw ValidationException::withMessages([
                 'cart' => "Il ne reste plus assez de places pour '{$ticketType->name}'."
             ]);
         }
+
+        if ($price->status !== ReservableStatus::OPEN) {
+            throw ValidationException::withMessages([
+                'cart' => "Le tarif pour '{$ticketType->name} - {$price->name}' a changé ou n'est plus disponible."
+            ]);
+        }
+
 
         $checkout->reservations()->create([
             'reservable_id' => $ticketType->id,

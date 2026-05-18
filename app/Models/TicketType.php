@@ -31,6 +31,8 @@ class TicketType extends Model implements Reservable
         'capacity' => 'integer',
     ];
 
+    protected $appends = ['status', 'available_stock'];
+
     // --- Relations ---
 
     public function event(): BelongsTo

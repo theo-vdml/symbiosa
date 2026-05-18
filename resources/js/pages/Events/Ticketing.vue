@@ -188,7 +188,9 @@
                                 :price="price.price_in_euro" :disabled="price.status !== 'open'"
                                 :disabled_reason="price.status === 'upcoming' ? 'Bientôt' : 'Épuisé'"
                                 :quantity="getItemQuantity('ticket', type.id, price.id)"
-                                @update-quantity="updateQuantity" :max_per_order="type.max_per_order || 99" />
+                                @update-quantity="updateQuantity"
+                                :max_per_order="type.max_per_order ?? 10"
+                                :available_stock="type.available_stock" />
                         </TicketingSection>
 
                         <!-- Addons -->
@@ -199,7 +201,8 @@
                                 :price="addon.price_in_euro" :disabled="addon.status !== 'open'"
                                 :disabled_reason="addon.status === 'upcoming' ? 'Bientôt' : 'Épuisé'"
                                 :quantity="getItemQuantity('addon', addon.id)" @update-quantity="updateQuantity"
-                                :max_per_order="addon.max_per_order" />
+                                :max_per_order="addon.max_per_order ?? 10"
+                                :available_stock="addon.available_stock" />
                         </TicketingSection>
                     </div>
 
