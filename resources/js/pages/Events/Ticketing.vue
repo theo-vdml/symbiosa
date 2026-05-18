@@ -93,6 +93,10 @@
         return form.items.reduce((sum, item) => sum + item.qty, 0);
     });
 
+    const hasProducts = computed(() => {
+        return (props.event.ticket_types?.length > 0) || (props.event.addons?.length > 0);
+    });
+
     const updateQuantity = (details: { type: 'ticket' | 'addon', id: number, priceId?: number }, change: number, max: number = 99) => {
         const index = form.items.findIndex(item => item.type === details.type && item.id === details.id && item.priceId === details.priceId);
 
@@ -180,30 +184,48 @@
                             class="font-chillax text-4xl md:text-5xl text-white uppercase tracking-widest leading-none pt-8">
                             Billetterie</h2>
 
-                        <!-- Tickets -->
-                        <TicketingSection v-for="type in event.ticket_types" :key="type.id" :title="type.name"
-                            :description="type.description">
-                            <TicketingItem v-for="price in type.prices" :key="`ticket_${type.id}_price_${price.id}`"
-                                :type="'ticket'" :id="type.id" :priceId="price.id" :title="price.name"
-                                :price="price.price_in_euro" :disabled="price.status !== 'open'"
-                                :disabled_reason="price.status === 'upcoming' ? 'Bientôt' : 'Épuisé'"
-                                :quantity="getItemQuantity('ticket', type.id, price.id)"
-                                @update-quantity="updateQuantity"
-                                :max_per_order="type.max_per_order ?? 10"
-                                :available_stock="type.available_stock" />
-                        </TicketingSection>
+                        <template v-if="hasProducts">
+                            <!-- Tickets -->
+                            <TicketingSection v-for="type in event.ticket_types" :key="type.id" :title="type.name"
+                                :description="type.description">
+                                <TicketingItem v-for="price in type.prices" :key="`ticket_${type.id}_price_${price.id}`"
+                                    :type="'ticket'" :id="type.id" :priceId="price.id" :title="price.name"
+                                    :price="price.price_in_euro" :disabled="price.status !== 'open'"
+                                    :disabled_reason="price.status === 'upcoming' ? 'Bientôt' : 'Épuisé'"
+                                    :quantity="getItemQuantity('ticket', type.id, price.id)"
+                                    @update-quantity="updateQuantity"
+                                    :max_per_order="type.max_per_order ?? 10"
+                                    :available_stock="type.available_stock" />
+                            </TicketingSection>
 
-                        <!-- Addons -->
-                        <TicketingSection v-if="event.addons?.length" title="Extras"
-                            description="Ajoutez des options supplémentaires">
-                            <TicketingItem v-for="addon in event.addons" :key="`addon_${addon.id}`"
-                                :description="addon.description" :type="'addon'" :id="addon.id" :title="addon.name"
-                                :price="addon.price_in_euro" :disabled="addon.status !== 'open'"
-                                :disabled_reason="addon.status === 'upcoming' ? 'Bientôt' : 'Épuisé'"
-                                :quantity="getItemQuantity('addon', addon.id)" @update-quantity="updateQuantity"
-                                :max_per_order="addon.max_per_order ?? 10"
-                                :available_stock="addon.available_stock" />
-                        </TicketingSection>
+                            <!-- Addons -->
+                            <TicketingSection v-if="event.addons?.length" title="Extras"
+                                description="Ajoutez des options supplémentaires">
+                                <TicketingItem v-for="addon in event.addons" :key="`addon_${addon.id}`"
+                                    :description="addon.description" :type="'addon'" :id="addon.id" :title="addon.name"
+                                    :price="addon.price_in_euro" :disabled="addon.status !== 'open'"
+                                    :disabled_reason="addon.status === 'upcoming' ? 'Bientôt' : 'Épuisé'"
+                                    :quantity="getItemQuantity('addon', addon.id)" @update-quantity="updateQuantity"
+                                    :max_per_order="addon.max_per_order ?? 10"
+                                    :available_stock="addon.available_stock" />
+                            </TicketingSection>
+                        </template>
+
+                        <div v-else class="py-24 px-12 text-center space-y-8 rounded-[3rem] border border-white/10 bg-white/5 backdrop-blur-xl">
+                            <div class="w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto">
+                                <Ticket class="w-10 h-10 text-white/20" />
+                            </div>
+                            <div class="space-y-4">
+                                <p class="text-[10px] font-bold tracking-[0.4em] text-[#51A687] uppercase">Indisponible</p>
+                                <h3 class="font-chillax text-2xl text-white uppercase tracking-widest">Aucun billet en vente</h3>
+                                <p class="max-w-md mx-auto text-sm text-white/40 leading-relaxed uppercase tracking-widest">
+                                    Il n'y a actuellement aucun billet ou option disponible pour cet événement. Revenez plus tard !
+                                </p>
+                            </div>
+                            <Link :href="events.show(event.slug).url" class="inline-flex h-12 items-center px-8 rounded-full border border-white/10 text-[10px] font-bold tracking-[0.2em] text-white uppercase hover:bg-white/10 transition-colors">
+                                Retour à l'événement
+                            </Link>
+                        </div>
                     </div>
 
                     <!-- Panier Sidebar -->
