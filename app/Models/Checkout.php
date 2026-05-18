@@ -40,6 +40,8 @@ class Checkout extends Model
         'customer_email',
         'customer_name',
         'stripe_session_id',
+        'stripe_payment_intent_id',
+        'stripe_customer_id',
         'accepted_legal_pages',
         'expires_at',
         'completed_at',
