@@ -4,7 +4,6 @@ namespace App\Filament\Resources\Events\Pages;
 
 use App\Enums\EventNavigationGroups;
 use App\Filament\Resources\Events\EventResource;
-use App\Models\TicketPrice;
 use App\Models\TicketType;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -72,10 +71,10 @@ class EditEventTicketing extends EditRecord
                                     $recordId = str_replace('record-', '', $recordId);
                                     if (!$recordId) return;
 
-                                    $hasDeps = \App\Models\Reservation::where('reservable_type', \App\Models\TicketType::class)
+                                    $hasDeps = \App\Models\Reservation::where('reservable_type', TicketType::class)
                                         ->where('reservable_id', $recordId)
                                         ->exists() ||
-                                        \App\Models\IssuedTicket::where('reservable_type', \App\Models\TicketType::class)
+                                        \App\Models\IssuedTicket::where('reservable_type', TicketType::class)
                                         ->where('reservable_id', $recordId)
                                         ->exists();
 
