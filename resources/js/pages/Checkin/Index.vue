@@ -356,7 +356,7 @@
                             <Clock class="text-zinc-600" :size="40" />
                         </div>
                         <p class="font-black uppercase text-xl tracking-widest text-white mb-2">Aucun scan récent</p>
-                        <p class="text-zinc-500 font-bold max-w-[250px] mx-auto text-lg">Les billets scannés ou modifiés
+                        <p class="text-zinc-500 font-bold max-w-62.5 mx-auto text-lg">Les billets scannés ou modifiés
                             apparaîtront ici.</p>
                     </div>
                 </div>
@@ -386,7 +386,7 @@
                             <Search class="text-zinc-600" :size="28" />
                         </div>
                         <p class="font-black uppercase text-lg tracking-widest text-white mb-1">Prêt à scanner ?</p>
-                        <p class="text-zinc-500 font-bold max-w-[200px] mx-auto text-sm">Tapez un nom ou un
+                        <p class="text-zinc-500 font-bold max-w-50 mx-auto text-sm">Tapez un nom ou un
                             identifiant.</p>
                     </div>
 
@@ -460,7 +460,7 @@
                                 <TicketSlash class="text-zinc-600" :size="28" />
                             </div>
                             <p class="font-black uppercase text-lg tracking-widest text-white mb-1">Aucun ticket</p>
-                            <p class="text-zinc-500 font-bold max-w-[200px] mx-auto text-sm">Essayez avec un autre nom
+                            <p class="text-zinc-500 font-bold max-w-50 mx-auto text-sm">Essayez avec un autre nom
                                 ou email.</p>
                         </div>
                     </template>
@@ -517,11 +517,11 @@
             enter-to-class="scale-100 opacity-100" leave-active-class="transition duration-200 ease-in"
             leave-from-class="scale-100 opacity-100" leave-to-class="scale-95 opacity-0">
             <div v-if="lastScanResult"
-                :class="[getStatusColor(lastScanResult.status), 'fixed inset-0 z-150 flex flex-col p-6 overflow-hidden transition-colors duration-500 border-[6px] border-black']">
+                :class="[getStatusColor(lastScanResult.status), 'fixed inset-0 z-150 flex flex-col p-6 overflow-hidden transition-colors duration-500']">
                 <div class="flex-1 flex flex-col items-center justify-center text-center">
                     <!-- Status Icon -->
                     <div
-                        class="mb-6 p-6 rounded-[2rem] bg-white/20 backdrop-blur-md border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] text-white">
+                        class="mb-6 p-6 rounded-4xl bg-white/20 backdrop-blur-md border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] text-white">
                         <component :is="getStatusIcon(lastScanResult.status)" :size="80" stroke-width="4" />
                     </div>
 
@@ -663,7 +663,7 @@
                                     <p class="text-[8px] font-black uppercase tracking-[0.3em] text-zinc-500">
                                         Identifiant Unique
                                     </p>
-                                    <p class="font-mono text-xl font-black text-white tracking-[0.1em]">
+                                    <p class="font-mono text-xl font-black text-white tracking-widest">
                                         {{ selectedTicket.public_id }}
                                     </p>
                                 </div>
