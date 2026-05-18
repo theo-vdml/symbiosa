@@ -34,6 +34,25 @@ class TicketPrice extends Model
         return $this->belongsTo(TicketType::class);
     }
 
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
+    public function issuedTickets()
+    {
+        return $this->hasMany(IssuedTicket::class);
+    }
+
+    protected static function booted()
+    {
+        static::deleting(function ($ticketPrice) {
+            if ($ticketPrice->reservations()->exists() || $ticketPrice->issuedTickets()->exists()) {
+                throw new \Exception("Impossible de supprimer ce prix car des réservations ou des billets y sont liés.");
+            }
+        });
+    }
+
     protected function status(): Attribute
     {
         return Attribute::get(function (): ReservableStatus {

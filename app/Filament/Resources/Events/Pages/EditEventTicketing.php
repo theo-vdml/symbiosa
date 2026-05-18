@@ -4,11 +4,15 @@ namespace App\Filament\Resources\Events\Pages;
 
 use App\Enums\EventNavigationGroups;
 use App\Filament\Resources\Events\EventResource;
+use App\Models\TicketPrice;
+use App\Models\TicketType;
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Grid;
@@ -62,6 +66,30 @@ class EditEventTicketing extends EditRecord
                                 isset($state['name']) ? $state['name'] : 'Nouveau type de billet'
                             )
                             ->addActionLabel('Ajouter un type de billet')
+                            ->deleteAction(
+                                fn (Action $action) => $action->before(function (Action $action, array $arguments) {
+                                    $recordId = $arguments['item'] ?? null;
+                                    $recordId = str_replace('record-', '', $recordId);
+                                    if (!$recordId) return;
+
+                                    $hasDeps = \App\Models\Reservation::where('reservable_type', \App\Models\TicketType::class)
+                                        ->where('reservable_id', $recordId)
+                                        ->exists() ||
+                                        \App\Models\IssuedTicket::where('reservable_type', \App\Models\TicketType::class)
+                                        ->where('reservable_id', $recordId)
+                                        ->exists();
+
+                                    if ($hasDeps) {
+                                        Notification::make()
+                                            ->danger()
+                                            ->title('Suppression impossible')
+                                            ->body('Ce type de billet est lié à des réservations ou des billets.')
+                                            ->send();
+
+                                        $action->cancel();
+                                    }
+                                })
+                            )
                             ->schema([
                                 Grid::make(3)
                                     ->schema([
@@ -114,6 +142,26 @@ class EditEventTicketing extends EditRecord
                                     ->emptyLabel('Ajouter une phase de tarification')
                                     ->orderColumn('sort_order')
                                     ->reorderableWithButtons(false)
+                                    ->deleteAction(
+                                        fn (Action $action) => $action->before(function (Action $action, array $arguments) {
+                                            $recordId = $arguments['item'] ?? null;
+                                            $recordId = str_replace('record-', '', $recordId);
+                                            if (!$recordId) return;
+
+                                            $hasDeps = \App\Models\Reservation::where('ticket_price_id', $recordId)->exists() ||
+                                                       \App\Models\IssuedTicket::where('ticket_price_id', $recordId)->exists();
+
+                                            if ($hasDeps) {
+                                                Notification::make()
+                                                    ->danger()
+                                                    ->title('Suppression impossible')
+                                                    ->body('Ce prix est lié à des réservations ou des billets.')
+                                                    ->send();
+
+                                                $action->cancel();
+                                            }
+                                        })
+                                    )
                                     ->tableColumns([
                                         Column::make('name')
                                             ->label('Phase'),

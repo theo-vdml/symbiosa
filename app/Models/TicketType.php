@@ -45,6 +45,25 @@ class TicketType extends Model implements Reservable
         return $this->hasMany(TicketPrice::class)->orderBy('sort_order');
     }
 
+    public function reservations()
+    {
+        return $this->morphMany(Reservation::class, 'reservable');
+    }
+
+    public function issuedTickets()
+    {
+        return $this->morphMany(IssuedTicket::class, 'reservable');
+    }
+
+    protected static function booted()
+    {
+        static::deleting(function ($ticketType) {
+            if ($ticketType->reservations()->exists() || $ticketType->issuedTickets()->exists()) {
+                throw new \Exception("Impossible de supprimer ce type de billet car des réservations ou des billets y sont liés.");
+            }
+        });
+    }
+
     // --- Attributes (Logic) ---
 
 
