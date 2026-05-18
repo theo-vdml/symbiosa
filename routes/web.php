@@ -44,4 +44,18 @@ Route::get('/checkout/{checkout:uuid}/success', [\App\Http\Controllers\CheckoutC
 Route::get('/checkout/{checkout:uuid}/cancel', [\App\Http\Controllers\CheckoutController::class, 'cancel_payment'])
     ->name('checkout.cancel_payment');
 
+Route::get('/checkin/{token}', [\App\Http\Controllers\CheckinController::class, 'publicShow'])->name('checkin.public');
+Route::get('/checkin/{token}/search', [\App\Http\Controllers\CheckinController::class, 'publicSearch'])->name('checkin.public_search');
+Route::post('/checkin/{token}/auth', [\App\Http\Controllers\CheckinController::class, 'authenticate'])->name('checkin.authenticate');
+Route::post('/checkin/{token}/scan', [\App\Http\Controllers\CheckinController::class, 'publicScan'])->name('checkin.public_scan');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/checkin/list/{checkinList}', [\App\Http\Controllers\CheckinController::class, 'show'])->name('checkin.show');
+    Route::get('/checkin/list/{checkinList}/search', [\App\Http\Controllers\CheckinController::class, 'search'])->name('checkin.search');
+    Route::post('/checkin/list/{checkinList}/scan', [\App\Http\Controllers\CheckinController::class, 'scan'])->name('checkin.scan');
+});
+
+Route::post('/checkin/tickets/{issuedTicket}/toggle', [\App\Http\Controllers\CheckinController::class, 'toggleCheckin'])->name('checkin.toggle');
+Route::get('/checkin/tickets/{issuedTicket}/status', [\App\Http\Controllers\CheckinController::class, 'getTicketStatus'])->name('checkin.status');
+
 Route::post('/webhooks/stripe', [\App\Http\Controllers\StripeWebhookController::class, 'handle']);

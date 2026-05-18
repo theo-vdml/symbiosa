@@ -47,7 +47,7 @@ class CheckoutInfolist
                                 ->label('Expire le')
                                 ->dateTime(),
                             TextEntry::make('stripe_session_id')
-                                ->label('ID Stripe')
+                                ->label('ID Session Stripe')
                                 ->fontFamily('mono')
                                 ->suffixAction(
                                     CopyAction::make()
@@ -56,6 +56,31 @@ class CheckoutInfolist
                                 ->size('xs')
                                 ->placeholder('N/A'),
                         ]),
+
+                    Section::make('Stripe Dashboard')
+                        ->icon('heroicon-m-arrow-top-right-on-square')
+                        ->columns(2)
+                        ->schema([
+                            TextEntry::make('stripe_customer_id')
+                                ->label('Client Stripe')
+                                ->fontFamily('mono')
+                                ->size('xs')
+                                ->color('primary')
+                                ->icon('heroicon-m-arrow-top-right-on-square')
+                                ->url(fn($state) => $state ? "https://dashboard.stripe.com/customers/{$state}" : null)
+                                ->openUrlInNewTab()
+                                ->placeholder('N/A'),
+                            TextEntry::make('stripe_payment_intent_id')
+                                ->label('Paiement Stripe')
+                                ->fontFamily('mono')
+                                ->size('xs')
+                                ->color('primary')
+                                ->icon('heroicon-m-arrow-top-right-on-square')
+                                ->url(fn($state) => $state ? "https://dashboard.stripe.com/payments/{$state}" : null)
+                                ->openUrlInNewTab()
+                                ->placeholder('N/A'),
+                        ])
+                        ->visible(fn($record) => $record->stripe_customer_id || $record->stripe_payment_intent_id),
 
                     Section::make('Informations Client')
                         ->icon('heroicon-m-user')

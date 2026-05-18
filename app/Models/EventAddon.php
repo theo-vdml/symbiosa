@@ -33,11 +33,30 @@ class EventAddon extends Model implements Reservable
         'available_until' => 'datetime',
     ];
 
-    protected $appends = ['status', 'price_in_euro'];
+    protected $appends = ['status', 'price_in_euro', 'available_stock'];
 
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
+    }
+
+    public function reservations()
+    {
+        return $this->morphMany(Reservation::class, 'reservable');
+    }
+
+    public function issuedTickets()
+    {
+        return $this->morphMany(IssuedTicket::class, 'reservable');
+    }
+
+    protected static function booted()
+    {
+        static::deleting(function ($addon) {
+            if ($addon->reservations()->exists() || $addon->issuedTickets()->exists()) {
+                throw new \Exception("Impossible de supprimer cet extra car des réservations ou des billets y sont liés.");
+            }
+        });
     }
 
     protected function status(): Attribute

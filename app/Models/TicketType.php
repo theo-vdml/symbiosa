@@ -31,6 +31,8 @@ class TicketType extends Model implements Reservable
         'capacity' => 'integer',
     ];
 
+    protected $appends = ['status', 'available_stock'];
+
     // --- Relations ---
 
     public function event(): BelongsTo
@@ -41,6 +43,25 @@ class TicketType extends Model implements Reservable
     public function prices(): HasMany
     {
         return $this->hasMany(TicketPrice::class)->orderBy('sort_order');
+    }
+
+    public function reservations()
+    {
+        return $this->morphMany(Reservation::class, 'reservable');
+    }
+
+    public function issuedTickets()
+    {
+        return $this->morphMany(IssuedTicket::class, 'reservable');
+    }
+
+    protected static function booted()
+    {
+        static::deleting(function ($ticketType) {
+            if ($ticketType->reservations()->exists() || $ticketType->issuedTickets()->exists()) {
+                throw new \Exception("Impossible de supprimer ce type de billet car des réservations ou des billets y sont liés.");
+            }
+        });
     }
 
     // --- Attributes (Logic) ---

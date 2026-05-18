@@ -16,9 +16,11 @@ use App\Filament\Resources\Events\Pages\EditEventSeo;
 use App\Filament\Resources\Events\Pages\EditEventTicketing;
 use App\Filament\Resources\Events\Pages\EditEventTicketingConfig;
 use App\Filament\Resources\Events\Pages\EditEventVisuals;
+use App\Filament\Resources\Events\Pages\ListEventCheckinLists;
 use App\Filament\Resources\Events\Pages\ListEventCheckouts;
 use App\Filament\Resources\Events\Pages\ListEventIssuedTickets;
 use App\Filament\Resources\Events\Pages\ListEvents;
+use App\Filament\Resources\Events\Pages\EventDashboard;
 use App\Filament\Resources\Events\Schemas\EventForm;
 use App\Filament\Resources\Events\Schemas\EventInfolist;
 use App\Filament\Resources\Events\Tables\EventsTable;
@@ -73,6 +75,7 @@ class EventResource extends Resource
     public static function getPages(): array
     {
         return [
+            'dashboard' => EventDashboard::route('/{record}'),
             'index' => ListEvents::route('/'),
             'create' => CreateEvent::route('/create'),
             'edit' => EditEvent::route('/{record}/edit'),
@@ -89,12 +92,14 @@ class EventResource extends Resource
             'addons' => EditEventAddons::route('/{record}/addons'),
             'checkouts' => ListEventCheckouts::route('/{record}/checkouts'),
             'issued-tickets' => ListEventIssuedTickets::route('/{record}/issued-tickets'),
+            'checkin-lists' => ListEventCheckinLists::route('/{record}/checkin-lists'),
         ];
     }
 
     public static function getRecordSubNavigation(Page $page): array
     {
         return $page->generateNavigationItems([
+            EventDashboard::class,
             EditEvent::class,
             EditEventDetails::class,
             EditEventCopywritting::class,
@@ -109,6 +114,7 @@ class EventResource extends Resource
             EditEventAddons::class,
             ListEventCheckouts::class,
             ListEventIssuedTickets::class,
+            ListEventCheckinLists::class,
         ]);
     }
 }

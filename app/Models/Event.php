@@ -217,9 +217,19 @@ class Event extends Model implements HasMedia
         return $this->hasMany(Checkout::class);
     }
 
+    public function reservations()
+    {
+        return $this->hasManyThrough(Reservation::class, Checkout::class);
+    }
+
     public function issuedTickets()
     {
         return $this->hasManyThrough(IssuedTicket::class, Checkout::class);
+    }
+
+    public function checkinLists()
+    {
+        return $this->hasMany(CheckinList::class);
     }
 
     public function getAttendeesCountAttribute()
