@@ -227,6 +227,11 @@ class Event extends Model implements HasMedia
         return $this->hasManyThrough(IssuedTicket::class, Checkout::class);
     }
 
+    public function checkinLists()
+    {
+        return $this->hasMany(CheckinList::class);
+    }
+
     public function getAttendeesCountAttribute()
     {
         return $this->issuedTickets()->where('is_attendee', true)->count();

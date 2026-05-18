@@ -16,6 +16,7 @@ use App\Filament\Resources\Events\Pages\EditEventSeo;
 use App\Filament\Resources\Events\Pages\EditEventTicketing;
 use App\Filament\Resources\Events\Pages\EditEventTicketingConfig;
 use App\Filament\Resources\Events\Pages\EditEventVisuals;
+use App\Filament\Resources\Events\Pages\ListEventCheckinLists;
 use App\Filament\Resources\Events\Pages\ListEventCheckouts;
 use App\Filament\Resources\Events\Pages\ListEventIssuedTickets;
 use App\Filament\Resources\Events\Pages\ListEvents;
@@ -91,6 +92,7 @@ class EventResource extends Resource
             'addons' => EditEventAddons::route('/{record}/addons'),
             'checkouts' => ListEventCheckouts::route('/{record}/checkouts'),
             'issued-tickets' => ListEventIssuedTickets::route('/{record}/issued-tickets'),
+            'checkin-lists' => ListEventCheckinLists::route('/{record}/checkin-lists'),
         ];
     }
 
@@ -112,6 +114,7 @@ class EventResource extends Resource
             EditEventAddons::class,
             ListEventCheckouts::class,
             ListEventIssuedTickets::class,
+            ListEventCheckinLists::class,
         ]);
     }
 }
