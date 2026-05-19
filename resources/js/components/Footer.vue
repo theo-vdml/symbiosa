@@ -7,8 +7,8 @@
 </script>
 
 <template>
-    <footer class="sticky bottom-0 h-fit w-full bg-white text-black">
-        <div class="flex h-full flex-col items-center justify-between px-12 pt-24 pb-4">
+    <footer class="relative z-0 h-fit w-full bg-white text-black md:sticky md:bottom-0">
+        <div class="flex h-full flex-col items-center justify-between px-12 pt-16 pb-4 md:pt-24">
             <div class="grid w-full max-w-7xl grid-cols-1 gap-12 md:grid-cols-3">
                 <!-- Left Column: Navigation -->
                 <div class="flex flex-col space-y-1 text-center md:text-left">
@@ -29,7 +29,7 @@
                 </div>
 
                 <!-- Middle Column: Info -->
-                <div class="flex flex-col items-center justify-center space-y-4 border-black/20 md:border-x">
+                <div class="flex flex-col items-center justify-center space-y-4 py-8 border-y border-black/10 md:py-0 md:border-y-0 md:border-x md:border-black/20">
                     <div class="text-center text-base space-y-1">
                         <p class="font-bold uppercase tracking-widest">Symbiosa ASBL</p>
                         <p>Rue de la rue n°12</p>
@@ -59,8 +59,8 @@
                 </div>
             </div>
 
-            <div class="relative mt-24 flex w-full items-center justify-center overflow-visible">
-                <h2 class="font-chillax text-[8vw] select-none lg:text-[12rem] xl:text-[14rem]">
+            <div class="relative mt-16 flex w-full items-center justify-center md:mt-24">
+                <h2 class="font-chillax text-[15vw] leading-[0.8] select-none md:text-[8vw] lg:text-[12rem] xl:text-[14rem]">
                     Symbiosa
                 </h2>
             </div>
