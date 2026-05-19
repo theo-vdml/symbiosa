@@ -30,7 +30,7 @@
 
     <Header />
 
-    <div class="relative z-10 overflow-hidden rounded-b-[6rem] bg-black min-h-screen">
+    <div class="relative z-10 overflow-hidden rounded-b-[3rem] lg:rounded-b-[6rem] bg-black min-h-screen">
         <!-- Background Effects -->
         <div class="pointer-events-none absolute inset-0 bg-linear-to-b from-black via-black to-black"></div>
         <div

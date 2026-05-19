@@ -40,7 +40,7 @@
 
     <Header />
 
-    <div class="relative z-10 min-h-[120vh] overflow-hidden rounded-b-[6rem] bg-black">
+    <div class="relative z-10 min-h-[120vh] overflow-hidden rounded-b-[3rem] lg:rounded-b-[6rem] bg-black">
         <div class="pointer-events-none absolute inset-0 bg-linear-to-b from-black via-black to-black"></div>
         <div
             class="pointer-events-none absolute -top-32 left-1/2 h-115 w-[130%] -translate-x-1/2 rounded-full bg-[#06402B]/18 blur-[150px]">
@@ -50,9 +50,8 @@
 
         <!-- Hero Section -->
         <section class="relative h-[45vh] w-full overflow-hidden md:h-[65vh]">
-            <img :src="post.cover_url" :srcset="post.cover_responsive?.srcset"
-                sizes="(max-width: 768px) 200vw, 100vw" :alt="post.title"
-                class="h-full w-full object-cover transition-transform duration-1000" />
+            <img :src="post.cover_url" :srcset="post.cover_responsive?.srcset" sizes="(max-width: 768px) 200vw, 100vw"
+                :alt="post.title" class="h-full w-full object-cover transition-transform duration-1000" />
             <div class="absolute inset-0 bg-linear-to-t from-black via-transparent to-black/20"></div>
         </section>
 

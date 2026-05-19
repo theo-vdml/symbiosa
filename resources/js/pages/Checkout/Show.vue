@@ -79,7 +79,7 @@
     <Head title="Finaliser ma commande" />
     <Header />
 
-    <div class="relative z-10 bg-black min-h-screen pb-24 pt-32">
+    <div class="relative z-10 bg-black min-h-screen pb-24 pt-32 rounded-b-[3rem] lg:rounded-b-[6rem]">
         <main class="mx-auto max-w-3xl px-6">
 
             <!-- Header de la page -->
@@ -204,8 +204,8 @@
                                 <div v-for="page in legalPages" :key="page.id" class="space-y-2">
                                     <label class="flex items-start gap-4 cursor-pointer group/legal">
                                         <div class="relative flex items-center justify-center mt-0.5 shrink-0">
-                                            <input v-model="form['accept_' + page.slug.replace(/-/g, '_')]" type="checkbox"
-                                                class="peer sr-only" />
+                                            <input v-model="form['accept_' + page.slug.replace(/-/g, '_')]"
+                                                type="checkbox" class="peer sr-only" />
                                             <div class="w-5 h-5 rounded-md border-2 border-white/10 bg-white/5 transition-all duration-300 peer-checked:bg-[#51A687] peer-checked:border-[#51A687]"
                                                 :class="{ 'border-red-500/50': form.errors['accept_' + page.slug.replace(/-/g, '_')] }">
                                             </div>
@@ -214,7 +214,8 @@
                                                 <path d="M5 13l4 4L19 7" />
                                             </svg>
                                         </div>
-                                        <span class="text-[10px] text-white/40 uppercase tracking-widest leading-relaxed">
+                                        <span
+                                            class="text-[10px] text-white/40 uppercase tracking-widest leading-relaxed">
                                             J'ai lu et j'accepte <a :href="`/legal/${page.slug}`" target="_blank"
                                                 class="text-white hover:text-[#51A687] underline underline-offset-4 transition-colors">{{
                                                     page.title }}</a>.
@@ -235,7 +236,8 @@
                                             class="text-sm font-bold uppercase tracking-widest text-white transition-opacity duration-300"
                                             :class="{ 'opacity-20': !allLegalAccepted }">Payer
                                             avec</span>
-                                        <img src="/stripe.svg" class="h-8 brightness-0 invert transition-all duration-300"
+                                        <img src="/stripe.svg"
+                                            class="h-8 brightness-0 invert transition-all duration-300"
                                             :class="{ 'opacity-20': !allLegalAccepted }" alt="Stripe" />
                                     </div>
                                 </button>
