@@ -18,6 +18,9 @@ class HomePage extends Model implements HasMedia
         $this->addMediaCollection('hero_video')
             ->singleFile()
             ->useDisk('r2');
+
+        $this->addMediaCollection('bento_gallery')
+            ->useDisk('r2');
     }
 
     public function registerMediaConversions(?Media $media = null): void

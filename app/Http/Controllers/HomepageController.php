@@ -24,6 +24,14 @@ class HomepageController extends Controller
             ->with('genres')
             ->first();
 
+        $bentoMedia = $homePage->getMedia('bento_gallery');
+        $bentoGallery = $bentoMedia->count() === 6 ? $bentoMedia->map(function ($media) {
+            return [
+                'url' => $media->getUrl(),
+                'srcset' => $media->getSrcset(),
+            ];
+        })->toArray() : [];
+
         return Inertia::render('Home', [
             'posts' => $posts,
             'upcomingEvent' => $upcomingEvent,
@@ -32,6 +40,7 @@ class HomepageController extends Controller
             'heroSubheading' => $homePage->hero_subheading,
             'heroVideoUrl' => $homePage->getFirstMediaUrl('hero_video'),
             'heroPosterUrl' => $homePage->getFirstMediaUrl('hero_video', 'poster'),
+            'bentoGallery' => $bentoGallery,
             'spotifyPlaylistHeading' => $homePage->spotify_playlist_heading,
             'spotifyPlaylistId' => $homePage->spotify_playlist_id,
             'showSpotifyPlaylist' => $homePage->show_spotify_playlist,

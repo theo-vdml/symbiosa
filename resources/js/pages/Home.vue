@@ -18,6 +18,7 @@
         heroSubheading: string;
         heroVideoUrl: string | null;
         heroPosterUrl: string | null;
+        bentoGallery: any[];
         spotifyPlaylistHeading: string | null;
         spotifyPlaylistId: string | null;
         showSpotifyPlaylist: boolean;
@@ -98,7 +99,7 @@
             :playlistId="props.spotifyPlaylistId" :heading="props.spotifyPlaylistHeading ?? undefined"
             :forceDark="props.spotifyPlaylistForceDark" />
 
-        <BentoGallery />
+        <BentoGallery v-if="props.bentoGallery.length === 6" :images="props.bentoGallery" />
     </div>
 
     <Footer />
