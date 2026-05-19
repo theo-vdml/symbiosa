@@ -75,9 +75,9 @@ class EventResource extends Resource
     public static function getPages(): array
     {
         return [
-            'dashboard' => EventDashboard::route('/{record}'),
             'index' => ListEvents::route('/'),
             'create' => CreateEvent::route('/create'),
+            'dashboard' => EventDashboard::route('/{record}/dashboard'),
             'edit' => EditEvent::route('/{record}/edit'),
             'details' => EditEventDetails::route('/{record}/details'),
             'copywritting' => EditEventCopywritting::route('/{record}/copywritting'),
