@@ -81,19 +81,19 @@
 
     const downloadImage = async () => {
         if (selectedImageIndex.value === null || !props.event.gallery_urls) return;
-        
+
         try {
             const imageUrl = props.event.gallery_urls[selectedImageIndex.value].url;
             const response = await fetch(imageUrl);
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
-            
+
             const link = document.createElement('a');
             link.href = url;
             link.download = `symbiosa-event-${props.event.slug}-${selectedImageIndex.value + 1}.jpg`;
             document.body.appendChild(link);
             link.click();
-            
+
             document.body.removeChild(link);
             window.URL.revokeObjectURL(url);
         } catch (error) {
@@ -121,13 +121,14 @@
 
     <Header />
 
-    <div class="relative z-10 rounded-b-[6rem] bg-black min-h-screen">
+    <div class="relative z-10 rounded-b-[3rem] lg:rounded-b-[6rem] bg-black min-h-screen">
 
         <!-- Hero Banner Section -->
         <section class="relative h-[85vh] w-full overflow-hidden">
             <template v-if="event.background_url">
                 <img :src="event.background_url" :srcset="event.background_responsive?.srcset"
-                    sizes="(max-width: 768px) 200vw, 100vw" class="absolute inset-0 h-full w-full object-cover" alt="" />
+                    sizes="(max-width: 768px) 200vw, 100vw" class="absolute inset-0 h-full w-full object-cover"
+                    alt="" />
                 <div class="absolute inset-0 bg-linear-to-t from-black via-black/40 to-black/20"></div>
                 <div class="absolute inset-0 bg-[url('/noise.png')] opacity-[0.05] mix-blend-soft-light"></div>
             </template>
@@ -349,18 +350,16 @@
                 </div>
 
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    <div v-for="(image, index) in event.gallery_urls" :key="image.id"
-                        @click="openLightbox(index)"
+                    <div v-for="(image, index) in event.gallery_urls" :key="image.id" @click="openLightbox(index)"
                         class="aspect-square overflow-hidden rounded-2xl bg-white/5 border border-white/10 group cursor-zoom-in relative">
                         <!-- Skeleton Placeholder -->
                         <div class="absolute inset-0 bg-[#51A687]/5 animate-pulse"
                             :class="{ 'opacity-0': loadedImages.has(image.id) }"></div>
 
-                        <img :src="image.thumb"
-                            @load="handleImageLoad(image.id)"
+                        <img :src="image.thumb" @load="handleImageLoad(image.id)"
                             class="h-full w-full object-cover transition-all duration-700 group-hover:scale-110 relative z-10"
-                            :class="loadedImages.has(image.id) ? 'opacity-100' : 'opacity-0'"
-                            loading="lazy" alt="Event gallery image" />
+                            :class="loadedImages.has(image.id) ? 'opacity-100' : 'opacity-0'" loading="lazy"
+                            alt="Event gallery image" />
                     </div>
                 </div>
             </section>
@@ -370,7 +369,8 @@
                 <Transition enter-active-class="transition duration-300 ease-out" enter-from-class="opacity-0"
                     enter-to-class="opacity-100" leave-active-class="transition duration-200 ease-in"
                     leave-from-class="opacity-100" leave-to-class="opacity-0">
-                    <div v-if="isLightboxOpen" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 px-4">
+                    <div v-if="isLightboxOpen"
+                        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 px-4">
                         <!-- Close button -->
                         <button @click="closeLightbox"
                             class="absolute top-6 right-6 z-[110] rounded-full bg-white/10 p-3 text-white backdrop-blur-md transition-colors hover:bg-white/20">
@@ -400,17 +400,19 @@
                             <!-- Lightbox Loading State -->
                             <div v-if="!isLightboxImageLoaded"
                                 class="absolute inset-0 flex items-center justify-center">
-                                <div class="h-12 w-12 animate-spin rounded-full border-4 border-[#51A687]/20 border-t-[#51A687]"></div>
+                                <div
+                                    class="h-12 w-12 animate-spin rounded-full border-4 border-[#51A687]/20 border-t-[#51A687]">
+                                </div>
                             </div>
 
                             <img v-if="event.gallery_urls" :src="event.gallery_urls[selectedImageIndex!].url"
                                 @load="isLightboxImageLoaded = true"
                                 class="max-h-[85vh] w-full object-contain shadow-2xl transition-opacity duration-300"
-                                :class="isLightboxImageLoaded ? 'opacity-100' : 'opacity-0'"
-                                alt="" />
-                            
+                                :class="isLightboxImageLoaded ? 'opacity-100' : 'opacity-0'" alt="" />
+
                             <!-- Counter -->
-                            <div class="absolute -bottom-10 left-1/2 -translate-x-1/2 text-white/50 text-sm font-medium">
+                            <div
+                                class="absolute -bottom-10 left-1/2 -translate-x-1/2 text-white/50 text-sm font-medium">
                                 {{ selectedImageIndex! + 1 }} / {{ event.gallery_urls?.length }}
                             </div>
                         </div>

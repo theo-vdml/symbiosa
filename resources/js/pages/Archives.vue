@@ -94,7 +94,7 @@
 
     <Header />
 
-    <div class="relative z-10 min-h-[120vh] overflow-hidden rounded-b-[6rem] bg-black">
+    <div class="relative z-10 min-h-[120vh] overflow-hidden rounded-b-[3rem] lg:rounded-b-[6rem] bg-black">
         <div class="pointer-events-none absolute inset-0 bg-linear-to-b from-black via-black to-black"></div>
         <div
             class="pointer-events-none absolute -top-32 left-1/2 h-115 w-[130%] -translate-x-1/2 rounded-full bg-[#06402B]/18 blur-[150px]">

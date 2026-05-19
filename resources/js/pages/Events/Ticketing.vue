@@ -126,7 +126,7 @@
     <Head :title="`Billetterie - ${event.title}`" />
     <Header />
 
-    <div class="relative z-10 rounded-b-[6rem] bg-black min-h-screen pb-24">
+    <div class="relative z-10 rounded-b-[3rem] lg:rounded-b-[6rem] bg-black min-h-screen pb-24">
         <!-- Hero Section -->
         <section class="relative h-[45vh] w-full overflow-hidden">
             <img v-if="event.background" :src="'/' + event.background"
@@ -142,7 +142,7 @@
                         <div class="flex items-center gap-2">
                             <Calendar class="w-4 h-4 text-[#51A687]" />
                             <span class="font-chillax uppercase tracking-widest text-sm">{{ getDateFormatted(event.date)
-                                }}</span>
+                            }}</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <MapPin class="w-4 h-4 text-[#51A687]" />
@@ -193,8 +193,7 @@
                                     :price="price.price_in_euro" :disabled="price.status !== 'open'"
                                     :disabled_reason="price.status === 'upcoming' ? 'Bientôt' : 'Épuisé'"
                                     :quantity="getItemQuantity('ticket', type.id, price.id)"
-                                    @update-quantity="updateQuantity"
-                                    :max_per_order="type.max_per_order ?? 10"
+                                    @update-quantity="updateQuantity" :max_per_order="type.max_per_order ?? 10"
                                     :available_stock="type.available_stock" />
                             </TicketingSection>
 
@@ -211,18 +210,25 @@
                             </TicketingSection>
                         </template>
 
-                        <div v-else class="py-24 px-12 text-center space-y-8 rounded-[3rem] border border-white/10 bg-white/5 backdrop-blur-xl">
-                            <div class="w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto">
+                        <div v-else
+                            class="py-24 px-12 text-center space-y-8 rounded-[3rem] border border-white/10 bg-white/5 backdrop-blur-xl">
+                            <div
+                                class="w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto">
                                 <Ticket class="w-10 h-10 text-white/20" />
                             </div>
                             <div class="space-y-4">
-                                <p class="text-[10px] font-bold tracking-[0.4em] text-[#51A687] uppercase">Indisponible</p>
-                                <h3 class="font-chillax text-2xl text-white uppercase tracking-widest">Aucun billet en vente</h3>
-                                <p class="max-w-md mx-auto text-sm text-white/40 leading-relaxed uppercase tracking-widest">
-                                    Il n'y a actuellement aucun billet ou option disponible pour cet événement. Revenez plus tard !
+                                <p class="text-[10px] font-bold tracking-[0.4em] text-[#51A687] uppercase">Indisponible
+                                </p>
+                                <h3 class="font-chillax text-2xl text-white uppercase tracking-widest">Aucun billet en
+                                    vente</h3>
+                                <p
+                                    class="max-w-md mx-auto text-sm text-white/40 leading-relaxed uppercase tracking-widest">
+                                    Il n'y a actuellement aucun billet ou option disponible pour cet événement. Revenez
+                                    plus tard !
                                 </p>
                             </div>
-                            <Link :href="events.show(event.slug).url" class="inline-flex h-12 items-center px-8 rounded-full border border-white/10 text-[10px] font-bold tracking-[0.2em] text-white uppercase hover:bg-white/10 transition-colors">
+                            <Link :href="events.show(event.slug).url"
+                                class="inline-flex h-12 items-center px-8 rounded-full border border-white/10 text-[10px] font-bold tracking-[0.2em] text-white uppercase hover:bg-white/10 transition-colors">
                                 Retour à l'événement
                             </Link>
                         </div>
@@ -250,7 +256,7 @@
                                         <div class="space-y-0.5">
                                             <p class="text-white text-xs font-medium uppercase tracking-wide">{{
                                                 item.name
-                                                }}</p>
+                                            }}</p>
                                             <p class="text-[10px] text-white/50 uppercase">{{ item.qty }} x {{
                                                 formatEuro(item.price) }}</p>
                                         </div>

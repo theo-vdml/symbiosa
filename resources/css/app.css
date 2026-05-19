@@ -10,8 +10,49 @@
         Instrument Sans, ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
-    --font-chillax: "Chillax", sans-serif;
-    --font-synonym: "Synonym", sans-serif;
+    --font-chillax: 'Chillax', sans-serif;
+    --font-synonym: 'Synonym', sans-serif;
+
+    @keyframes slow-zoom {
+        from { transform: scale(1); }
+        to { transform: scale(1.1); }
+    }
+
+    @keyframes fade-in-up {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes reveal-title {
+        from { opacity: 0; transform: translateY(110%); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fade-in {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes scroll-line {
+        0% { transform: scaleY(0); transform-origin: top; }
+        50% { transform: scaleY(1); transform-origin: top; }
+        51% { transform: scaleY(1); transform-origin: bottom; }
+        100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    --animate-slow-zoom: slow-zoom 25s ease-in-out infinite alternate;
+    --animate-fade-in-up: fade-in-up 1.2s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+    --animate-reveal-title: reveal-title 1.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    --animate-fade-in: fade-in 1.5s ease-out forwards;
+    --animate-scroll-line: scroll-line 2s cubic-bezier(0.645, 0.045, 0.355, 1) infinite;
+}
+
+.bg-radial-vignette {
+    background: radial-gradient(circle, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+}
+
+.noise-overlay {
+    background-image: url('/noise.png');
 }
 
 html {

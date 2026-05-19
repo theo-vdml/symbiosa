@@ -31,17 +31,17 @@
 </script>
 
 <template>
-    <section class="relative bg-black py-24 px-12 xl:px-32">
+    <section class="relative bg-black py-24 px-6 md:px-12 xl:px-32">
         <div class="max-w-7xl mx-auto">
 
             <!-- Header Section -->
-            <div class="flex items-end justify-between mb-16">
+            <div class="flex items-end justify-between mb-12 md:mb-16">
                 <div class="space-y-4">
                     <div class="flex items-center gap-4">
                         <div class="h-px w-8 bg-[#51A687]"></div>
                         <span class="text-[#51A687] text-sm font-bold tracking-[0.3em] uppercase">Actualités</span>
                     </div>
-                    <h2 class="text-5xl font-chillax  text-white uppercase italic">News & Stories</h2>
+                    <h2 class="text-4xl md:text-5xl font-chillax text-white uppercase italic">News & Stories</h2>
                 </div>
                 <div class="hidden md:block">
                     <AppButton :href="newsRoute.index.url()" variant="ghost" size="md"
