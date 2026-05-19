@@ -64,7 +64,8 @@ class ManageAboutPage extends SettingsPage
                                             ->directory('about/sections')
                                             ->imageEditor()
                                             ->imagePreviewHeight(300)
-                                            ->required(),
+                                            ->required()
+                                            ->optimize('webp', 85),
                                     ])
                             ])
                     ]),

@@ -63,7 +63,8 @@ class ArtistForm
                             ->image()
                             ->automaticallyResizeImagesMode('cover')
                             ->automaticallyResizeImagesToWidth('1080')
-                            ->nullable(),
+                            ->nullable()
+                            ->optimize('webp', 85),
 
                     ]),
             ]);
