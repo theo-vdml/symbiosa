@@ -1,6 +1,16 @@
 <script setup lang="ts">
+    import { onMounted, ref } from 'vue';
     import { Link } from '@inertiajs/vue3';
     import AppButton from './AppButton.vue';
+
+    const videoElement = ref<HTMLVideoElement | null>(null);
+
+    onMounted(() => {
+        if (videoElement.value && videoElement.value.dataset.src) {
+            videoElement.value.src = videoElement.value.dataset.src;
+            videoElement.value.load();
+        }
+    });
 </script>
 
 <template>
@@ -9,7 +19,7 @@
 
         <!-- Full-screen Background Video with Rounded Mask -->
         <div class="absolute inset-0 z-0">
-            <video src="/abstract.mp4" autoplay loop muted playsinline
+            <video ref="videoElement" data-src="/abstract.webm" autoplay loop muted playsinline
                 class="h-full w-full object-cover opacity-60 grayscale-[0.2]"></video>
 
             <!-- The "Melting Mask" Overlays -->
