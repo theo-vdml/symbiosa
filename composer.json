@@ -9,6 +9,7 @@
         "php": "^8.4",
         "azgasim/filament-unsaved-changes-modal": "^1.0",
         "barryvdh/laravel-dompdf": "^3.1",
+        "cmsmaxinc/filament-error-pages": "^2.0",
         "cocosmos/filament-quick-add-select": "^1.3",
         "codewithdennis/filament-advanced-choice": "^2.0",
         "danihidayatx/image-optimizer": "^2.2",
