@@ -39,12 +39,12 @@
         <div class="pointer-events-none absolute inset-0 bg-[url('/noise.png')] opacity-[0.04] mix-blend-soft-light">
         </div>
 
-        <main class="relative z-10 mx-auto max-w-6xl px-6 pt-34 pb-32 md:px-10">
-            <header class="mb-20 space-y-4 text-center md:text-left">
+        <main class="relative z-10 mx-auto max-w-6xl px-4 pt-34 pb-32 md:px-10">
+            <header class="mb-16 md:mb-20 space-y-4 text-center md:text-left">
                 <p class="text-xs font-bold tracking-[0.35em] text-[#51A687] uppercase">
                     Calendrier
                 </p>
-                <h1 class="font-chillax text-5xl leading-[0.92] text-white md:text-7xl lg:text-8xl">
+                <h1 class="font-chillax text-4xl leading-[0.92] text-white md:text-7xl lg:text-8xl">
                     Tous les événements <br class="hidden md:block" />
                     à venir
                 </h1>
@@ -56,21 +56,21 @@
                 </p>
             </header>
 
-            <div v-if="events.length > 0" class="relative mt-20 px-4 md:px-0">
+            <div v-if="events.length > 0" class="relative mt-20 md:px-0">
                 <!-- Timeline Line -->
                 <div
                     class="absolute top-0 bottom-0 left-1/2 z-1 hidden w-0.5 -translate-x-1/2 bg-linear-to-b from-transparent via-[#51A687]/60 via-10%  to-[#51A687]/20 md:block">
                 </div>
 
-                <div class="relative space-y-8 md:space-y-0">
-                    <article v-for="(event, index) in events" :key="event.id" class="relative">
+                <div class="relative space-y-16 md:space-y-0">
+                    <article v-for="(event, index) in events" :key="event.id" class="relative border-b border-white/5 pb-16 last:border-0 md:border-0 md:pb-0">
                         <!-- Timeline Node -->
                         <div class="absolute top-34 left-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 md:block">
                             <div class="h-6 w-6 border-8 rounded-full bg-[#51A687] border-black"></div>
                         </div>
 
                         <div
-                            class="grid grid-cols-1 items-start gap-12 rounded-[2.5rem] border border-white/10 bg-white/3 p-6 md:grid-cols-2 md:gap-24 md:border-0 md:bg-transparent md:p-0 md:py-24">
+                            class="grid grid-cols-1 items-start gap-10 md:grid-cols-2 md:gap-24 md:py-24">
                             <!-- Poster Column -->
                             <div :class="index % 2 === 0 ? 'md:order-1' : 'md:order-2'" class="flex justify-center">
                                 <div
@@ -131,7 +131,7 @@
                                         <div
                                             class="absolute inset-0 flex flex-col items-center justify-center text-center px-8">
                                             <span
-                                                class="font-chillax text-4xl md:text-5xl text-white uppercase tracking-tighter leading-[0.9] drop-shadow-[0_0_40px_rgba(81,166,135,0.8)]">
+                                                class="font-chillax text-3xl md:text-5xl text-white uppercase tracking-tighter leading-[0.9] drop-shadow-[0_0_40px_rgba(81,166,135,0.8)]">
                                                 {{ event.title }}
                                             </span>
                                         </div>
@@ -141,19 +141,19 @@
 
                             <!-- Info Column -->
                             <div :class="[index % 2 === 0 ? 'md:order-2 md:pl-12' : 'md:order-1 md:pr-12 md:text-right']"
-                                class="flex flex-col px-2 pb-4 md:px-0 md:pb-0">
+                                class="flex flex-col pb-4 md:pb-0">
                                 <!-- Header: Date + Title + Genres (Grouped for mobile) -->
-                                <div class="flex flex-row items-start gap-6 md:flex-col"
+                                <div class="flex flex-row items-start gap-4 md:flex-col md:gap-6"
                                     :class="index % 2 !== 0 ? 'md:items-end' : 'md:items-start'">
                                     <!-- Date Badge -->
                                     <div class="shrink-0">
                                         <div
-                                            class="flex h-20 w-20 flex-col items-center justify-center rounded-2xl border border-[#51A687]/30 bg-[#51A687]/10 text-center backdrop-blur-md">
-                                            <span class="font-chillax text-3xl leading-none text-white">
+                                            class="flex h-16 w-16 md:h-20 md:w-20 flex-col items-center justify-center rounded-2xl border border-[#51A687]/30 bg-[#51A687]/10 text-center backdrop-blur-md">
+                                            <span class="font-chillax text-2xl md:text-3xl leading-none text-white">
                                                 {{ getDateParts(event.date).day }}
                                             </span>
                                             <span
-                                                class="text-[10px] font-bold tracking-[0.25em] text-[#51A687] uppercase">
+                                                class="text-[9px] md:text-[10px] font-bold tracking-[0.25em] text-[#51A687] uppercase">
                                                 {{ getDateParts(event.date).month }}
                                             </span>
                                         </div>
@@ -162,13 +162,22 @@
                                     <div class="flex flex-col"
                                         :class="index % 2 !== 0 ? 'md:items-end' : 'md:items-start'">
                                         <h2
-                                            class="mb-2 font-chillax text-3xl leading-[1.1] text-white md:mb-6 md:text-4xl lg:text-5xl">
+                                            class="mb-3 font-chillax text-2xl leading-[1.1] text-white md:mb-4 md:text-4xl lg:text-5xl">
                                             {{ event.title }}
                                         </h2>
 
+                                        <!-- Location -->
+                                        <div class="mb-4 flex items-center gap-2 text-gray-400 md:mb-6"
+                                            :class="index % 2 !== 0 ? 'md:flex-row-reverse' : ''">
+                                            <MapPin class="h-3.5 w-3.5 md:h-5 md:w-5 text-[#51A687]/80" />
+                                            <span class="text-[11px] md:text-lg font-bold md:font-medium tracking-[0.2em] md:tracking-wide uppercase">
+                                                {{ event.city }}, {{ event.country }}
+                                            </span>
+                                        </div>
+
                                         <!-- Music Styles -->
                                         <div v-if="event.genres && event.genres.length > 0"
-                                            class="mb-4 flex flex-wrap gap-2 md:mb-8"
+                                            class="mb-6 flex flex-wrap gap-2 md:mb-8"
                                             :class="index % 2 !== 0 ? 'md:justify-end' : 'md:justify-start'">
                                             <span v-for="(genre, genreIndex) in event.genres" :key="genre.id"
                                                 class="text-[10px] font-bold tracking-[0.3em] text-[#51A687] uppercase md:text-xs">
@@ -177,16 +186,14 @@
                                                     class="ml-1 text-gray-700">/</span>
                                             </span>
                                         </div>
-                                    </div>
-                                </div>
 
-                                <!-- Location -->
-                                <div class="mt-6 mb-8 flex items-center gap-3 text-gray-400 md:mt-0 md:mb-10" :class="index % 2 !== 0 ? 'md:justify-end' : ''
-                                    ">
-                                    <MapPin class="h-5 w-5" />
-                                    <span class="text-lg font-medium tracking-wide uppercase">
-                                        {{ event.city }}, {{ event.country }}
-                                    </span>
+                                        <!-- Description Preview -->
+                                        <div v-if="event.description"
+                                            class="mb-8 line-clamp-4 text-sm leading-relaxed text-gray-400 md:text-base"
+                                            :class="index % 2 !== 0 ? 'md:text-right' : 'md:text-left'"
+                                            v-html="event.description">
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- CTAs -->
