@@ -1,87 +1,100 @@
 <script setup lang="ts">
-// No extra logic needed for this Simple UI component
+    import { Link } from '@inertiajs/vue3';
+    import AppButton from './AppButton.vue';
 </script>
 
 <template>
     <section
-        class="relative flex w-full items-center justify-center overflow-hidden bg-black py-64 md:py-80"
-    >
-        <!-- Intense Distant Glows -->
-        <div
-            class="absolute top-1/2 left-1/2 h-240 w-240 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/3 blur-[180px]"
-        ></div>
+        class="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-black py-48 md:py-80 lg:py-96">
 
-        <!-- Large Background Text with Masking/Subtraction effect look -->
-        <div
-            class="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden select-none"
-        >
-            <span
-                class="font-chillax leading-none font-black whitespace-nowrap text-transparent uppercase opacity-20 md:text-[55rem]"
-                style="
-                    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15);
-                    filter: blur(1px);
-                "
-            >
-                SYMBIOSA
-            </span>
+        <!-- Full-screen Background Video with Rounded Mask -->
+        <div class="absolute inset-0 z-0">
+            <video src="/abstract.mp4" autoplay loop muted playsinline
+                class="h-full w-full object-cover opacity-60 grayscale-[0.2]"></video>
+
+            <!-- The "Melting Mask" Overlays -->
+            <!-- 1. Central Portal Glow -->
+            <div
+                class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_75%)] md:bg-[radial-gradient(circle_at_center,transparent_0%,black_65%)]">
+            </div>
+
+            <!-- 2. Extra Layer of Blur around the edges to truly "melt" -->
+            <div
+                class="absolute inset-0 backdrop-blur-xs mask-[radial-gradient(circle_at_center,transparent_20%,black_80%)]">
+            </div>
+
+            <!-- 3. Overall Cinematic Polish -->
+            <div class="absolute inset-0 bg-radial-vignette opacity-90"></div>
+            <div class="absolute inset-0 opacity-[0.03] pointer-events-none noise-overlay"></div>
         </div>
 
-        <div class="relative z-10 w-full max-w-full overflow-hidden px-4">
-            <div class="flex flex-col items-center justify-center text-center">
-                <!-- Massive Typography Adjusted with stricter width constraints -->
-                <h2
-                    class="bg-linear-to-b from-white via-white/70 to-white/10 bg-clip-text pt-12 pb-8 font-chillax text-[9vw] leading-[0.8] font-black tracking-tighter whitespace-nowrap text-transparent uppercase italic md:text-[min(10rem,13vw)] lg:text-[min(12rem,15vw)]"
-                >
-                    <span class="block translate-x-[1vw] opacity-95"
-                        >Live music</span
-                    >
-                    <span class="block opacity-80">for</span>
-                    <span class="block -translate-x-[1vw] opacity-70"
-                        >living people.</span
-                    >
+        <!-- Content -->
+        <div class="relative z-10 w-full max-w-5xl px-8">
+            <div class="flex flex-col items-center text-center">
+                <h2 class="font-chillax flex flex-col items-center gap-4 md:gap-8">
+                    <span
+                        class="block text-4xl md:text-7xl lg:text-9xl font-light text-white leading-none tracking-tight opacity-0 animate-fade-in-up [animation-delay:200ms]">
+                        Live music
+                    </span>
+
+                    <span
+                        class="block font-synonym text-2xl md:text-4xl lg:text-5xl italic text-white/40 opacity-0 animate-fade-in-up [animation-delay:400ms]">
+                        for
+                    </span>
+
+                    <span
+                        class="block text-4xl md:text-7xl lg:text-9xl font-black uppercase tracking-tighter text-white leading-none opacity-0 animate-fade-in-up [animation-delay:600ms]">
+                        Living people
+                    </span>
                 </h2>
 
-                <!-- More brutalist/architectural UI elements -->
-                <div class="mt-24 flex flex-col items-center gap-12">
-                    <div
-                        class="relative h-32 w-px bg-linear-to-b from-white/60 via-white/20 to-transparent"
-                    >
-                        <div
-                            class="absolute top-0 left-1/2 h-2 w-2 -translate-x-1/2 rounded-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.8)]"
-                        ></div>
-                    </div>
-
-                    <div class="flex flex-col items-center gap-4">
-                        <div
-                            class="flex items-center gap-12 font-mono text-[12px] tracking-[0.6em] text-white/50 uppercase"
-                        >
-                            <span class="transition-colors hover:text-white"
-                                >50,3341° N</span
-                            >
-                            <span class="transition-colors hover:text-white"
-                                >4,4156° E
-                            </span>
-                        </div>
-                    </div>
+                <!-- CTA Button -->
+                <div class="mt-20 md:mt-32 opacity-0 animate-fade-in [animation-delay:1.2s]">
+                    <AppButton href="/about" variant="primary" size="lg">
+                        Notre Univers
+                    </AppButton>
                 </div>
             </div>
         </div>
 
-        <!-- Radical Screen Splits (Horizontal Lines) -->
-        <div
-            class="absolute top-0 left-0 h-px w-full bg-linear-to-r from-transparent via-white/20 to-transparent"
-        ></div>
-        <div
-            class="absolute bottom-0 left-0 h-px w-full bg-linear-to-r from-transparent via-white/20 to-transparent"
-        ></div>
-
-        <!-- Deep Cinematic Fade Out -->
-        <div
-            class="absolute top-0 left-0 h-80 w-full bg-linear-to-b from-black via-black/95 to-transparent"
-        ></div>
-        <div
-            class="absolute bottom-0 left-0 h-80 w-full bg-linear-to-t from-black via-black/95 to-transparent"
-        ></div>
+        <!-- Section Transitions -->
+        <div class="absolute inset-x-0 top-0 h-64 bg-linear-to-b from-black to-transparent"></div>
+        <div class="absolute inset-x-0 bottom-0 h-64 bg-linear-to-t from-black to-transparent"></div>
     </section>
 </template>
 
+<style scoped>
+.animate-fade-in-up {
+    animation: fadeInUp 1.2s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+}
+
+.animate-fade-in {
+    animation: fadeIn 1.5s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.noise-overlay {
+    background-image: url('/noise.png');
+}
+</style>

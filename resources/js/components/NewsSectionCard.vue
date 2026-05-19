@@ -16,9 +16,9 @@
     // Dynamic Class Mappings to maintain original styles
     const cardClasses = computed(() => ({
         'group relative flex overflow-hidden border border-white/8 bg-white/2 transition-all duration-300 hover:border-white/18 hover:bg-white/5': true,
-        'flex-col md:flex-row rounded-3xl hover:shadow-[0_0_50px_rgba(200,10,69,0.15)] w-full': props.layout === 'horizontal',
-        'flex-col rounded-3xl hover:shadow-[0_0_50px_rgba(200,10,69,0.15)] h-full': props.layout === 'featured',
-        'flex-col md:flex-row xl:flex-col rounded-2xl hover:shadow-[0_0_40px_rgba(200,10,69,0.1)]': props.layout === 'sidebar',
+        'flex-col md:flex-row rounded-3xl w-full': props.layout === 'horizontal',
+        'flex-col rounded-3xl h-full': props.layout === 'featured',
+        'flex-col md:flex-row xl:flex-col rounded-2xl': props.layout === 'sidebar',
     }));
 
     const imageContainerClasses = computed(() => ({
