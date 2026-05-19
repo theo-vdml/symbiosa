@@ -30,28 +30,28 @@
 
     const contentContainerClasses = computed(() => ({
         'flex flex-1 flex-col justify-center gap-4': true,
-        'p-8 md:p-12 xl:p-16': props.layout === 'horizontal',
-        'p-8': props.layout === 'featured',
-        'p-5 md:p-8 xl:p-5 gap-3': props.layout === 'sidebar',
+        'p-6 md:p-12 xl:p-16': props.layout === 'horizontal',
+        'p-6 md:p-8': props.layout === 'featured',
+        'p-4 md:p-8 xl:p-5 gap-3': props.layout === 'sidebar',
     }));
 
     const titleClasses = computed(() => ({
         'font-chillax leading-tight text-white transition-colors duration-300 group-hover:text-[#51A687] text-balance': true,
-        'text-2xl md:text-3xl xl:text-4xl': props.layout === 'horizontal',
-        'text-lg md:text-4xl': props.layout === 'featured',
+        'text-xl md:text-3xl xl:text-4xl': props.layout === 'horizontal',
+        'text-xl md:text-4xl': props.layout === 'featured',
         'text-lg md:text-xl xl:text-lg leading-snug': props.layout === 'sidebar',
     }));
 
     const excerptClasses = computed(() => ({
         'text-gray-400 leading-relaxed': true,
-        'line-clamp-3 text-base xl:text-lg max-w-3xl': props.layout === 'horizontal',
+        'line-clamp-2 md:line-clamp-3 text-sm md:text-base xl:text-lg max-w-3xl': props.layout === 'horizontal',
         'line-clamp-3 md:line-clamp-6 text-sm md:text-base w-full': props.layout === 'featured',
-        'line-clamp-2 text-sm': props.layout === 'sidebar',
+        'line-clamp-2 text-xs md:text-sm': props.layout === 'sidebar',
     }));
 
     // Shared styles that don't change much
     const imageClasses = "h-full w-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110";
-    const badgeClasses = "absolute left-6 top-6 rounded-full border border-[#51A687]/60 bg-[#51A687]/30 px-4 py-1.5 text-xs font-bold tracking-[0.18em] text-white uppercase backdrop-blur-sm";
+    const badgeClasses = "absolute left-4 top-4 md:left-6 md:top-6 rounded-full border border-[#51A687]/60 bg-[#51A687]/30 px-4 py-1.5 text-xs font-bold tracking-[0.18em] text-white uppercase backdrop-blur-sm";
     const dateClasses = "text-xs font-medium text-gray-500 capitalize";
     const footerLinkClasses = "mt-4 text-xs font-bold tracking-[0.14em] text-[#51A687] uppercase opacity-0 transition-opacity duration-200 group-hover:opacity-100 flex items-center";
 </script>

@@ -45,12 +45,12 @@
 
         <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 w-full">
             <div :class="[
-                'flex flex-col items-center gap-16 lg:gap-32 text-center',
-                event.poster_url ? 'lg:flex-row' : ''
+                'flex flex-col items-center gap-10 md:gap-16 lg:gap-32 text-center',
+                event.poster_url ? 'lg:flex-row lg:text-left' : ''
             ]">
                 <!-- Left: The Poster (Optional) -->
-                <div v-if="event.poster_url" class="w-full lg:w-4/12 xl:w-5/12 shrink-0 flex justify-center">
-                    <div class="relative group w-full max-w-sm lg:max-w-none">
+                <div v-if="event.poster_url" class="hidden md:flex w-full md:w-8/12 lg:w-4/12 xl:w-5/12 shrink-0 justify-center">
+                    <div class="relative group w-full max-w-[280px] md:max-w-sm lg:max-w-none">
                         <div
                             class="relative z-10 w-full aspect-3/4 overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
                             <img :src="event.poster_url" :alt="event.title"
@@ -61,36 +61,48 @@
 
                 <!-- Right: The Content -->
                 <div :class="[
-                    'w-full space-y-10 flex flex-col items-center',
-                    event.poster_url ? 'lg:w-7/12' : 'max-w-4xl mx-auto'
+                    'w-full space-y-8 md:space-y-10 flex flex-col items-center',
+                    event.poster_url ? 'lg:w-7/12 lg:items-start' : 'max-w-4xl mx-auto'
                 ]">
-                    <div class="space-y-6 flex flex-col items-center w-full">
+                    <div :class="[
+                        'space-y-4 md:space-y-6 flex flex-col w-full items-center',
+                        event.poster_url ? 'lg:items-start' : ''
+                    ]">
                         <!-- Header: City & Date -->
-                        <div class="flex flex-col items-center gap-2">
-                            <span class="text-white text-sm font-bold tracking-[0.4em] uppercase">
+                        <div :class="[
+                            'flex flex-col gap-2 items-center',
+                            event.poster_url ? 'lg:items-start' : ''
+                        ]">
+                            <span class="text-white text-xs md:text-sm font-bold tracking-[0.3em] md:tracking-[0.4em] uppercase">
                                 {{ event.city }}
                             </span>
-                            <span class="text-[#51A687] text-sm font-bold tracking-[0.4em] uppercase">
+                            <span class="text-[#51A687] text-xs md:text-sm font-bold tracking-[0.3em] md:tracking-[0.4em] uppercase">
                                 {{ getWeekday(event.date) }} {{ getDateFormatted(event.date) }}
                             </span>
                         </div>
 
                         <h2 :class="[
-                            'font-chillax text-white leading-[0.85] tracking-tight uppercase',
-                            event.poster_url ? 'text-6xl md:text-8xl' : 'text-7xl md:text-9xl'
+                            'font-chillax text-white leading-[0.9] md:leading-[0.85] tracking-tight uppercase',
+                            event.poster_url ? 'text-4xl md:text-7xl lg:text-8xl' : 'text-5xl md:text-8xl lg:text-9xl'
                         ]">
                             {{ event.title }}
                         </h2>
 
                         <!-- Event Description -->
                         <div v-if="event.description"
-                            class="max-w-2xl text-white text-lg md:text-xl leading-relaxed font-light"
+                            :class="[
+                                'max-w-2xl text-white text-base md:text-xl leading-relaxed font-light text-center',
+                                event.poster_url ? 'lg:text-left' : ''
+                            ]"
                             v-html="event.description">
                         </div>
                     </div>
 
                     <!-- CTAs -->
-                    <div class="flex flex-col sm:flex-row justify-center gap-6 pt-4 w-full">
+                    <div :class="[
+                        'flex flex-col sm:flex-row gap-4 md:gap-6 pt-4 w-full justify-center',
+                        event.poster_url ? 'lg:justify-start' : ''
+                    ]">
                         <AppButton v-if="event.ticketing_status === 'open'" :href="events.ticketing(event.slug).url" variant="primary" size="lg"
                             class="w-full sm:w-auto border-[#51A687]/50 bg-[#51A687]/10 backdrop-blur-xl hover:bg-[#51A687]/20">
                             Réserver mes places
