@@ -81,7 +81,7 @@
                                     <!-- Fallback 1: Background Image (Atmospheric but clear) -->
                                     <template v-else-if="event.background_url">
                                         <img :src="event.background_url" :srcset="event.background_responsive?.srcset"
-                                            sizes="(max-width: 768px) 100vw, 400px" :alt="event.title"
+                                            sizes="(max-width: 768px) 150vw, 1080px" :alt="event.title"
                                             class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 hover:scale-105" />
                                         <div
                                             class="absolute inset-0 bg-linear-to-t from-black/60 via-black/10 to-transparent">

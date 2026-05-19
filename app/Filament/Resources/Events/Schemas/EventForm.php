@@ -256,6 +256,7 @@ class EventForm
                                 ->image()
                                 ->imageAspectRatio('3:4')
                                 ->automaticallyOpenImageEditorForAspectRatio()
+                                ->automaticallyCropImagesToAspectRatio()
                                 ->imageEditor(),
 
                             SpatieMediaLibraryFileUpload::make('background')
@@ -266,6 +267,7 @@ class EventForm
                                 ->image()
                                 ->imageAspectRatio('16:9')
                                 ->automaticallyOpenImageEditorForAspectRatio()
+                                ->automaticallyCropImagesToAspectRatio()
                                 ->imageEditor(),
                         ]),
                 ])
