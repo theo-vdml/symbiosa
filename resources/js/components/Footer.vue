@@ -4,6 +4,7 @@
 
     const page = usePage();
     const footerLegalPages = computed(() => page.props.footerLegalPages as Array<{ title: string, slug: string }>);
+    const contactEmails = computed(() => page.props.contactEmails as Array<{ label: string, email: string }>);
 </script>
 
 <template>
@@ -44,17 +45,9 @@
 
                 <!-- Right Column: Contact -->
                 <div class="flex flex-col space-y-6 text-center text-base md:text-right">
-                    <div>
-                        <p class="mb-1 font-bold">Envie de nous poser une question ?</p>
-                        <a href="mailto:hi@symbiosa.be" class="hover:underline">hi@symbiosa.be</a>
-                    </div>
-                    <div>
-                        <p class="mb-1 font-bold">Envie de devenir un sponsors ?</p>
-                        <a href="mailto:sponsors@symbiosa.be" class="hover:underline">sponsors@symbiosa.be</a>
-                    </div>
-                    <div>
-                        <p class="mb-1 font-bold">Envie de devenir bénévole ?</p>
-                        <a href="mailto:team@symbiosa.be" class="hover:underline">team@symbiosa.be</a>
+                    <div v-for="option in contactEmails" :key="option.email">
+                        <p class="mb-1 font-bold">{{ option.label }}</p>
+                        <a :href="`mailto:${option.email}`" class="hover:underline">{{ option.email }}</a>
                     </div>
                 </div>
             </div>

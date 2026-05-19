@@ -46,6 +46,7 @@ class HandleInertiaRequests extends Middleware
                 'error' => $request->session()->get('error'),
             ],
             'footerLegalPages' => \App\Models\LegalPage::inFooter()->get(['title', 'slug']),
+            'contactEmails' => app(\App\Settings\ContactSettings::class)->email_options,
         ];
     }
 }
