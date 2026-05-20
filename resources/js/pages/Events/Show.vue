@@ -358,8 +358,7 @@
 
                         <img :src="image.thumb" @load="handleImageLoad(image.id)"
                             class="h-full w-full object-cover transition-all duration-700 group-hover:scale-110 relative z-10"
-                            :class="loadedImages.has(image.id) ? 'opacity-100' : 'opacity-0'" loading="lazy"
-                            alt="Event gallery image" />
+                            loading="lazy" alt="Event gallery image" />
                     </div>
                 </div>
             </section>

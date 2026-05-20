@@ -479,15 +479,15 @@ class EventForm
                     SpatieMediaLibraryFileUpload::make('gallery')
                         ->label('Galerie photo')
                         ->collection('gallery')
+                        ->panelLayout('grid')
                         ->disk('r2')
                         ->multiple()
                         ->appendFiles()
                         ->reorderable()
                         ->visibility('public')
                         ->image()
-                        ->imageEditor()
                         ->columnSpanFull()
-                        ->optimize('webp', 100),
+                        ->optimize('webp'),
                 ])
         ];
     }
