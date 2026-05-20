@@ -5,11 +5,13 @@
     interface Props {
         playlistId: string;
         heading?: string;
+        forceDark?: boolean;
     }
 
-    withDefaults(defineProps<Props>(), {
+    const props = withDefaults(defineProps<Props>(), {
         playlistId: '1t4HqapUmOPIamxdTYPBHC',
         heading: 'Sound of Symbiosa',
+        forceDark: false,
     });
 </script>
 
@@ -38,7 +40,7 @@
             <!-- Spotify Embed -->
             <div class="group relative">
                 <div class="relative overflow-hidden rounded-4xl border border-white/10 bg-[#121212] shadow-2xl">
-                    <iframe style="border-radius: 12px;" :src="`https://open.spotify.com/embed/playlist/${playlistId}`"
+                    <iframe style="border-radius: 12px;" :src="`https://open.spotify.com/embed/playlist/${playlistId}${props.forceDark ? '?theme=0' : ''}`"
                         width="100%" height="500" allow="
                             autoplay;
                             clipboard-write;

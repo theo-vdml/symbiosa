@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use AzGasim\FilamentUnsavedChangesModal\FilamentUnsavedChangesModalPlugin;
+use Cmsmaxinc\FilamentErrorPages\FilamentErrorPagesPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -33,6 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->unsavedChangesAlerts()
             ->plugin(FilamentUnsavedChangesModalPlugin::make())
             ->plugin(ModalRepeaterPlugin::make())
+            ->plugin(FilamentErrorPagesPlugin::make())
             ->login()
             ->colors([
                 'primary' => Color::hex('#51A687'),

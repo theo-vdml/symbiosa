@@ -1,4 +1,5 @@
 <script setup lang="ts">
+    import { onMounted, ref } from 'vue';
     import Header from '@/components/Header.vue';
     import UpcomingEvent from '@/components/UpcomingEvent.vue';
     import NewsSection from '@/components/NewsSection.vue';
@@ -12,11 +13,27 @@
     const props = defineProps<{
         posts: any[];
         upcomingEvent: Event | null;
+        heroPreheading: string;
+        heroTitle: string;
+        heroSubheading: string;
+        heroVideoUrl: string | null;
+        heroPosterUrl: string | null;
+        bentoGallery: any[];
         spotifyPlaylistHeading: string | null;
         spotifyPlaylistId: string | null;
         showSpotifyPlaylist: boolean;
+        spotifyPlaylistForceDark: boolean;
         seo: Seo;
     }>();
+
+    const heroVideo = ref<HTMLVideoElement | null>(null);
+
+    onMounted(() => {
+        if (heroVideo.value && heroVideo.value.dataset.src) {
+            heroVideo.value.src = heroVideo.value.dataset.src;
+            heroVideo.value.load();
+        }
+    });
 </script>
 
 <template>
@@ -28,7 +45,8 @@
         <div class="relative h-screen w-full overflow-hidden">
             <!-- Background Video with subtle scale animation -->
             <div class="absolute inset-0 scale-105 animate-slow-zoom">
-                <video src="/abstract.mp4" autoplay loop muted playsinline class="h-full w-full object-cover"></video>
+                <video ref="heroVideo" :data-src="props.heroVideoUrl || '/abstract.webm'" :poster="props.heroPosterUrl || undefined"
+                    autoplay loop muted playsinline class="h-full w-full object-cover"></video>
             </div>
 
             <!-- Overlays -->
@@ -42,21 +60,21 @@
                 <div class="overflow-hidden py-2">
                     <span
                         class="block font-synonym text-xs md:text-sm tracking-[0.5em] text-white/70 uppercase mb-4 animate-fade-in-up opacity-0">
-                        DJ Sets & Expériences
+                        {{ props.heroPreheading }}
                     </span>
                 </div>
 
                 <div class="overflow-hidden py-10 -my-10">
                     <h1
                         class="font-chillax text-[clamp(4rem,18vw,14rem)] leading-[0.85] text-white tracking-tighter animate-reveal-title opacity-0">
-                        Symbiosa
+                        {{ props.heroTitle }}
                     </h1>
                 </div>
 
                 <div class="overflow-hidden py-2">
                     <span
                         class="block font-synonym text-xs md:text-sm tracking-[0.3em] text-white/50 uppercase mt-6 animate-fade-in-up [animation-delay:800ms] opacity-0">
-                        Belgique — Est. 2026
+                        {{ props.heroSubheading }}
                     </span>
                 </div>
             </div>
@@ -78,9 +96,10 @@
         <MaximSection />
 
         <SpotifyPlaylist v-if="props.showSpotifyPlaylist && props.spotifyPlaylistId"
-            :playlistId="props.spotifyPlaylistId" :heading="props.spotifyPlaylistHeading ?? undefined" />
+            :playlistId="props.spotifyPlaylistId" :heading="props.spotifyPlaylistHeading ?? undefined"
+            :forceDark="props.spotifyPlaylistForceDark" />
 
-        <BentoGallery />
+        <BentoGallery v-if="props.bentoGallery.length === 6" :images="props.bentoGallery" />
     </div>
 
     <Footer />

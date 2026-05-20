@@ -107,7 +107,8 @@ class SeoSchema
                         FileUpload::make("{$p}og_image")
                             ->label('Image de Partage')
                             ->image()
-                            ->directory('seo/og'),
+                            ->directory('seo/og')
+                            ->optimize('webp', 75),
                         Select::make("{$p}twitter_card")
                             ->options(['summary' => 'Petite image', 'summary_large_image' => 'Grande image'])
                             ->default('summary_large_image'),

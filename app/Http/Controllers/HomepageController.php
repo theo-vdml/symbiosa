@@ -3,14 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\HomePage;
 use App\Models\Post;
-use App\Settings\HomepageSettings;
 use Inertia\Inertia;
 
 class HomepageController extends Controller
 {
-    public function index(HomepageSettings $settings)
+    public function index()
     {
+        $homePage = HomePage::first() ?? new HomePage();
+
         $posts = Post::published()
             ->with('category')
             ->latest('published_at')
@@ -22,13 +24,28 @@ class HomepageController extends Controller
             ->with('genres')
             ->first();
 
+        $bentoMedia = $homePage->getMedia('bento_gallery');
+        $bentoGallery = $bentoMedia->count() === 6 ? $bentoMedia->map(function ($media) {
+            return [
+                'url' => $media->getUrl(),
+                'srcset' => $media->getSrcset(),
+            ];
+        })->toArray() : [];
+
         return Inertia::render('Home', [
             'posts' => $posts,
             'upcomingEvent' => $upcomingEvent,
-            'spotifyPlaylistHeading' => $settings->spotify_playlist_heading,
-            'spotifyPlaylistId' => $settings->spotify_playlist_id,
-            'showSpotifyPlaylist' => $settings->show_spotify_playlist,
-            'seo' => $settings->getSeoData(),
+            'heroPreheading' => $homePage->hero_preheading,
+            'heroTitle' => $homePage->hero_title,
+            'heroSubheading' => $homePage->hero_subheading,
+            'heroVideoUrl' => $homePage->getFirstMediaUrl('hero_video'),
+            'heroPosterUrl' => $homePage->getFirstMediaUrl('hero_video', 'poster'),
+            'bentoGallery' => $bentoGallery,
+            'spotifyPlaylistHeading' => $homePage->spotify_playlist_heading,
+            'spotifyPlaylistId' => $homePage->spotify_playlist_id,
+            'showSpotifyPlaylist' => $homePage->show_spotify_playlist,
+            'spotifyPlaylistForceDark' => $homePage->spotify_playlist_force_dark,
+            'seo' => $homePage->getSeoData(),
         ]);
     }
 }

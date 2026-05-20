@@ -257,7 +257,8 @@ class EventForm
                                 ->imageAspectRatio('3:4')
                                 ->automaticallyOpenImageEditorForAspectRatio()
                                 ->automaticallyCropImagesToAspectRatio()
-                                ->imageEditor(),
+                                ->imageEditor()
+                                ->optimize('webp'),
 
                             SpatieMediaLibraryFileUpload::make('background')
                                 ->label('Background')
@@ -268,7 +269,8 @@ class EventForm
                                 ->imageAspectRatio('16:9')
                                 ->automaticallyOpenImageEditorForAspectRatio()
                                 ->automaticallyCropImagesToAspectRatio()
-                                ->imageEditor(),
+                                ->imageEditor()
+                                ->optimize('webp'),
                         ]),
                 ])
         ];
@@ -477,14 +479,15 @@ class EventForm
                     SpatieMediaLibraryFileUpload::make('gallery')
                         ->label('Galerie photo')
                         ->collection('gallery')
+                        ->panelLayout('grid')
                         ->disk('r2')
                         ->multiple()
                         ->appendFiles()
                         ->reorderable()
                         ->visibility('public')
                         ->image()
-                        ->imageEditor()
-                        ->columnSpanFull(),
+                        ->columnSpanFull()
+                        ->optimize('webp'),
                 ])
         ];
     }
@@ -502,7 +505,8 @@ class EventForm
                 ->visibility('public')
                 ->image()
                 ->automaticallyResizeImagesToWidth('1080')
-                ->required(),
+                ->required()
+                ->optimize('webp', 85),
             TextInput::make('website')
                 ->label('Site web / Instagram')
                 ->url()

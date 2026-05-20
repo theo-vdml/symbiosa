@@ -29,6 +29,7 @@
 </script>
 
 <template>
+
     <Head :title="title" />
 
     <Header />
@@ -39,7 +40,8 @@
             <div class="absolute inset-0 z-0">
                 <!-- Background Video -->
                 <div class="absolute inset-0 scale-105 animate-slow-zoom opacity-40">
-                    <video src="/abstract.mp4" autoplay loop muted playsinline class="h-full w-full object-cover"></video>
+                    <video src="/abstract.webm" autoplay loop muted playsinline
+                        class="h-full w-full object-cover"></video>
                 </div>
 
                 <!-- Overlays for Readability -->
@@ -47,26 +49,31 @@
                 <div class="absolute inset-0 bg-radial-gradient from-transparent via-black/40 to-black/90"></div>
                 <div class="absolute inset-0 bg-linear-to-b from-black via-transparent to-black"></div>
                 <div class="absolute inset-0 bg-[url('/noise.png')] opacity-[0.05] mix-blend-soft-light"></div>
-                
+
                 <!-- Branded Glow -->
-                <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl aspect-square bg-[#51A687]/10 blur-[120px] rounded-full"></div>
+                <div
+                    class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl aspect-square bg-[#51A687]/10 blur-[120px] rounded-full">
+                </div>
             </div>
 
             <!-- --- LAYER 1: CONTENT --- -->
             <div class="relative z-10 flex flex-col items-center px-6">
                 <!-- Main Title -->
-                <h1 class="font-chillax text-5xl md:text-7xl lg:text-8xl text-white uppercase italic tracking-tighter leading-none mb-6 animate-fade-in-up">
+                <h1
+                    class="font-chillax text-5xl md:text-7xl lg:text-8xl text-white uppercase italic tracking-tighter leading-none mb-6 animate-fade-in-up">
                     {{ title }}
                 </h1>
 
                 <!-- Description -->
-                <p class="max-w-md font-synonym text-gray-400 text-base md:text-lg leading-relaxed mb-10 animate-fade-in-up [animation-delay:200ms]">
+                <p
+                    class="max-w-md font-synonym text-gray-400 text-base md:text-lg leading-relaxed mb-10 animate-fade-in-up [animation-delay:200ms]">
                     {{ description }}
                 </p>
 
                 <!-- CTA -->
                 <div class="animate-fade-in-up [animation-delay:400ms]">
-                    <AppButton href="/" variant="primary" size="lg" class="border-[#51A687]/50 bg-[#51A687]/10 backdrop-blur-xl hover:bg-[#51A687]/20">
+                    <AppButton href="/" variant="primary" size="lg"
+                        class="border-[#51A687]/50 bg-[#51A687]/10 backdrop-blur-xl hover:bg-[#51A687]/20">
                         Retour à l'accueil
                     </AppButton>
                 </div>

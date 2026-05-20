@@ -5,6 +5,8 @@
 
 @source '../../../../vendor/codewithdennis/filament-advanced-choice/resources/**/*.blade.php';
 
+@source '../../../../vendor/cmsmaxinc/filament-error-pages/resources/**/*.blade.php';
+
 .fi-main {
     @apply max-w-none!;
 }
