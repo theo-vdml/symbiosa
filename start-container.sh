@@ -23,8 +23,11 @@ if [ "$IS_LARAVEL" = "true" ]; then
     --tries=3 \
     --timeout=60 &
 
-  echo "Starting Laravel server ..."
+#   echo "Starting Laravel server ..."
 fi
 
 # Start the FrankenPHP server
-docker-php-entrypoint --config /Caddyfile --adapter caddyfile 2>&1
+# docker-php-entrypoint --config /Caddyfile --adapter caddyfile 2>&1
+
+echo "Starting Supervisor (managing FrankenPHP & Queue Worker)..."
+exec /usr/bin/supervisord -c /app/supervisord.conf
