@@ -21,13 +21,6 @@
     const props = defineProps<{ posts: Post[] }>();
 
     const isHorizontal = computed(() => props.posts.length <= 2);
-
-    const formatDate = (dateString: string) => {
-        return new Intl.DateTimeFormat('fr-FR', {
-            month: 'long',
-            year: 'numeric',
-        }).format(new Date(dateString));
-    };
 </script>
 
 <template>
@@ -45,7 +38,7 @@
                 </div>
                 <div class="hidden md:block">
                     <AppButton :href="newsRoute.index.url()" variant="ghost" size="md"
-                        className="text-gray-400 hover:text-white">
+                        class="text-gray-400 hover:text-white">
                         Toutes les actualités
                         <template #right-icon>
                             <ArrowRight class="w-5 h-5 transition-transform group-hover:translate-x-1" />
@@ -76,7 +69,7 @@
 
             <!-- Mobile CTA -->
             <div class="mt-12 flex justify-center md:hidden">
-                <AppButton :href="newsRoute.index.url()" variant="primary" size="md" className="w-full">
+                <AppButton :href="newsRoute.index.url()" variant="primary" size="md" class="w-full">
                     Toutes les actualités
                     <template #right-icon>
                         <ArrowRight class="w-5 h-5 transition-transform group-hover:translate-x-1" />

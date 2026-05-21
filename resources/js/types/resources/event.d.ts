@@ -19,13 +19,13 @@ interface Event {
     end_time: string;
     city: string;
     country: string;
-    address: string;
+    address: string | null;
     dress_code: string;
     minimum_age: number;
     description: string;
     body: string;
     background_url: string;
-    background_responsive?: { src: string, srcset: string };
+    background_responsive?: { src: string; srcset: string };
     poster_url: string;
     ticketing_starts_at: string | null;
     ticketing_ends_at: string | null;
@@ -44,5 +44,10 @@ interface Event {
     artists?: ArtistWithPivot[];
     ticket_types?: TicketType[];
     addons?: EventAddon[];
-    gallery_urls?: { id: number, url: string, thumb: string, responsive: { src: string, srcset: string } }[];
+    gallery_urls?: {
+        id: number;
+        url: string;
+        thumb: string;
+        responsive: { src: string; srcset: string };
+    }[];
 }

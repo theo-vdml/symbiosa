@@ -10,33 +10,17 @@
     import events from '@/routes/events';
     import SeoMeta from '@/components/SeoMeta.vue';
     import { Seo } from '@/types/seo';
+    import { useEventDates } from '@/composables/useEventDates';
+    import { useGoogleMapsUrl } from '@/composables/useGoogleMapsUrl';
 
     const props = defineProps<{
         event: Event;
         seo: Seo;
     }>();
 
-    const getWeekday = (dateStr: string) => {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('fr-FR', { weekday: 'long' });
-    };
+    const eventDates = useEventDates(() => props.event);
+    const addressHref = useGoogleMapsUrl(() => props.event.address)
 
-    const getDateFormatted = (dateStr: string) => {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
-    };
-
-    const getOpeningHours = (startAt: string, endAt: string) => {
-        const start = new Date(startAt);
-        const end = new Date(endAt);
-
-        const options: Intl.DateTimeFormatOptions = {
-            hour: '2-digit',
-            minute: '2-digit',
-        };
-
-        return `${start.toLocaleTimeString('fr-FR', options)} - ${end.toLocaleTimeString('fr-FR', options)}`;
-    };
 
     const getPerformanceTime = (time: string) => {
         return time.substring(0, 5).replace(':', 'h');
@@ -158,10 +142,11 @@
                                 <Calendar class="w-6 h-6" />
                             </div>
                             <div class="flex flex-col gap-1">
-                                <span class="text-xs font-medium tracking-[0.2em] text-white/50 uppercase">{{
-                                    getWeekday(event.date) }}</span>
+                                <span class="text-xs font-medium tracking-[0.2em] text-white/50 uppercase">
+                                    {{ eventDates.startWeekday }}
+                                </span>
                                 <span class="text-2xl font-chillax text-white uppercase">
-                                    {{ getDateFormatted(event.date) }}
+                                    {{ eventDates.startLong }}
                                 </span>
                             </div>
                         </div>
@@ -174,8 +159,9 @@
                             </div>
                             <div class="flex flex-col gap-1">
                                 <span class="text-2xl font-chillax text-white uppercase">{{ event.city }}</span>
-                                <span class="text-xs font-medium tracking-[0.2em] text-white/50 uppercase">{{
-                                    event.country }}</span>
+                                <span class="text-xs font-medium tracking-[0.2em] text-white/50 uppercase">
+                                    {{ event.country }}
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -285,16 +271,15 @@
                         <div class="space-y-6">
                             <div class="space-y-1">
                                 <p class="text-[10px] font-bold tracking-[0.2em] text-[#51A687] uppercase">Date</p>
-                                <p class="text-white font-medium">{{ getDateFormatted(event.date) }}</p>
+                                <p class="text-white font-medium">
+                                    {{ eventDates.startWeekday }} {{ eventDates.startLong }}
+                                </p>
                             </div>
                             <div class="space-y-1">
                                 <p class="text-[10px] font-bold tracking-[0.2em] text-[#51A687] uppercase">Heures</p>
-                                <p class="text-white font-medium">{{ getOpeningHours(event.start_at,
-                                    event.end_at) }}</p>
-                            </div>
-                            <div class="space-y-1">
-                                <p class="text-[10px] font-bold tracking-[0.2em] text-[#51A687] uppercase">Lieu</p>
-                                <p class="text-white font-medium">{{ event.address }}</p>
+                                <p class="text-white font-medium">
+                                    {{ eventDates.startTime }} - {{ eventDates.endTime }}
+                                </p>
                             </div>
                             <div class="space-y-1" v-if="event.minimum_age && event.minimum_age > 0">
                                 <p class="text-[10px] font-bold tracking-[0.2em] text-[#51A687] uppercase">Age Minimum
@@ -306,6 +291,14 @@
                                 </p>
                                 <p class="text-white font-medium">{{ event.dress_code }}</p>
                             </div>
+                            <div class="space-y-1" v-if="event.address && event.address !== ''">
+                                <p class="text-[10px] font-bold tracking-[0.2em] text-[#51A687] uppercase">Lieu</p>
+                                <p class="text-white font-medium">{{ event.address }}</p>
+                            </div>
+                            <AppButton v-if="addressHref" :href="addressHref" variant="outline" size="md"
+                                rel="noopener noreferrer" class="w-full" target="_blank" external>
+                                Voir sur Maps
+                            </AppButton>
                         </div>
                     </div>
 
@@ -369,28 +362,28 @@
                     enter-to-class="opacity-100" leave-active-class="transition duration-200 ease-in"
                     leave-from-class="opacity-100" leave-to-class="opacity-0">
                     <div v-if="isLightboxOpen"
-                        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 px-4">
+                        class="fixed inset-0 z-100 flex items-center justify-center bg-black/95 px-4">
                         <!-- Close button -->
                         <button @click="closeLightbox"
-                            class="absolute top-6 right-6 z-[110] rounded-full bg-white/10 p-3 text-white backdrop-blur-md transition-colors hover:bg-white/20">
+                            class="absolute top-6 right-6 z-110 rounded-full bg-white/10 p-3 text-white backdrop-blur-md transition-colors hover:bg-white/20">
                             <X class="h-6 w-6" />
                         </button>
 
                         <!-- Download button -->
                         <button @click="downloadImage"
-                            class="absolute top-6 right-24 z-[110] flex items-center gap-2 rounded-full bg-[#51A687] px-4 py-2.5 text-xs font-bold tracking-widest text-white uppercase transition-transform hover:scale-105 active:scale-95">
+                            class="absolute top-6 right-24 z-110 flex items-center gap-2 rounded-full bg-[#51A687] px-4 py-2.5 text-xs font-bold tracking-widest text-white uppercase transition-transform hover:scale-105 active:scale-95">
                             <Download class="h-4 w-4" />
                             <span>Télécharger</span>
                         </button>
 
                         <!-- Navigation -->
                         <button @click.stop="prevImage"
-                            class="absolute left-6 z-[110] rounded-full bg-white/5 p-4 text-white backdrop-blur-md transition-colors hover:bg-white/10 hidden md:block">
+                            class="absolute left-6 z-110 rounded-full bg-white/5 p-4 text-white backdrop-blur-md transition-colors hover:bg-white/10 hidden md:block">
                             <ChevronLeft class="h-8 w-8" />
                         </button>
 
                         <button @click.stop="nextImage"
-                            class="absolute right-6 z-[110] rounded-full bg-white/5 p-4 text-white backdrop-blur-md transition-colors hover:bg-white/10 hidden md:block">
+                            class="absolute right-6 z-110 rounded-full bg-white/5 p-4 text-white backdrop-blur-md transition-colors hover:bg-white/10 hidden md:block">
                             <ChevronRight class="h-8 w-8" />
                         </button>
 
