@@ -11,6 +11,8 @@ use App\Models\TicketType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use App\Mail\CheckoutEmailVerificationMail;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Stripe\Checkout\Session;
 use Str;
@@ -55,8 +57,25 @@ class CheckoutController extends Controller
         return redirect()->route('checkout.show', $checkout->uuid);
     }
 
-    public function show(Checkout $checkout)
+    public function show(Checkout $checkout, Request $request)
     {
+        if ($request->has('reset_verification')) {
+            $checkout->update([
+                'email_verification_code' => null,
+                'email_verified_at' => null,
+            ]);
+            return redirect()->route('checkout.show', $checkout->uuid);
+        }
+
+        if ($request->has('verification_code')) {
+            if ((string)$checkout->email_verification_code === (string)$request->verification_code) {
+                $checkout->update([
+                    'email_verified_at' => now(),
+                ]);
+                return redirect()->route('checkout.show', $checkout->uuid)->with('message', 'Email vérifié avec succès !');
+            }
+        }
+
         if ($checkout->completed_at) {
             // Le checkout est déjà complété, rediriger vers la page de succès
             return redirect()->route('checkout.success', $checkout->uuid);
@@ -102,6 +121,10 @@ class CheckoutController extends Controller
         }
 
         $request->validate($rules);
+
+        if (!$checkout->email_verified_at || $checkout->customer_email !== $request->email) {
+            return redirect()->back()->with('error', 'Veuillez vérifier votre adresse email avant de continuer.');
+        }
 
         if ($checkout->expires_at->isPast() || $checkout->completed_at || $checkout->cancelled_at) {
             return redirect()->route('events.ticketing', $checkout->event->slug)
@@ -175,6 +198,51 @@ class CheckoutController extends Controller
 
         return redirect()->route('checkout.show', $checkout->uuid)
             ->with('error', 'Le paiement a été annulé. Vous pouvez réessayer de payer ou revenir à la sélection des billets.');
+    }
+
+    public function sendVerificationEmail(Request $request, Checkout $checkout)
+    {
+        $request->validate([
+            'email' => 'required|email|max:255',
+            'name' => 'required|string|max:255',
+        ]);
+
+        $code = str_pad((string)rand(1, 999999), 6, '0', STR_PAD_LEFT);
+
+        $checkout->update([
+            'customer_email' => $request->email,
+            'customer_name' => $request->name,
+            'email_verification_code' => (string)$code,
+            'email_verified_at' => null,
+        ]);
+
+        $verificationUrl = route('checkout.show', [
+            'checkout' => $checkout->uuid,
+            'verification_code' => $code
+        ]);
+
+        Mail::to($request->email)->send(new CheckoutEmailVerificationMail($checkout, $code, $verificationUrl));
+
+        return redirect()->back()->with('message', 'Code de vérification envoyé !');
+    }
+
+    public function verifyEmail(Request $request, Checkout $checkout)
+    {
+        $request->validate([
+            'code' => 'required|string',
+        ]);
+
+        $checkout = $checkout->fresh();
+
+        if ($checkout->email_verification_code && (string)$checkout->email_verification_code === (string)$request->code) {
+            $checkout->update([
+                'email_verified_at' => now(),
+            ]);
+
+            return redirect()->back();
+        }
+
+        return redirect()->back()->withErrors(['code' => 'Code invalide.']);
     }
 
     private function handleTicketReservation(Checkout $checkout, array $item)

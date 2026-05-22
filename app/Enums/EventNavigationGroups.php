@@ -10,6 +10,7 @@ enum EventNavigationGroups implements HasLabel
     case Copywriting;
     case Ticketing;
     case Partners;
+    case Archives;
 
 
     public function getLabel(): string
@@ -19,8 +20,7 @@ enum EventNavigationGroups implements HasLabel
             self::Copywriting => 'Rédaction',
             self::Ticketing => 'Billetterie',
             self::Partners => 'Partenaires',
+            self::Archives => 'Archives',
         };
     }
-} {
-    //
 }

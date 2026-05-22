@@ -1,5 +1,6 @@
 <script setup lang="ts">
     import AppButton from '@/components/AppButton.vue';
+    import { useEventDates } from '@/composables/useEventDates';
     import events from '@/routes/events';
     import { Calendar, MapPin } from '@lucide/vue';
 
@@ -7,17 +8,9 @@
         event: Event;
     }
 
-    defineProps<Props>();
+    const props = defineProps<Props>();
 
-    const getWeekday = (dateStr: string) => {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('fr-FR', { weekday: 'long' });
-    };
-
-    const getDateFormatted = (dateStr: string) => {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
-    };
+    const eventDates = useEventDates(() => props.event);
 </script>
 
 <template>
@@ -49,12 +42,12 @@
                 event.poster_url ? 'lg:flex-row lg:text-left' : ''
             ]">
                 <!-- Left: The Poster (Optional) -->
-                <div v-if="event.poster_url" class="hidden md:flex w-full md:w-8/12 lg:w-4/12 xl:w-5/12 shrink-0 justify-center">
-                    <div class="relative group w-full max-w-[280px] md:max-w-sm lg:max-w-none">
+                <div v-if="event.poster_url"
+                    class="hidden md:flex w-full md:w-8/12 lg:w-4/12 xl:w-5/12 shrink-0 justify-center">
+                    <div class="relative group w-full max-w-70 md:max-w-sm lg:max-w-none">
                         <div
                             class="relative z-10 w-full aspect-3/4 overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
-                            <img :src="event.poster_url" :alt="event.title"
-                                class="h-full w-full object-cover" />
+                            <img :src="event.poster_url" :alt="event.title" class="h-full w-full object-cover" />
                         </div>
                     </div>
                 </div>
@@ -73,11 +66,13 @@
                             'flex flex-col gap-2 items-center',
                             event.poster_url ? 'lg:items-start' : ''
                         ]">
-                            <span class="text-white text-xs md:text-sm font-bold tracking-[0.3em] md:tracking-[0.4em] uppercase">
+                            <span
+                                class="text-white text-xs md:text-sm font-bold tracking-[0.3em] md:tracking-[0.4em] uppercase">
                                 {{ event.city }}
                             </span>
-                            <span class="text-[#51A687] text-xs md:text-sm font-bold tracking-[0.3em] md:tracking-[0.4em] uppercase">
-                                {{ getWeekday(event.date) }} {{ getDateFormatted(event.date) }}
+                            <span
+                                class="text-[#51A687] text-xs md:text-sm font-bold tracking-[0.3em] md:tracking-[0.4em] uppercase">
+                                {{ eventDates.startWeekday }} {{ eventDates.startLong }}
                             </span>
                         </div>
 
@@ -89,12 +84,10 @@
                         </h2>
 
                         <!-- Event Description -->
-                        <div v-if="event.description"
-                            :class="[
-                                'max-w-2xl text-white text-base md:text-xl leading-relaxed font-light text-center',
-                                event.poster_url ? 'lg:text-left' : ''
-                            ]"
-                            v-html="event.description">
+                        <div v-if="event.description" :class="[
+                            'max-w-2xl text-white text-base md:text-xl leading-relaxed font-light text-center',
+                            event.poster_url ? 'lg:text-left' : ''
+                        ]" v-html="event.description">
                         </div>
                     </div>
 
@@ -103,7 +96,8 @@
                         'flex flex-col sm:flex-row gap-4 md:gap-6 pt-4 w-full justify-center',
                         event.poster_url ? 'lg:justify-start' : ''
                     ]">
-                        <AppButton v-if="event.ticketing_status === 'open'" :href="events.ticketing(event.slug).url" variant="primary" size="lg"
+                        <AppButton v-if="event.ticketing_status === 'open'" :href="events.ticketing(event.slug).url"
+                            variant="primary" size="lg"
                             class="w-full sm:w-auto border-[#51A687]/50 bg-[#51A687]/10 backdrop-blur-xl hover:bg-[#51A687]/20">
                             Réserver mes places
                         </AppButton>

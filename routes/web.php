@@ -29,11 +29,20 @@ Route::get('/news/{slug}', [\App\Http\Controllers\NewsController::class, 'show']
 Route::get('/legal/{slug}', [\App\Http\Controllers\LegalPageController::class, 'show'])
     ->name('legal.show');
 
+Route::get('/lost-tickets', [\App\Http\Controllers\LostTicketsController::class, 'show'])->name('lost-tickets.show');
+Route::post('/lost-tickets', [\App\Http\Controllers\LostTicketsController::class, 'send'])->name('lost-tickets.send');
+
 Route::post('/events/{event:slug}/checkout', [\App\Http\Controllers\CheckoutController::class, 'store'])
     ->name('events.checkout.store');
 
 Route::get('/checkout/{checkout:uuid}', [\App\Http\Controllers\CheckoutController::class, 'show'])
     ->name('checkout.show');
+
+Route::post('/checkout/{checkout:uuid}/send-verification', [\App\Http\Controllers\CheckoutController::class, 'sendVerificationEmail'])
+    ->name('checkout.send-verification');
+
+Route::post('/checkout/{checkout:uuid}/verify', [\App\Http\Controllers\CheckoutController::class, 'verifyEmail'])
+    ->name('checkout.verify');
 
 Route::post('/checkout/{checkout:uuid}/start', [\App\Http\Controllers\CheckoutController::class, 'checkout'])
     ->name('checkout.start');

@@ -19,13 +19,13 @@ interface Event {
     end_time: string;
     city: string;
     country: string;
-    address: string;
+    address: string | null;
     dress_code: string;
     minimum_age: number;
     description: string;
     body: string;
     background_url: string;
-    background_responsive?: { src: string, srcset: string };
+    background_responsive?: { src: string; srcset: string };
     poster_url: string;
     ticketing_starts_at: string | null;
     ticketing_ends_at: string | null;
@@ -33,7 +33,8 @@ interface Event {
     ticket_pdf_content: string | null;
     stripe_metadata: Record<string, string> | null;
     is_ticketing_open: boolean;
-    is_visible_in_archives: boolean;
+    is_archived: boolean;
+    photo_count: number;
     ticketing_status: 'none' | 'coming_soon' | 'open' | 'closed';
     created_at: string;
     updated_at: string;
@@ -44,5 +45,10 @@ interface Event {
     artists?: ArtistWithPivot[];
     ticket_types?: TicketType[];
     addons?: EventAddon[];
-    gallery_urls?: { id: number, url: string, thumb: string, responsive: { src: string, srcset: string } }[];
+    gallery_urls?: {
+        id: number;
+        url: string;
+        thumb: string;
+        responsive: { src: string; srcset: string };
+    }[];
 }

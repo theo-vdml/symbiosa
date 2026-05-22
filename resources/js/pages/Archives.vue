@@ -3,22 +3,10 @@
     import { Head, Link } from '@inertiajs/vue3';
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
-
-    interface ArchiveEvent {
-        id: number;
-        title: string;
-        type: string;
-        genres: string[];
-        isoDate: string;
-        location: string;
-        image: string;
-        lineup: string[];
-        photoCount: number;
-        recapLink: string;
-    }
+    import routes from '@/routes/events';
 
     const props = defineProps<{
-        events: ArchiveEvent[];
+        events: Event[];
     }>();
 
     const search = ref('');
@@ -46,27 +34,6 @@
 
     watch(search, () => {
         visibleCount.value = pageSize;
-    });
-
-    const eventsByYear = computed(() => {
-        const groups = new Map<string, ArchiveEvent[]>();
-
-        visiblePastEvents.value.forEach((event) => {
-            const date = new Date(event.isoDate);
-            if (isNaN(date.getTime())) return;
-
-            const year = new Intl.DateTimeFormat('fr-BE', {
-                year: 'numeric',
-            }).format(date);
-            const current = groups.get(year) ?? [];
-            current.push(event);
-            groups.set(year, current);
-        });
-
-        return Array.from(groups.entries()).map(([year, events]) => ({
-            year,
-            events,
-        }));
     });
 
     function formatDate(isoDate: string) {
@@ -102,8 +69,8 @@
         <div class="pointer-events-none absolute inset-0 bg-[url('/noise.png')] opacity-[0.04] mix-blend-soft-light">
         </div>
 
-        <main class="relative z-10 mx-auto max-w-6xl px-6 pt-34 pb-24 md:px-10 lg:px-14">
-            <section class="mb-8 space-y-3 text-center md:text-left">
+        <main class="relative z-10 mx-auto max-w-4xl px-6 pt-34 pb-24 md:px-10">
+            <section class="mb-12 space-y-3 text-center md:text-left">
                 <p class="text-xs font-bold tracking-[0.35em] text-[#51A687] uppercase">
                     Archives
                 </p>
@@ -120,63 +87,60 @@
                 </div>
             </section>
 
-            <section v-if="eventsByYear.length" class="space-y-7">
-                <article v-for="group in eventsByYear" :key="group.year"
-                    class="grid gap-3 md:grid-cols-[72px,1fr] md:gap-5">
-                    <div class="md:pt-1.5">
-                        <p class="font-chillax text-3xl leading-none text-white/90 md:text-4xl">
-                            {{ group.year }}
-                        </p>
+            <section v-if="visiblePastEvents.length" class="space-y-5">
+                <Link v-for="event in visiblePastEvents" :key="event.id" :href="routes.show(event.slug).url"
+                    class="group relative flex items-center gap-6 overflow-hidden rounded-2xl border border-white/8 bg-white/[0.03] p-2.5 pr-8 transition-all duration-300 hover:border-white/15 hover:bg-white/[0.06]">
+                    <div class="relative aspect-[16/9] w-36 shrink-0 overflow-hidden rounded-xl bg-white/5 md:w-64">
+                        <img v-if="event.background_url || event.poster_url"
+                            :src="event.background_url || event.poster_url" :alt="event.title"
+                            class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                        <div class="absolute inset-0 bg-black/10 transition-opacity duration-300 group-hover:opacity-0">
+                        </div>
                     </div>
 
-                    <div class="space-y-3.5">
-                        <Link v-for="event in group.events" :key="event.id" :href="event.recapLink"
-                            class="group relative block rounded-lg border border-white/8 bg-white/2 px-3 py-4 transition-all duration-200 hover:border-white/18 hover:bg-white/5">
-                            <div class="min-w-0 space-y-2.5">
-                                <div class="flex flex-wrap items-center gap-1.5">
-                                    <span
-                                        class="rounded-md border border-white/20 bg-black/40 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-white uppercase">
-                                        {{ formatDate(event.isoDate) }}
-                                    </span>
-                                    <span
-                                        class="rounded-full border border-[#51A687]/40 bg-[#51A687]/15 px-2 py-0.5 text-[9px] font-bold tracking-[0.12em] text-white uppercase">
-                                        {{ event.type }}
-                                    </span>
-                                </div>
+                    <div class="min-w-0 flex-1 py-2">
+                        <div class="flex items-center gap-2">
+                            <span
+                                class="text-[10px] font-bold tracking-[0.15em] text-[#51A687] uppercase opacity-80 group-hover:opacity-100 md:text-xs">
+                                {{ formatDate(event.start_at) }}
+                            </span>
+                        </div>
 
-                                <h2 class="font-chillax text-2xl leading-none text-white md:text-[1.85rem]">
-                                    {{ event.title }}
-                                </h2>
+                        <h2 class="truncate font-chillax text-2xl leading-tight text-white md:text-4xl">
+                            {{ event.title }}
+                        </h2>
 
-                                <div
-                                    class="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-gray-300 md:text-xs">
-                                    <p class="font-medium">
-                                        {{ event.location }}
-                                    </p>
-                                    <span class="text-gray-500">-</span>
-                                    <p class="font-medium">
-                                        {{ event.photoCount }} photos
-                                    </p>
-                                    <p class="ml-auto text-[10px] font-bold tracking-[0.14em] text-[#51A687] uppercase">
-                                        Voir recap
-                                    </p>
-                                </div>
-                            </div>
-                        </Link>
+                        <div class="flex items-center gap-x-3 text-[11px] text-gray-400 md:text-sm">
+                            <p class="font-medium">{{ event.city }}, {{ event.country }}</p>
+                            <span class="h-1 w-1 rounded-full bg-white/20"></span>
+                            <p class="font-medium">{{ event.photo_count }} photos</p>
+                        </div>
                     </div>
-                </article>
+
+                    <div class="shrink-0">
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 transition-all duration-300 group-hover:border-[#51A687]/40 group-hover:bg-[#51A687]/10">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="text-white/30 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-white">
+                                <path d="M5 12h14m-7-7 7 7-7 7" />
+                            </svg>
+                        </div>
+                    </div>
+                </Link>
             </section>
 
-            <div v-if="hasMore" class="mt-10 flex justify-center">
+            <div v-if="hasMore" class="mt-12 flex justify-center">
                 <button type="button" @click="loadMore"
-                    class="cursor-pointer rounded-full border border-white/20 bg-white/5 px-5 py-2 text-xs font-bold tracking-[0.18em] text-white uppercase transition-colors hover:border-white/35">
+                    class="cursor-pointer rounded-full border border-white/20 bg-white/5 px-6 py-2.5 text-xs font-bold tracking-[0.18em] text-white uppercase transition-colors hover:border-white/35">
                     Charger plus
                 </button>
             </div>
 
-            <section v-if="!eventsByYear.length" class="flex flex-col items-center justify-center py-20 text-center">
+            <section v-if="!visiblePastEvents.length" class="flex flex-col items-center justify-center py-20 text-center">
                 <h2 class="font-chillax text-3xl text-white md:text-4xl">
-                    {{ }}
+                    Aucun résultat
                 </h2>
                 <p class="mt-4 max-w-sm text-gray-400">
                     Essaie avec un autre mot-cle pour retrouver une edition

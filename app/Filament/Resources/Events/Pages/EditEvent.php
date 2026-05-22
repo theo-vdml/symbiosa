@@ -74,7 +74,7 @@ class EditEvent extends EditRecord
                             ]),
                         Callout::make("Archives")
                             ->info()
-                            ->description('Pour que vos événements passés restent consultables sur votre page archives, veillez à ne pas changer leur statut en « Archivé ». Laissez-les « Publiés » et activez simplement l\'option de visibilité dédiée dans la section « Archives ».'),
+                            ->description('Pour que vos événements passés restent consultables sur votre page archives, veillez à ne pas changer leur statut en « Archivé ». Laissez-les « Publiés » et attendez simplement que la date de fin de l\'événement soit passée.'),
                     ]),
                 Section::make('Zone de danger')
                     ->collapsible()

@@ -12,7 +12,6 @@ use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ViewField;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Components\Grid;
@@ -461,34 +460,6 @@ class EventForm
     {
         return [
             \App\Filament\Shared\Schemas\SeoSchema::make(),
-        ];
-    }
-
-    public static function getArchivesSchema(): array
-    {
-        return [
-            Section::make('Archives')
-                ->description('Paramètres de visibilité dans les archives et galerie photo post-événement.')
-                ->columnSpanFull()
-                ->schema([
-                    Toggle::make('is_visible_in_archives')
-                        ->label('Visible dans les archives')
-                        ->helperText('Si activé, l\'événement apparaîtra dans la page des archives et le mode "Archive" sera activé sur sa page de détail.')
-                        ->columnSpanFull(),
-
-                    SpatieMediaLibraryFileUpload::make('gallery')
-                        ->label('Galerie photo')
-                        ->collection('gallery')
-                        ->panelLayout('grid')
-                        ->disk('r2')
-                        ->multiple()
-                        ->appendFiles()
-                        ->reorderable()
-                        ->visibility('public')
-                        ->image()
-                        ->columnSpanFull()
-                        ->optimize('webp'),
-                ])
         ];
     }
 

@@ -1,16 +1,19 @@
 <script setup lang="ts">
-    import { computed } from 'vue';
+    import { computed, HTMLAttributes } from 'vue';
     import { Link } from '@inertiajs/vue3';
     import { cn } from '@/lib/utils';
-
     import { Loader2 } from '@lucide/vue';
+
+    defineOptions({
+        inheritAttrs: false,
+    });
 
     interface Props {
         href?: string;
         as?: 'a' | 'button' | typeof Link;
         variant?: 'primary' | 'outline' | 'glass' | 'ghost';
         size?: 'sm' | 'md' | 'lg';
-        className?: string;
+        class?: HTMLAttributes['class'];
         external?: boolean;
         loading?: boolean;
         disabled?: boolean;
@@ -45,17 +48,22 @@
     };
 
     const baseClasses =
-        'group inline-flex items-center justify-center gap-2 font-bold rounded-full transition-all duration-300 text-center disabled:opacity-50 disabled:cursor-not-allowed';
+        'group inline-flex items-center justify-center gap-2 font-bold rounded-full transition-all duration-300 text-center disabled:opacity-80 disabled:cursor-not-allowed';
+
+    const computedClasses = computed(() => {
+        return cn(
+            baseClasses,
+            variantClasses[props.variant],
+            sizeClasses[props.size],
+            props.class
+        );
+    });
+
 </script>
 
 <template>
-    <component :is="componentType" :href="href" :disabled="disabled || loading" :class="cn(
-        baseClasses,
-        variantClasses[variant],
-        sizeClasses[size],
-        className,
-    )
-        ">
+    <component :is="componentType" :href="href" :disabled="disabled || loading" :class="computedClasses"
+        v-bind="$attrs">
         <Loader2 v-if="loading" class="w-4 h-4 animate-spin shrink-0" />
         <slot name="left-icon" />
         <slot />
