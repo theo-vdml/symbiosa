@@ -46,12 +46,15 @@ class Checkout extends Model
         'expires_at',
         'completed_at',
         'cancelled_at',
+        'email_verified_at',
+        'email_verification_code',
     ];
 
     protected $casts = [
         'expires_at' => 'datetime',
         'completed_at' => 'datetime',
         'cancelled_at' => 'datetime',
+        'email_verified_at' => 'datetime',
         'accepted_legal_pages' => 'array',
     ];
 

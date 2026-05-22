@@ -48,7 +48,7 @@
     };
 
     const baseClasses =
-        'group inline-flex items-center justify-center gap-2 font-bold rounded-full transition-all duration-300 text-center disabled:opacity-50 disabled:cursor-not-allowed';
+        'group inline-flex items-center justify-center gap-2 font-bold rounded-full transition-all duration-300 text-center disabled:opacity-80 disabled:cursor-not-allowed';
 
     const computedClasses = computed(() => {
         return cn(

@@ -38,6 +38,12 @@ Route::post('/events/{event:slug}/checkout', [\App\Http\Controllers\CheckoutCont
 Route::get('/checkout/{checkout:uuid}', [\App\Http\Controllers\CheckoutController::class, 'show'])
     ->name('checkout.show');
 
+Route::post('/checkout/{checkout:uuid}/send-verification', [\App\Http\Controllers\CheckoutController::class, 'sendVerificationEmail'])
+    ->name('checkout.send-verification');
+
+Route::post('/checkout/{checkout:uuid}/verify', [\App\Http\Controllers\CheckoutController::class, 'verifyEmail'])
+    ->name('checkout.verify');
+
 Route::post('/checkout/{checkout:uuid}/start', [\App\Http\Controllers\CheckoutController::class, 'checkout'])
     ->name('checkout.start');
 
