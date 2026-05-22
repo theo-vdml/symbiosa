@@ -43,7 +43,7 @@ class Event extends Model implements HasMedia
             ->width(600)
             ->height(600)
             ->sharpen(10)
-            ->nonQueued()
+            ->queued()
             ->performOnCollections('gallery');
     }
 
@@ -52,7 +52,6 @@ class Event extends Model implements HasMedia
         'description',
         'slug',
         'status',
-        'is_visible_in_archives',
         'published_at',
         'start_at',
         'end_at',
@@ -70,7 +69,7 @@ class Event extends Model implements HasMedia
         'stripe_metadata',
     ];
 
-    protected $appends = ['min_price', 'date', 'start_time', 'end_time', 'is_ticketing_open', 'ticketing_status', 'poster_url', 'background_url', 'background_responsive', 'gallery_urls'];
+    protected $appends = ['min_price', 'date', 'start_time', 'end_time', 'is_ticketing_open', 'ticketing_status', 'is_archived', 'photo_count', 'poster_url', 'background_url', 'background_responsive', 'gallery_urls'];
 
     protected $casts = [
         'start_at' => 'datetime',
@@ -78,11 +77,20 @@ class Event extends Model implements HasMedia
         'faq' => 'array',
         'status' => PublicationStatus::class,
         'published_at' => 'datetime',
-        'is_visible_in_archives' => 'boolean',
         'ticketing_starts_at' => 'datetime',
         'ticketing_ends_at' => 'datetime',
         'stripe_metadata' => 'array',
     ];
+
+    protected function photoCount(): Attribute
+    {
+        return Attribute::get(fn() => $this->getMedia('gallery')->count());
+    }
+
+    protected function isArchived(): Attribute
+    {
+        return Attribute::get(fn() => $this->end_at?->isPast() ?? false);
+    }
 
     public function getPosterUrlAttribute(): ?string
     {
@@ -105,15 +113,14 @@ class Event extends Model implements HasMedia
 
     public function getGalleryUrlsAttribute(): array
     {
-        return $this->getMedia('gallery')->map(fn($media) => [
-            'id' => $media->id,
-            'url' => $media->getUrl(),
-            'thumb' => $media->getUrl('thumb'),
-            'responsive' => [
-                'src' => $media->getUrl(),
-                'srcset' => $media->getSrcset(),
-            ],
-        ])->toArray();
+        return $this->getMedia('gallery')
+            ->filter(fn($media) => $media->hasGeneratedConversion('thumb'))
+            ->map(fn($media) => [
+                'id' => $media->id,
+                'url' => $media->getUrl(),
+                'file_name' => $media->file_name,
+                'thumb' => $media->getUrl('thumb') . '?t=' . $media->updated_at?->timestamp,
+            ])->toArray();
     }
 
     protected function ticketingStatus(): Attribute
@@ -235,6 +242,12 @@ class Event extends Model implements HasMedia
     public function getAttendeesCountAttribute()
     {
         return $this->issuedTickets()->where('is_attendee', true)->count();
+    }
+
+    public function scopeArchived(Builder $query)
+    {
+        return $query->where('end_at', '<', now())
+            ->orderBy('start_at', 'desc');
     }
 
     public function scopeUpcoming(Builder $query, bool $includeOngoing = false)

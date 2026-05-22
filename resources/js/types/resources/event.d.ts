@@ -33,7 +33,8 @@ interface Event {
     ticket_pdf_content: string | null;
     stripe_metadata: Record<string, string> | null;
     is_ticketing_open: boolean;
-    is_visible_in_archives: boolean;
+    is_archived: boolean;
+    photo_count: number;
     ticketing_status: 'none' | 'coming_soon' | 'open' | 'closed';
     created_at: string;
     updated_at: string;

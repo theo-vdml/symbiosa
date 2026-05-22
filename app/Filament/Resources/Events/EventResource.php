@@ -6,10 +6,10 @@ use App\Enums\NavigationGroups;
 use App\Filament\Resources\Events\Pages\CreateEvent;
 use App\Filament\Resources\Events\Pages\EditEvent;
 use App\Filament\Resources\Events\Pages\EditEventAddons;
-use App\Filament\Resources\Events\Pages\EditEventArchives;
 use App\Filament\Resources\Events\Pages\EditEventCopywritting;
 use App\Filament\Resources\Events\Pages\EditEventDetails;
 use App\Filament\Resources\Events\Pages\EditEventFaq;
+use App\Filament\Resources\Events\Pages\EditEventGallery;
 use App\Filament\Resources\Events\Pages\EditEventLineup;
 use App\Filament\Resources\Events\Pages\EditEventSponsors;
 use App\Filament\Resources\Events\Pages\EditEventSeo;
@@ -82,7 +82,6 @@ class EventResource extends Resource
             'details' => EditEventDetails::route('/{record}/details'),
             'copywritting' => EditEventCopywritting::route('/{record}/copywritting'),
             'visuals' => EditEventVisuals::route('/{record}/visuals'),
-            'archives' => EditEventArchives::route('/{record}/archives'),
             'seo' => EditEventSeo::route('/{record}/seo'),
             'faq' => EditEventFaq::route('/{record}/faq'),
             'sponsors' => EditEventSponsors::route('/{record}/sponsors'),
@@ -93,6 +92,7 @@ class EventResource extends Resource
             'checkouts' => ListEventCheckouts::route('/{record}/checkouts'),
             'issued-tickets' => ListEventIssuedTickets::route('/{record}/issued-tickets'),
             'checkin-lists' => ListEventCheckinLists::route('/{record}/checkin-lists'),
+            'gallery' => EditEventGallery::route('/{record}/gallery'),
         ];
     }
 
@@ -104,7 +104,6 @@ class EventResource extends Resource
             EditEventDetails::class,
             EditEventCopywritting::class,
             EditEventVisuals::class,
-            EditEventArchives::class,
             EditEventSeo::class,
             EditEventLineup::class,
             EditEventFaq::class,
@@ -115,6 +114,7 @@ class EventResource extends Resource
             ListEventCheckouts::class,
             ListEventIssuedTickets::class,
             ListEventCheckinLists::class,
+            EditEventGallery::class,
         ]);
     }
 }
