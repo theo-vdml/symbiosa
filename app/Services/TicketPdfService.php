@@ -34,8 +34,6 @@ class TicketPdfService
             $backgroundImage = $event->background_url;
         }
 
-        Log::info('Bg: ' . ($backgroundImage ?? 'none'));
-
         return Pdf::loadView('pdfs.ticket', [
             'tickets'  => $tickets,
             'event'    => $event,

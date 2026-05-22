@@ -29,6 +29,9 @@ Route::get('/news/{slug}', [\App\Http\Controllers\NewsController::class, 'show']
 Route::get('/legal/{slug}', [\App\Http\Controllers\LegalPageController::class, 'show'])
     ->name('legal.show');
 
+Route::get('/lost-tickets', [\App\Http\Controllers\LostTicketsController::class, 'show'])->name('lost-tickets.show');
+Route::post('/lost-tickets', [\App\Http\Controllers\LostTicketsController::class, 'send'])->name('lost-tickets.send');
+
 Route::post('/events/{event:slug}/checkout', [\App\Http\Controllers\CheckoutController::class, 'store'])
     ->name('events.checkout.store');
 

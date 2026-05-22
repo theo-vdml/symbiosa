@@ -22,6 +22,8 @@
                     </Link>
                     <Link href="/contact" class="text-base cursor-pointer transition-colors hover:underline">Contact
                     </Link>
+                    <Link href="/lost-tickets" class="text-base cursor-pointer transition-colors hover:underline">J'ai perdu mes billets
+                    </Link>
 
                     <Link v-for="legalPage in footerLegalPages" :key="legalPage.slug" :href="`/legal/${legalPage.slug}`"
                         class="text-base cursor-pointer transition-colors hover:underline">
