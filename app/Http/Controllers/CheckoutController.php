@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use App\Mail\CheckoutEmailVerificationMail;
+use App\Services\TicketPdfService;
+use App\Enums\CheckoutStatus;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Stripe\Checkout\Session;
@@ -184,8 +186,21 @@ class CheckoutController extends Controller
     public function success(Checkout $checkout)
     {
         return Inertia::render('Checkout/Success', [
-            'checkout' => $checkout->load('reservations.reservable.event'),
+            'checkout' => $checkout->load('reservations.reservable.event')->append('status'),
         ]);
+    }
+
+    public function downloadTickets(Checkout $checkout, TicketPdfService $pdfService)
+    {
+        if ($checkout->status !== CheckoutStatus::COMPLETED) {
+            abort(403, 'Cette commande n\'est pas encore confirmée.');
+        }
+
+        $checkout->load(['issuedTickets.ticketPrice.ticketType', 'event']);
+
+        $pdf = $pdfService->generate($checkout->event, $checkout->issuedTickets);
+
+        return $pdf->download("tickets-{$checkout->uuid}.pdf");
     }
 
     public function cancel_payment(Checkout $checkout)

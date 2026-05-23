@@ -50,6 +50,9 @@ Route::post('/checkout/{checkout:uuid}/start', [\App\Http\Controllers\CheckoutCo
 Route::get('/checkout/{checkout:uuid}/success', [\App\Http\Controllers\CheckoutController::class, 'success'])
     ->name('checkout.success');
 
+Route::get('/checkout/{checkout:uuid}/download', [\App\Http\Controllers\CheckoutController::class, 'downloadTickets'])
+    ->name('checkout.download');
+
 Route::get('/checkout/{checkout:uuid}/cancel', [\App\Http\Controllers\CheckoutController::class, 'cancel_payment'])
     ->name('checkout.cancel_payment');
 
