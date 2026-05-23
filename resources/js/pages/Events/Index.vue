@@ -1,7 +1,6 @@
 <script setup lang="ts">
-    import { Head } from '@inertiajs/vue3';
-    import Header from '@/components/Header.vue';
-    import Footer from '@/components/Footer.vue';
+    import MainLayout from '@/layouts/MainLayout.vue';
+    import PageHeader from '@/components/PageHeader.vue';
     import EventListItem from '@/components/Events/EventListItem.vue';
     import EventEmptyState from '@/components/Events/EventEmptyState.vue';
     import EventListEnd from '@/components/Events/EventListEnd.vue';
@@ -14,36 +13,10 @@
 </script>
 
 <template>
-
-    <Head title="Calendrier" />
-
-    <Header />
-
-    <div class="relative z-10 overflow-hidden rounded-b-[3rem] lg:rounded-b-[6rem] bg-black min-h-screen">
-        <!-- Background Effects -->
-        <div class="pointer-events-none absolute inset-0 bg-linear-to-b from-black via-black to-black"></div>
-        <div
-            class="pointer-events-none absolute -top-32 left-1/2 h-115 w-[130%] -translate-x-1/2 rounded-full bg-[#06402B]/18 blur-[150px]">
-        </div>
-        <div class="pointer-events-none absolute inset-0 bg-[url('/noise.png')] opacity-[0.04] mix-blend-soft-light">
-        </div>
-
-        <main class="relative z-10 mx-auto max-w-6xl px-4 pt-34 pb-32 md:px-10">
-            <header class="mb-16 md:mb-20 space-y-4 text-center md:text-left">
-                <p class="text-xs font-bold tracking-[0.35em] text-[#51A687] uppercase">
-                    Calendrier
-                </p>
-                <h1 class="font-chillax text-4xl leading-[0.92] text-white md:text-7xl lg:text-8xl">
-                    Tous les événements <br class="hidden md:block" />
-                    à venir
-                </h1>
-                <p class="max-w-2xl text-sm text-gray-300 md:text-base">
-                    Découvrez les prochaines expériences Symbiosa.
-                    <br class="hidden md:block" />
-                    Chaque événement est une immersion unique dans l'univers
-                    électronique.
-                </p>
-            </header>
+    <MainLayout title="Calendrier" has-background>
+        <div class="relative z-10 mx-auto max-w-6xl px-4 pt-34 pb-32 md:px-10">
+            <PageHeader preheading="Calendrier" heading="Tous les événements à venir"
+                description="Découvrez les prochaines expériences Symbiosa. Chaque événement est une immersion unique dans l'univers électronique." />
 
             <div v-if="events.length > 0" class="relative mt-20 md:px-0">
                 <!-- Timeline Line -->
@@ -79,8 +52,6 @@
             </div>
 
             <EventEmptyState v-else />
-        </main>
-    </div>
-
-    <Footer />
+        </div>
+    </MainLayout>
 </template>

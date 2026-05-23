@@ -41,10 +41,11 @@ class PostForm
                                     ->image()
                                     ->imageAspectRatio('16:9')
                                     ->automaticallyOpenImageEditorForAspectRatio()
-                                    ->automaticallyResizeImagesToWidth('2048')
+                                    ->automaticallyCropImagesToAspectRatio()
                                     ->imageEditor()
                                     ->imagePreviewHeight(600)
-                                    ->helperText('Image de couverture de l\'article. Recommandé : 16:9, max 2048px de large.'),
+                                    ->rules(['dimensions:aspect_ratio=16/9'])
+                                    ->optimize('webp'),
 
                                 Select::make('category_id')
                                     ->label('Catégorie')

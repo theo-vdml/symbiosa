@@ -1,9 +1,9 @@
 <script setup lang="ts">
     import { computed, ref, watch } from 'vue';
-    import { Head, Link } from '@inertiajs/vue3';
-    import Header from '@/components/Header.vue';
-    import Footer from '@/components/Footer.vue';
+    import MainLayout from '@/layouts/MainLayout.vue';
+    import PageHeader from '@/components/PageHeader.vue';
     import routes from '@/routes/events';
+    import { Link } from '@inertiajs/vue3';
 
     const props = defineProps<{
         events: Event[];
@@ -56,41 +56,19 @@
 </script>
 
 <template>
+    <MainLayout title="Archives" has-background>
+        <div class="relative z-10 mx-auto max-w-6xl px-4 pt-34 pb-32 md:px-10">
+            <PageHeader preheading="Archives" heading="Les souvenirs de Symbiosa"
+                description="Retrouvez tout nos évènements passés. Chaque édition est une capsule temporelle, un souvenir précieux de notre voyage à travers la musique électronique." />
 
-    <Head title="Archives" />
-
-    <Header />
-
-    <div class="relative z-10 min-h-[120vh] overflow-hidden rounded-b-[3rem] lg:rounded-b-[6rem] bg-black">
-        <div class="pointer-events-none absolute inset-0 bg-linear-to-b from-black via-black to-black"></div>
-        <div
-            class="pointer-events-none absolute -top-32 left-1/2 h-115 w-[130%] -translate-x-1/2 rounded-full bg-[#06402B]/18 blur-[150px]">
-        </div>
-        <div class="pointer-events-none absolute inset-0 bg-[url('/noise.png')] opacity-[0.04] mix-blend-soft-light">
-        </div>
-
-        <main class="relative z-10 mx-auto max-w-4xl px-6 pt-34 pb-24 md:px-10">
-            <section class="mb-12 space-y-3 text-center md:text-left">
-                <p class="text-xs font-bold tracking-[0.35em] text-[#51A687] uppercase">
-                    Archives
-                </p>
-                <h1 class="font-chillax text-5xl leading-[0.92] text-white md:text-7xl lg:text-8xl">
-                    Les souvenirs de Symbiosa
-                </h1>
-                <p class="max-w-2xl font-synonym text-sm text-gray-300 md:text-base">
-                    Retrouvez tout nos évènements passés.
-                </p>
-
-                <div class="max-w-xl pt-2">
-                    <input v-model="search" type="text" placeholder="Rechercher un évènement."
-                        class="w-full rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm text-white placeholder:text-gray-500 focus:border-[#06402B]/70 focus:ring-2 focus:ring-[#06402B]/30 focus:outline-none" />
-                </div>
-            </section>
-
+            <div class="mb-8">
+                <input v-model="search" type="text" placeholder="Rechercher un évènement."
+                    class="w-full rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm text-white placeholder:text-gray-500 focus:border-[#06402B]/70 focus:ring-2 focus:ring-[#06402B]/30 focus:outline-none" />
+            </div>
             <section v-if="visiblePastEvents.length" class="space-y-5">
                 <Link v-for="event in visiblePastEvents" :key="event.id" :href="routes.show(event.slug).url"
-                    class="group relative flex items-center gap-6 overflow-hidden rounded-2xl border border-white/8 bg-white/[0.03] p-2.5 pr-8 transition-all duration-300 hover:border-white/15 hover:bg-white/[0.06]">
-                    <div class="relative aspect-[16/9] w-36 shrink-0 overflow-hidden rounded-xl bg-white/5 md:w-64">
+                    class="group relative flex items-center gap-6 overflow-hidden rounded-2xl border border-white/8 bg-white/3 p-2.5 pr-8 transition-all duration-300 hover:border-white/15 hover:bg-white/6">
+                    <div class="relative aspect-video w-36 shrink-0 overflow-hidden rounded-xl bg-white/5 md:w-64">
                         <img v-if="event.background_url || event.poster_url"
                             :src="event.background_url || event.poster_url" :alt="event.title"
                             class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
@@ -138,7 +116,8 @@
                 </button>
             </div>
 
-            <section v-if="!visiblePastEvents.length" class="flex flex-col items-center justify-center py-20 text-center">
+            <section v-if="!visiblePastEvents.length"
+                class="flex flex-col items-center justify-center py-20 text-center">
                 <h2 class="font-chillax text-3xl text-white md:text-4xl">
                     Aucun résultat
                 </h2>
@@ -147,8 +126,6 @@
                     passee.
                 </p>
             </section>
-        </main>
-    </div>
-
-    <Footer />
+        </div>
+    </MainLayout>
 </template>

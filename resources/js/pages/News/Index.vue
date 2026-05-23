@@ -1,8 +1,8 @@
 <script setup lang="ts">
     import { computed, ref } from 'vue';
-    import { Head, Link } from '@inertiajs/vue3';
-    import Header from '@/components/Header.vue';
-    import Footer from '@/components/Footer.vue';
+    import MainLayout from '@/layouts/MainLayout.vue';
+    import PageHeader from '@/components/PageHeader.vue';
+    import { Link } from '@inertiajs/vue3';
 
     interface NewsProps {
         posts: {
@@ -63,33 +63,11 @@
 </script>
 
 <template>
+    <MainLayout title="Actualités" has-background>
+        <div class="relative z-10 mx-auto max-w-6xl px-4 pt-34 pb-32 md:px-10">
 
-    <Head title="Actualités" />
-
-    <Header />
-
-    <div class="relative z-10 min-h-[120vh] overflow-hidden rounded-b-[3rem] lg:rounded-b-[6rem] bg-black">
-        <div class="pointer-events-none absolute inset-0 bg-linear-to-b from-black via-black to-black"></div>
-        <div
-            class="pointer-events-none absolute -top-32 left-1/2 h-115 w-[130%] -translate-x-1/2 rounded-full bg-[#06402B]/18 blur-[150px]">
-        </div>
-        <div class="pointer-events-none absolute inset-0 bg-[url('/noise.png')] opacity-[0.04] mix-blend-soft-light">
-        </div>
-
-        <main class="relative z-10 mx-auto max-w-6xl px-6 pt-34 pb-24 md:px-10 lg:px-14">
-
-            <!-- Page header -->
-            <section class="mb-10 space-y-3 text-center md:text-left">
-                <p class="text-xs font-bold tracking-[0.35em] text-[#51A687] uppercase">
-                    Actualités
-                </p>
-                <h1 class="font-chillax text-5xl leading-[0.92] text-white md:text-7xl lg:text-8xl">
-                    News & Stories
-                </h1>
-                <p class="max-w-2xl text-sm text-gray-300 md:text-base">
-                    Annonces, coulisses, aftermovies et portraits — tout ce qui fait vivre Symbiosa en dehors des nuits.
-                </p>
-            </section>
+            <PageHeader preheading="Actualités" heading="News & Stories"
+                description="Annonces, coulisses, aftermovies et portraits — tout ce qui fait vivre Symbiosa en dehors des nuits." />
 
             <!-- Category filters -->
             <div class="mb-10 flex flex-wrap items-center gap-1.5" v-if="props.categories.length > 1">
@@ -131,7 +109,7 @@
                     <!-- Content -->
                     <div class="flex flex-1 flex-col gap-3 p-5">
                         <span class="text-[11px] font-medium text-gray-500 capitalize">{{ formatDate(news.published_at)
-                            }}</span>
+                        }}</span>
                         <h3
                             class="font-chillax text-lg leading-snug text-white transition-colors duration-300 group-hover:text-[#51A687] md:text-xl">
                             {{ news.title }}
@@ -156,9 +134,6 @@
                     Essaie de désélectionner certains filtres.
                 </p>
             </section>
-
-        </main>
-    </div>
-
-    <Footer />
+        </div>
+    </MainLayout>
 </template>

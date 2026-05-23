@@ -1,11 +1,9 @@
 <script setup lang="ts">
-    import Header from '@/components/Header.vue';
-    import Footer from '@/components/Footer.vue';
+    import MainLayout from '@/layouts/MainLayout.vue';
     import AppButton from '@/components/AppButton.vue';
     import SponsorMarquee from '@/components/SponsorMarquee.vue';
     import EventFaq from '@/components/EventFaq.vue';
     import events from '@/routes/events';
-    import SeoMeta from '@/components/SeoMeta.vue';
     import { Seo } from '@/types/seo';
     import EventShowHero from '@/components/Events/EventShowHero.vue';
     import EventShowLineup from '@/components/Events/EventShowLineup.vue';
@@ -20,17 +18,12 @@
 </script>
 
 <template>
-    <SeoMeta :seo="seo" />
-
-    <Header />
-
-    <div class="relative z-10 rounded-b-[3rem] lg:rounded-b-[6rem] bg-black min-h-screen">
-
+    <MainLayout :seo="seo">
         <!-- Hero Banner Section -->
         <EventShowHero :event="event" />
 
         <!-- Main Content -->
-        <main class="relative z-10 mx-auto max-w-7xl px-6 pb-24 md:px-10 lg:px-14">
+        <div class="relative z-10 mx-auto max-w-7xl px-6 pb-24 md:px-10 lg:px-14">
             <!-- Action Bar -->
             <div v-if="event.ticketing_status === 'open' && !event.is_archived"
                 class="relative -translate-y-1/2 z-20 flex justify-center px-4">
@@ -72,7 +65,7 @@
 
             <!-- Sponsors Section -->
             <section v-if="event.sponsors?.length" class="mt-32 space-y-10">
-                <p class="text-center text-[10px] font-bold tracking-[0.3em] text-white/40 uppercase">
+                <p class="center text-[10px] font-bold tracking-[0.3em] text-white/40 uppercase">
                     Cet événement ne serait pas possible sans nos sponsors
                 </p>
 
@@ -81,10 +74,8 @@
 
             <!-- FAQ Section -->
             <EventFaq v-if="!event.is_archived && event.faq?.length" :faq="event.faq" />
-        </main>
-    </div>
-
-    <Footer />
+        </div>
+    </MainLayout>
 </template>
 
 <style scoped></style>

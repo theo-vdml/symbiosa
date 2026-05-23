@@ -1,8 +1,8 @@
 <script setup lang="ts">
     import { ref, computed } from 'vue';
-    import { Head, Link, useForm } from '@inertiajs/vue3';
-    import Header from '@/components/Header.vue';
-    import Footer from '@/components/Footer.vue';
+    import { Link, useForm } from '@inertiajs/vue3';
+    import MainLayout from '@/layouts/MainLayout.vue';
+    import HeroHeader from '@/components/HeroHeader.vue';
     import AppButton from '@/components/AppButton.vue';
     import { Ticket, Calendar, MapPin, Info } from '@lucide/vue';
     import events from '@/routes/events';
@@ -122,39 +122,40 @@
 </script>
 
 <template>
-
-    <Head :title="`Billetterie - ${event.title}`" />
-    <Header />
-
-    <div class="relative z-10 rounded-b-[3rem] lg:rounded-b-[6rem] bg-black min-h-screen pb-24">
+    <MainLayout :title="`Billetterie - ${event.title}`">
         <!-- Hero Section -->
-        <section class="relative h-[45vh] w-full overflow-hidden">
-            <img v-if="event.background" :src="'/' + event.background"
-                class="absolute inset-0 h-full w-full object-cover" alt="" />
+        <section v-if="event" class="relative h-[50vh] w-full overflow-hidden">
+            <img v-if="event.background_url" :src="event.background_url" :srcset="event.background_responsive?.srcset"
+                sizes="(max-width: 768px) 200vw, 100vw"
+                class="absolute inset-0 h-full w-full object-cover grayscale opacity-30" alt="" />
             <div class="absolute inset-0 bg-linear-to-t from-black via-black/40 to-black/20"></div>
 
-            <div class="relative z-10 flex h-full flex-col items-center justify-end pb-16 text-center px-6">
-                <div class="space-y-4 max-w-4xl">
-                    <h1 class="font-chillax text-4xl md:text-7xl text-white leading-none tracking-tight uppercase">
-                        {{ event.title }}
-                    </h1>
-                    <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-12 text-white/60">
-                        <div class="flex items-center gap-2">
-                            <Calendar class="w-4 h-4 text-[#51A687]" />
-                            <span class="font-chillax uppercase tracking-widest text-sm">{{ getDateFormatted(event.date)
-                            }}</span>
+            <div class="relative z-10 flex h-full flex-col items-center justify-end pb-20">
+                <HeroHeader size="lg">
+                    Billetterie
+
+                    <template #bottom>
+                        <div class="space-y-4">
+                            <h2 class="font-chillax text-2xl text-white uppercase">{{ event.title }}</h2>
+                            <div class="flex flex-wrap items-center justify-center gap-6 text-gray-400">
+                                <div class="flex items-center gap-2">
+                                    <Calendar class="w-4 h-4 text-[#51A687]" />
+                                    <span class="text-sm uppercase tracking-widest">{{ getDateFormatted(event.date)
+                                    }}</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <MapPin class="w-4 h-4 text-[#51A687]" />
+                                    <span class="text-sm uppercase tracking-widest">{{ event.city }}, {{ event.country
+                                    }}</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <MapPin class="w-4 h-4 text-[#51A687]" />
-                            <span class="font-chillax uppercase tracking-widest text-sm">{{ event.city }}, {{
-                                event.country }}</span>
-                        </div>
-                    </div>
-                </div>
+                    </template>
+                </HeroHeader>
             </div>
         </section>
 
-        <main class="relative z-10 mx-auto max-w-7xl px-6 pt-12">
+        <div class="relative z-10 mx-auto max-w-7xl px-6 pt-12">
             <!-- Retour -->
             <Link :href="events.show(event.slug).url"
                 class="group inline-flex items-center gap-3 text-[10px] font-bold tracking-[0.3em] text-white/40 hover:text-[#51A687] uppercase transition-all duration-300 mb-12">
@@ -162,7 +163,7 @@
                 <span>Retour à l'événement</span>
             </Link>
 
-            <div class="space-y-12">
+            <div class="space-y-12 pb-24">
                 <div v-if="form.errors.items || $page.props.flash.error"
                     class="p-6 rounded-4xl border border-red-500/20 bg-red-500/5 backdrop-blur-sm flex gap-6 items-center">
                     <div
@@ -182,7 +183,8 @@
                     <div class="xl:col-span-8 space-y-12">
                         <h2
                             class="font-chillax text-4xl md:text-5xl text-white uppercase tracking-widest leading-none pt-8">
-                            Billetterie</h2>
+                            Choisissez vos billets
+                        </h2>
 
                         <template v-if="hasProducts">
                             <!-- Tickets -->
@@ -283,8 +285,6 @@
                     </div>
                 </div>
             </div>
-        </main>
-    </div>
-
-    <Footer />
+        </div>
+    </MainLayout>
 </template>
