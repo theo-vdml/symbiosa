@@ -1,7 +1,5 @@
 <script setup lang="ts">
-    import Header from '@/components/Header.vue';
-    import Footer from '@/components/Footer.vue';
-    import SeoMeta from '@/components/SeoMeta.vue';
+    import MainLayout from '@/layouts/MainLayout.vue';
     import { Seo } from '@/types/seo';
 
     const props = defineProps<{
@@ -36,18 +34,7 @@
 </script>
 
 <template>
-    <SeoMeta :seo="seo" />
-
-    <Header />
-
-    <div class="relative z-10 min-h-[120vh] overflow-hidden rounded-b-[3rem] lg:rounded-b-[6rem] bg-black">
-        <div class="pointer-events-none absolute inset-0 bg-linear-to-b from-black via-black to-black"></div>
-        <div
-            class="pointer-events-none absolute -top-32 left-1/2 h-115 w-[130%] -translate-x-1/2 rounded-full bg-[#06402B]/18 blur-[150px]">
-        </div>
-        <div class="pointer-events-none absolute inset-0 bg-[url('/noise.png')] opacity-[0.04] mix-blend-soft-light">
-        </div>
-
+    <MainLayout :seo="seo" has-background>
         <!-- Hero Section -->
         <section class="relative h-[45vh] w-full overflow-hidden md:h-[65vh]">
             <img :src="post.cover_url" :srcset="post.cover_responsive?.srcset" sizes="(max-width: 768px) 200vw, 100vw"
@@ -55,8 +42,7 @@
             <div class="absolute inset-0 bg-linear-to-t from-black via-transparent to-black/20"></div>
         </section>
 
-
-        <main class="relative z-10 mx-auto max-w-6xl px-6 pb-24 pt-16 md:px-10 lg:px-14">
+        <div class="relative z-10 mx-auto max-w-6xl px-6 pb-24 pt-16 md:px-10 lg:px-14">
             <section class="mx-auto mb-10 max-w-4xl space-y-5 text-center md:text-left">
                 <p class="text-sm font-medium text-gray-400">
                     {{ formatDate(post.published_at) }}
@@ -73,10 +59,8 @@
                 class="mx-auto max-w-4xl space-y-10 font-synonym text-base leading-relaxed text-gray-300 prose prose-invert">
                 <div v-html="post.content"></div>
             </article>
-        </main>
-    </div>
-
-    <Footer />
+        </div>
+    </MainLayout>
 </template>
 
 <style scoped>

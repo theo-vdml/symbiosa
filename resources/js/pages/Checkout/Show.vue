@@ -1,11 +1,10 @@
 <script setup lang="ts">
     import { ref, computed, onMounted, onUnmounted } from 'vue';
-    import { Head, useForm, router } from '@inertiajs/vue3';
-    import Header from '@/components/Header.vue';
-    import Footer from '@/components/Footer.vue';
+    import { useForm, router } from '@inertiajs/vue3';
+    import MainLayout from '@/layouts/MainLayout.vue';
     import AppButton from '@/components/AppButton.vue';
     import CheckoutInput from '@/components/CheckoutInput.vue';
-    import { CreditCard, Clock, Info, ShieldCheck, ChevronRight, User, Mail, CheckCircle2, Edit2, Lock } from '@lucide/vue';
+    import { Clock, Info, ShieldCheck, ChevronRight, User, Mail, CheckCircle2, Lock } from '@lucide/vue';
     import checkoutRoute from '@/routes/checkout';
 
     const props = defineProps<{
@@ -121,12 +120,8 @@
 </script>
 
 <template>
-
-    <Head title="Finaliser ma commande" />
-    <Header />
-
-    <div class="relative z-10 bg-black min-h-screen pb-24 pt-32 rounded-b-[3rem] lg:rounded-b-[6rem]">
-        <main class="mx-auto max-w-3xl px-6">
+    <MainLayout title="Finaliser ma commande">
+        <div class="mx-auto max-w-3xl px-6 pb-24 pt-32">
 
             <!-- Header de la page -->
             <div class="text-center space-y-6 mb-16">
@@ -200,12 +195,8 @@
                             <h2 class="font-chillax text-2xl text-white uppercase tracking-wider">Vos Informations</h2>
                         </div>
 
-                        <AppButton v-if="currentStep > 2" 
-                                    variant="outline" 
-                                    size="sm"
-                                    @click="handleResetVerification" 
-                                    :loading="isResetting"
-                                    class="text-[10px]">
+                        <AppButton v-if="currentStep > 2" variant="outline" size="sm" @click="handleResetVerification"
+                            :loading="isResetting" class="text-[10px]">
                             Modifier mes infos
                         </AppButton>
 
@@ -353,9 +344,6 @@
                     </p>
                 </div>
             </div>
-
-        </main>
-    </div>
-
-    <Footer />
+        </div>
+    </MainLayout>
 </template>

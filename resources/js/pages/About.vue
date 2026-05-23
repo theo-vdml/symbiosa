@@ -1,7 +1,5 @@
 <script setup lang="ts">
-    import Header from '@/components/Header.vue';
-    import Footer from '@/components/Footer.vue';
-    import SeoMeta from '@/components/SeoMeta.vue';
+    import MainLayout from '@/layouts/MainLayout.vue';
     import { Seo } from '@/types/seo';
 
     interface Section {
@@ -17,20 +15,8 @@
 </script>
 
 <template>
-    <SeoMeta :seo="seo" />
-
-    <Header />
-
-    <div class="relative z-10 overflow-hidden rounded-b-[3rem] lg:rounded-b-[6rem] bg-black min-h-screen">
-        <!-- Background Effects -->
-        <div class="pointer-events-none absolute inset-0 bg-linear-to-b from-black via-black to-black"></div>
-        <div
-            class="pointer-events-none absolute -top-32 left-1/2 h-115 w-[130%] -translate-x-1/2 rounded-full bg-[#06402B]/18 blur-[150px]">
-        </div>
-        <div class="pointer-events-none absolute inset-0 bg-[url('/noise.png')] opacity-[0.04] mix-blend-soft-light">
-        </div>
-
-        <main class="relative z-10 mx-auto max-w-6xl px-6 pt-48 pb-32 md:px-10 lg:pt-56">
+    <MainLayout :seo="seo" has-background>
+        <div class="relative z-10 mx-auto max-w-6xl px-6 pt-48 pb-32 md:px-10 lg:pt-56">
             <!-- Header -->
             <header class="mb-32 md:mb-48 space-y-8 text-center flex flex-col items-center justify-center">
                 <p class="font-mono text-xs md:text-sm tracking-[0.5em] text-[#51A687] uppercase">À propos de nous</p>
@@ -116,11 +102,8 @@
                     merci.
                 </h2>
             </div>
-
-        </main>
-    </div>
-
-    <Footer />
+        </div>
+    </MainLayout>
 </template>
 
 <style scoped>

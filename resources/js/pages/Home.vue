@@ -1,13 +1,11 @@
 <script setup lang="ts">
     import { onMounted, ref } from 'vue';
-    import Header from '@/components/Header.vue';
+    import MainLayout from '@/layouts/MainLayout.vue';
     import UpcomingEvent from '@/components/UpcomingEvent.vue';
     import NewsSection from '@/components/NewsSection.vue';
     import MaximSection from '@/components/MaximSection.vue';
     import SpotifyPlaylist from '@/components/SpotifyPlaylist.vue';
     import BentoGallery from '@/components/BentoGallery.vue';
-    import Footer from '@/components/Footer.vue';
-    import SeoMeta from '@/components/SeoMeta.vue';
     import { Seo } from '@/types/seo';
 
     const props = defineProps<{
@@ -37,11 +35,7 @@
 </script>
 
 <template>
-    <SeoMeta :seo="seo" />
-
-    <Header />
-
-    <div class="relative z-10 rounded-b-[3rem] lg:rounded-b-[6rem] overflow-hidden bg-black">
+    <MainLayout :seo="seo">
         <div class="relative h-screen w-full overflow-hidden">
             <!-- Background Video with subtle scale animation -->
             <div class="absolute inset-0 scale-105 animate-slow-zoom">
@@ -100,7 +94,5 @@
             :forceDark="props.spotifyPlaylistForceDark" />
 
         <BentoGallery v-if="props.bentoGallery.length === 6" :images="props.bentoGallery" />
-    </div>
-
-    <Footer />
+    </MainLayout>
 </template>

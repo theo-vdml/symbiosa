@@ -1,9 +1,7 @@
 <script setup lang="ts">
     import { useForm, usePage } from '@inertiajs/vue3';
     import { computed } from 'vue';
-    import Header from '@/components/Header.vue';
-    import Footer from '@/components/Footer.vue';
-    import SeoMeta from '@/components/SeoMeta.vue';
+    import MainLayout from '@/layouts/MainLayout.vue';
     import { Seo } from '@/types/seo';
     import AppButton from '@/components/AppButton.vue';
     import { Mail, HelpCircle, CheckCircle2, ArrowRight } from '@lucide/vue';
@@ -28,13 +26,8 @@
 </script>
 
 <template>
-    <SeoMeta :seo="seo" />
-    <Header />
-
-    <div class="relative z-10 min-h-screen bg-black">
-        <div class="pointer-events-none absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-soft-light"></div>
-
-        <main class="relative z-10 mx-auto max-w-4xl px-6 pt-40 pb-32">
+    <MainLayout :seo="seo" has-background>
+        <div class="relative z-10 mx-auto max-w-4xl px-6 pt-40 pb-32">
             
             <div class="mb-16">
                 <h1 class="font-chillax text-4xl md:text-5xl text-white uppercase tracking-tight mb-6">
@@ -119,8 +112,6 @@
                     </div>
                 </div>
             </div>
-        </main>
-    </div>
-
-    <Footer />
+        </div>
+    </MainLayout>
 </template>

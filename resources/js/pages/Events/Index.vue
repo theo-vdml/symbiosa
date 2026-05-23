@@ -1,8 +1,5 @@
 <script setup lang="ts">
-    import { Head } from '@inertiajs/vue3';
-    import Header from '@/components/Header.vue';
-    import Footer from '@/components/Footer.vue';
-    import EventListItem from '@/components/Events/EventListItem.vue';
+    import MainLayout from '@/layouts/MainLayout.vue';
     import EventEmptyState from '@/components/Events/EventEmptyState.vue';
     import EventListEnd from '@/components/Events/EventListEnd.vue';
     import EventPoster from '@/components/Events/EventPoster.vue';
@@ -14,21 +11,8 @@
 </script>
 
 <template>
-
-    <Head title="Calendrier" />
-
-    <Header />
-
-    <div class="relative z-10 overflow-hidden rounded-b-[3rem] lg:rounded-b-[6rem] bg-black min-h-screen">
-        <!-- Background Effects -->
-        <div class="pointer-events-none absolute inset-0 bg-linear-to-b from-black via-black to-black"></div>
-        <div
-            class="pointer-events-none absolute -top-32 left-1/2 h-115 w-[130%] -translate-x-1/2 rounded-full bg-[#06402B]/18 blur-[150px]">
-        </div>
-        <div class="pointer-events-none absolute inset-0 bg-[url('/noise.png')] opacity-[0.04] mix-blend-soft-light">
-        </div>
-
-        <main class="relative z-10 mx-auto max-w-6xl px-4 pt-34 pb-32 md:px-10">
+    <MainLayout title="Calendrier" has-background>
+        <div class="relative z-10 mx-auto max-w-6xl px-4 pt-34 pb-32 md:px-10">
             <header class="mb-16 md:mb-20 space-y-4 text-center md:text-left">
                 <p class="text-xs font-bold tracking-[0.35em] text-[#51A687] uppercase">
                     Calendrier
@@ -79,8 +63,6 @@
             </div>
 
             <EventEmptyState v-else />
-        </main>
-    </div>
-
-    <Footer />
+        </div>
+    </MainLayout>
 </template>

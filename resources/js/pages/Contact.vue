@@ -1,9 +1,6 @@
 <script setup lang="ts">
     import { ref } from 'vue';
-    import { Head } from '@inertiajs/vue3';
-    import Header from '@/components/Header.vue';
-    import Footer from '@/components/Footer.vue';
-    import SeoMeta from '@/components/SeoMeta.vue';
+    import MainLayout from '@/layouts/MainLayout.vue';
     import { Seo } from '@/types/seo';
 
     interface FaqItem {
@@ -40,18 +37,8 @@
 </script>
 
 <template>
-    <SeoMeta :seo="seo" />
-    <Header />
-
-    <div class="relative z-10 min-h-screen overflow-hidden rounded-b-[3rem] lg:rounded-b-[6rem] bg-black">
-        <div class="pointer-events-none absolute inset-0 bg-linear-to-b from-black via-black to-black"></div>
-        <div
-            class="pointer-events-none absolute -top-32 left-1/2 h-115 w-[130%] -translate-x-1/2 rounded-full bg-[#06402B]/18 blur-[150px]">
-        </div>
-        <div class="pointer-events-none absolute inset-0 bg-[url('/noise.png')] opacity-[0.04] mix-blend-soft-light">
-        </div>
-
-        <main class="relative z-10 mx-auto max-w-6xl px-6 pt-34 pb-32 md:px-10 lg:px-14">
+    <MainLayout :seo="seo" has-background>
+        <div class="relative z-10 mx-auto max-w-6xl px-6 pt-34 pb-32 md:px-10 lg:px-14">
 
             <!-- Page header -->
             <section class="mb-20 space-y-3 text-center md:text-left">
@@ -118,7 +105,7 @@
                             class="rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm flex flex-col items-center text-center space-y-6 hover:border-[#51A687]/50 transition-colors">
                             <div>
                                 <p class="mb-2 font-chillax text-white uppercase tracking-wider text-sm">{{ option.label
-                                    }}</p>
+                                }}</p>
                                 <a :href="`mailto:${option.email}`"
                                     class="font-synonym text-xl text-[#51A687] hover:underline">{{ option.email }}</a>
                             </div>
@@ -127,8 +114,6 @@
                 </div>
 
             </div>
-        </main>
-    </div>
-
-    <Footer />
+        </div>
+    </MainLayout>
 </template>

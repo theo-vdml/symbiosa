@@ -1,8 +1,7 @@
 <script setup lang="ts">
     import { ref, computed } from 'vue';
-    import { Head, Link, useForm } from '@inertiajs/vue3';
-    import Header from '@/components/Header.vue';
-    import Footer from '@/components/Footer.vue';
+    import { Link, useForm } from '@inertiajs/vue3';
+    import MainLayout from '@/layouts/MainLayout.vue';
     import AppButton from '@/components/AppButton.vue';
     import { Ticket, Calendar, MapPin, Info } from '@lucide/vue';
     import events from '@/routes/events';
@@ -122,11 +121,7 @@
 </script>
 
 <template>
-
-    <Head :title="`Billetterie - ${event.title}`" />
-    <Header />
-
-    <div class="relative z-10 rounded-b-[3rem] lg:rounded-b-[6rem] bg-black min-h-screen pb-24">
+    <MainLayout :title="`Billetterie - ${event.title}`">
         <!-- Hero Section -->
         <section class="relative h-[45vh] w-full overflow-hidden">
             <img v-if="event.background" :src="'/' + event.background"
@@ -142,7 +137,7 @@
                         <div class="flex items-center gap-2">
                             <Calendar class="w-4 h-4 text-[#51A687]" />
                             <span class="font-chillax uppercase tracking-widest text-sm">{{ getDateFormatted(event.date)
-                            }}</span>
+                                }}</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <MapPin class="w-4 h-4 text-[#51A687]" />
@@ -154,7 +149,7 @@
             </div>
         </section>
 
-        <main class="relative z-10 mx-auto max-w-7xl px-6 pt-12">
+        <div class="relative z-10 mx-auto max-w-7xl px-6 pt-12">
             <!-- Retour -->
             <Link :href="events.show(event.slug).url"
                 class="group inline-flex items-center gap-3 text-[10px] font-bold tracking-[0.3em] text-white/40 hover:text-[#51A687] uppercase transition-all duration-300 mb-12">
@@ -162,7 +157,7 @@
                 <span>Retour à l'événement</span>
             </Link>
 
-            <div class="space-y-12">
+            <div class="space-y-12 pb-24">
                 <div v-if="form.errors.items || $page.props.flash.error"
                     class="p-6 rounded-4xl border border-red-500/20 bg-red-500/5 backdrop-blur-sm flex gap-6 items-center">
                     <div
@@ -256,7 +251,7 @@
                                         <div class="space-y-0.5">
                                             <p class="text-white text-xs font-medium uppercase tracking-wide">{{
                                                 item.name
-                                            }}</p>
+                                                }}</p>
                                             <p class="text-[10px] text-white/50 uppercase">{{ item.qty }} x {{
                                                 formatEuro(item.price) }}</p>
                                         </div>
@@ -283,8 +278,6 @@
                     </div>
                 </div>
             </div>
-        </main>
-    </div>
-
-    <Footer />
+        </div>
+    </MainLayout>
 </template>
