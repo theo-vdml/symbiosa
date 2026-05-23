@@ -2,6 +2,7 @@
     import { ref, computed } from 'vue';
     import { Link, useForm } from '@inertiajs/vue3';
     import MainLayout from '@/layouts/MainLayout.vue';
+    import HeroHeader from '@/components/HeroHeader.vue';
     import AppButton from '@/components/AppButton.vue';
     import { Ticket, Calendar, MapPin, Info } from '@lucide/vue';
     import events from '@/routes/events';
@@ -124,28 +125,29 @@
     <MainLayout :title="`Billetterie - ${event.title}`">
         <!-- Hero Section -->
         <section class="relative h-[45vh] w-full overflow-hidden">
-            <img v-if="event.background" :src="'/' + event.background"
-                class="absolute inset-0 h-full w-full object-cover" alt="" />
+            <img v-if="event.background_url" :src="event.background_url" :srcset="event.background_responsive?.srcset"
+                sizes="(max-width: 768px) 200vw, 100vw" class="absolute inset-0 h-full w-full object-cover" alt="" />
             <div class="absolute inset-0 bg-linear-to-t from-black via-black/40 to-black/20"></div>
 
-            <div class="relative z-10 flex h-full flex-col items-center justify-end pb-16 text-center px-6">
-                <div class="space-y-4 max-w-4xl">
-                    <h1 class="font-chillax text-4xl md:text-7xl text-white leading-none tracking-tight uppercase">
-                        {{ event.title }}
-                    </h1>
-                    <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-12 text-white/60">
-                        <div class="flex items-center gap-2">
-                            <Calendar class="w-4 h-4 text-[#51A687]" />
-                            <span class="font-chillax uppercase tracking-widest text-sm">{{ getDateFormatted(event.date)
+            <div class="relative z-10 flex h-full flex-col items-center justify-end pb-16">
+                <HeroHeader :heading="event.title">
+                    <template #bottom>
+                        <div
+                            class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-12 text-white/60">
+                            <div class="flex items-center gap-2">
+                                <Calendar class="w-4 h-4 text-[#51A687]" />
+                                <span class="font-chillax uppercase tracking-widest text-sm">{{
+                                    getDateFormatted(event.date)
                                 }}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <MapPin class="w-4 h-4 text-[#51A687]" />
+                                <span class="font-chillax uppercase tracking-widest text-sm">{{ event.city }}, {{
+                                    event.country }}</span>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <MapPin class="w-4 h-4 text-[#51A687]" />
-                            <span class="font-chillax uppercase tracking-widest text-sm">{{ event.city }}, {{
-                                event.country }}</span>
-                        </div>
-                    </div>
-                </div>
+                    </template>
+                </HeroHeader>
             </div>
         </section>
 

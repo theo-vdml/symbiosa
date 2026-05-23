@@ -1,6 +1,7 @@
 <script setup lang="ts">
     import { onMounted, ref } from 'vue';
     import MainLayout from '@/layouts/MainLayout.vue';
+    import HeroHeader from '@/components/HeroHeader.vue';
     import UpcomingEvent from '@/components/UpcomingEvent.vue';
     import NewsSection from '@/components/NewsSection.vue';
     import MaximSection from '@/components/MaximSection.vue';
@@ -50,27 +51,32 @@
             <div class="absolute inset-0 z-0 bg-linear-to-b from-black/20 via-transparent to-black"></div>
 
             <!-- Content -->
-            <div class="relative z-10 flex h-full flex-col items-center justify-center px-4 text-center">
-                <div class="overflow-hidden py-2">
-                    <span
-                        class="block font-synonym text-xs md:text-sm tracking-[0.5em] text-white/70 uppercase mb-4 animate-fade-in-up opacity-0">
-                        {{ props.heroPreheading }}
-                    </span>
-                </div>
+            <div class="relative z-10 flex h-full flex-col items-center justify-center">
+                <HeroHeader size="xl">
+                    <template #top>
+                        <div class="overflow-hidden py-2">
+                            <span
+                                class="block font-synonym text-xs md:text-sm tracking-[0.5em] text-white/70 uppercase mb-4 animate-fade-in-up opacity-0">
+                                {{ props.heroPreheading }}
+                            </span>
+                        </div>
+                    </template>
 
-                <div class="overflow-hidden py-10 -my-10">
-                    <h1
-                        class="font-chillax text-[clamp(4rem,18vw,14rem)] leading-[0.85] text-white tracking-tighter animate-reveal-title opacity-0">
-                        {{ props.heroTitle }}
-                    </h1>
-                </div>
+                    <div class="overflow-hidden py-10 -my-10">
+                        <span class="animate-reveal-title opacity-0 block">
+                            {{ props.heroTitle }}
+                        </span>
+                    </div>
 
-                <div class="overflow-hidden py-2">
-                    <span
-                        class="block font-synonym text-xs md:text-sm tracking-[0.3em] text-white/50 uppercase mt-6 animate-fade-in-up [animation-delay:800ms] opacity-0">
-                        {{ props.heroSubheading }}
-                    </span>
-                </div>
+                    <template #bottom>
+                        <div class="overflow-hidden py-2">
+                            <span
+                                class="block font-synonym text-xs md:text-sm tracking-[0.3em] text-white/50 uppercase mt-6 animate-fade-in-up [animation-delay:800ms] opacity-0">
+                                {{ props.heroSubheading }}
+                            </span>
+                        </div>
+                    </template>
+                </HeroHeader>
             </div>
 
             <!-- Scroll Indicator -->

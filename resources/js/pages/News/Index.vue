@@ -1,6 +1,7 @@
 <script setup lang="ts">
     import { computed, ref } from 'vue';
     import MainLayout from '@/layouts/MainLayout.vue';
+    import PageHeader from '@/components/PageHeader.vue';
     import { Link } from '@inertiajs/vue3';
 
     interface NewsProps {
@@ -63,20 +64,10 @@
 
 <template>
     <MainLayout title="Actualités" has-background>
-        <div class="relative z-10 mx-auto max-w-6xl px-6 pt-34 pb-24 md:px-10 lg:px-14">
+        <div class="relative z-10 mx-auto max-w-6xl px-4 pt-34 pb-32 md:px-10">
 
-            <!-- Page header -->
-            <section class="mb-10 space-y-3 text-center md:text-left">
-                <p class="text-xs font-bold tracking-[0.35em] text-[#51A687] uppercase">
-                    Actualités
-                </p>
-                <h1 class="font-chillax text-5xl leading-[0.92] text-white md:text-7xl lg:text-8xl">
-                    News & Stories
-                </h1>
-                <p class="max-w-2xl text-sm text-gray-300 md:text-base">
-                    Annonces, coulisses, aftermovies et portraits — tout ce qui fait vivre Symbiosa en dehors des nuits.
-                </p>
-            </section>
+            <PageHeader preheading="Actualités" heading="News & Stories"
+                description="Annonces, coulisses, aftermovies et portraits — tout ce qui fait vivre Symbiosa en dehors des nuits." />
 
             <!-- Category filters -->
             <div class="mb-10 flex flex-wrap items-center gap-1.5" v-if="props.categories.length > 1">

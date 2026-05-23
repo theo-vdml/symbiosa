@@ -1,5 +1,6 @@
 <script setup lang="ts">
     import MainLayout from '@/layouts/MainLayout.vue';
+    import HeroHeader from '@/components/HeroHeader.vue';
     import { Seo } from '@/types/seo';
 
     interface Section {
@@ -17,13 +18,14 @@
 <template>
     <MainLayout :seo="seo" has-background>
         <div class="relative z-10 mx-auto max-w-6xl px-6 pt-48 pb-32 md:px-10 lg:pt-56">
-            <!-- Header -->
-            <header class="mb-32 md:mb-48 space-y-8 text-center flex flex-col items-center justify-center">
-                <p class="font-mono text-xs md:text-sm tracking-[0.5em] text-[#51A687] uppercase">À propos de nous</p>
-                <h1 class="font-chillax text-[15vw] md:text-[10rem] leading-[0.75] text-white tracking-tighter">
-                    Symbiosa
-                </h1>
-            </header>
+            
+            <HeroHeader size="xl" class="mb-32 md:mb-48">
+                <template #top>
+                    <p class="font-mono text-xs md:text-sm tracking-[0.5em] text-[#51A687] uppercase">À propos de nous</p>
+                </template>
+                
+                Symbiosa
+            </HeroHeader>
 
             <div class="relative mt-20 px-4 md:px-0">
                 <!-- Timeline Line -->

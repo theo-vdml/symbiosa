@@ -1,5 +1,6 @@
 <script setup lang="ts">
     import MainLayout from '@/layouts/MainLayout.vue';
+    import HeroHeader from '@/components/HeroHeader.vue';
     import AppButton from '@/components/AppButton.vue';
     import { CheckCircle, Calendar, MapPin, Ticket } from '@lucide/vue';
     import events from '@/routes/events';
@@ -26,19 +27,14 @@
         <div class="relative z-10 min-h-screen pb-24 pt-32 flex items-center justify-center">
             <div class="mx-auto max-w-2xl px-6 text-center space-y-12">
 
-                <div class="space-y-6">
-                    <div
-                        class="w-24 h-24 rounded-full bg-[#51A687]/10 border border-[#51A687]/20 flex items-center justify-center mx-auto">
-                        <CheckCircle class="w-12 h-12 text-[#51A687]" />
-                    </div>
-                    <h1 class="font-chillax text-4xl md:text-6xl text-white uppercase tracking-tight leading-none">
-                        Merci pour<br />
-                        <span class="text-[#51A687]">votre commande</span>
-                    </h1>
-                    <p class="text-white/40 uppercase tracking-[0.2em] text-xs">
-                        Référence : {{ checkout.uuid.split('-')[0] }}
-                    </p>
-                </div>
+                <HeroHeader size="lg">
+                    Merci pour <span class="text-[#51A687]">votre commande</span>
+                    <template #bottom>
+                        <p class="text-white/40 uppercase tracking-[0.2em] text-xs">
+                            Référence : {{ checkout.uuid.split('-')[0] }}
+                        </p>
+                    </template>
+                </HeroHeader>
 
                 <div v-if="event"
                     class="p-8 rounded-[2.5rem] border border-white/10 bg-white/5 space-y-6 backdrop-blur-xl text-left">
@@ -51,7 +47,7 @@
                         <div class="flex items-center gap-3 text-white/60">
                             <Calendar class="w-4 h-4 text-[#51A687]" />
                             <span class="font-chillax uppercase tracking-widest text-xs">{{ getDateFormatted(event.date)
-                                }}</span>
+                            }}</span>
                         </div>
                         <div class="flex items-center gap-3 text-white/60">
                             <MapPin class="w-4 h-4 text-[#51A687]" />

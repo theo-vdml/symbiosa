@@ -1,6 +1,7 @@
 <script setup lang="ts">
     import { ref } from 'vue';
     import MainLayout from '@/layouts/MainLayout.vue';
+    import PageHeader from '@/components/PageHeader.vue';
     import { Seo } from '@/types/seo';
 
     interface FaqItem {
@@ -40,18 +41,11 @@
     <MainLayout :seo="seo" has-background>
         <div class="relative z-10 mx-auto max-w-6xl px-6 pt-34 pb-32 md:px-10 lg:px-14">
 
-            <!-- Page header -->
-            <section class="mb-20 space-y-3 text-center md:text-left">
-                <p class="text-xs font-bold tracking-[0.35em] text-[#51A687] uppercase">
-                    {{ settings.subheading }}
-                </p>
-                <h1 class="font-chillax text-5xl leading-[0.92] text-white md:text-7xl lg:text-8xl">
-                    {{ settings.heading }}
-                </h1>
-                <p class="max-w-2xl text-sm text-gray-300 md:text-base">
-                    {{ settings.description }}
-                </p>
-            </section>
+            <PageHeader
+                :preheading="settings.subheading"
+                :heading="settings.heading"
+                :description="settings.description"
+            />
 
             <!-- Layout: FAQ & Contact Emails Stacked -->
             <div class="w-full space-y-24">

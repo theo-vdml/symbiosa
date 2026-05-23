@@ -1,5 +1,7 @@
 <script setup lang="ts">
     import MainLayout from '@/layouts/MainLayout.vue';
+    import PageHeader from '@/components/PageHeader.vue';
+    import EventListItem from '@/components/Events/EventListItem.vue';
     import EventEmptyState from '@/components/Events/EventEmptyState.vue';
     import EventListEnd from '@/components/Events/EventListEnd.vue';
     import EventPoster from '@/components/Events/EventPoster.vue';
@@ -13,21 +15,8 @@
 <template>
     <MainLayout title="Calendrier" has-background>
         <div class="relative z-10 mx-auto max-w-6xl px-4 pt-34 pb-32 md:px-10">
-            <header class="mb-16 md:mb-20 space-y-4 text-center md:text-left">
-                <p class="text-xs font-bold tracking-[0.35em] text-[#51A687] uppercase">
-                    Calendrier
-                </p>
-                <h1 class="font-chillax text-4xl leading-[0.92] text-white md:text-7xl lg:text-8xl">
-                    Tous les événements <br class="hidden md:block" />
-                    à venir
-                </h1>
-                <p class="max-w-2xl text-sm text-gray-300 md:text-base">
-                    Découvrez les prochaines expériences Symbiosa.
-                    <br class="hidden md:block" />
-                    Chaque événement est une immersion unique dans l'univers
-                    électronique.
-                </p>
-            </header>
+            <PageHeader preheading="Calendrier" heading="Tous les événements à venir"
+                description="Découvrez les prochaines expériences Symbiosa. Chaque événement est une immersion unique dans l'univers électronique." />
 
             <div v-if="events.length > 0" class="relative mt-20 md:px-0">
                 <!-- Timeline Line -->

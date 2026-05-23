@@ -2,6 +2,7 @@
     import { ref, computed, onMounted, onUnmounted } from 'vue';
     import { useForm, router } from '@inertiajs/vue3';
     import MainLayout from '@/layouts/MainLayout.vue';
+    import HeroHeader from '@/components/HeroHeader.vue';
     import AppButton from '@/components/AppButton.vue';
     import CheckoutInput from '@/components/CheckoutInput.vue';
     import { Clock, Info, ShieldCheck, ChevronRight, User, Mail, CheckCircle2, Lock } from '@lucide/vue';
@@ -123,20 +124,17 @@
     <MainLayout title="Finaliser ma commande">
         <div class="mx-auto max-w-3xl px-6 pb-24 pt-32">
 
-            <!-- Header de la page -->
-            <div class="text-center space-y-6 mb-16">
-                <h1 class="font-chillax text-4xl md:text-6xl text-white uppercase tracking-tight leading-none">
-                    Finaliser<br />
-                    <span class="text-[#51A687]">ma commande</span>
-                </h1>
-
-                <!-- Timer Compact -->
-                <div
-                    class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[#51A687]/15 border border-[#51A687]/30 text-[#51A687]">
-                    <Clock class="w-4 h-4" />
-                    <span class="text-xs font-bold tracking-[0.2em] uppercase">Temps restant : {{ timeLeft }}</span>
-                </div>
-            </div>
+            <HeroHeader class="mb-16">
+                Finaliser ma <span class="text-[#51A687]">commande</span>
+                <template #bottom>
+                    <!-- Timer Compact -->
+                    <div
+                        class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[#51A687]/15 border border-[#51A687]/30 text-[#51A687]">
+                        <Clock class="w-4 h-4" />
+                        <span class="text-xs font-bold tracking-[0.2em] uppercase">Temps restant : {{ timeLeft }}</span>
+                    </div>
+                </template>
+            </HeroHeader>
 
             <div class="space-y-12">
 
@@ -226,7 +224,8 @@
                         class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#51A687]/15 border border-[#51A687]/30 text-[#51A687]">
                         <CheckCircle2 class="w-3.5 h-3.5" />
                         <span class="text-[10px] font-bold uppercase tracking-widest">Email vérifié : <span
-                                class="text-white">{{ form.email
+                                class="text-white">{{
+                                    form.email
                                 }}</span></span>
                     </div>
                 </section>

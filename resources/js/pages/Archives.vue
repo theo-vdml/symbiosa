@@ -1,6 +1,7 @@
 <script setup lang="ts">
     import { computed, ref, watch } from 'vue';
     import MainLayout from '@/layouts/MainLayout.vue';
+    import PageHeader from '@/components/PageHeader.vue';
     import routes from '@/routes/events';
     import { Link } from '@inertiajs/vue3';
 
@@ -56,24 +57,14 @@
 
 <template>
     <MainLayout title="Archives" has-background>
-        <div class="relative z-10 mx-auto max-w-4xl px-6 pt-34 pb-24 md:px-10">
-            <section class="mb-12 space-y-3 text-center md:text-left">
-                <p class="text-xs font-bold tracking-[0.35em] text-[#51A687] uppercase">
-                    Archives
-                </p>
-                <h1 class="font-chillax text-5xl leading-[0.92] text-white md:text-7xl lg:text-8xl">
-                    Les souvenirs de Symbiosa
-                </h1>
-                <p class="max-w-2xl font-synonym text-sm text-gray-300 md:text-base">
-                    Retrouvez tout nos évènements passés.
-                </p>
+        <div class="relative z-10 mx-auto max-w-6xl px-4 pt-34 pb-32 md:px-10">
+            <PageHeader preheading="Archives" heading="Les souvenirs de Symbiosa"
+                description="Retrouvez tout nos évènements passés. Chaque édition est une capsule temporelle, un souvenir précieux de notre voyage à travers la musique électronique." />
 
-                <div class="max-w-xl pt-2">
-                    <input v-model="search" type="text" placeholder="Rechercher un évènement."
-                        class="w-full rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm text-white placeholder:text-gray-500 focus:border-[#06402B]/70 focus:ring-2 focus:ring-[#06402B]/30 focus:outline-none" />
-                </div>
-            </section>
-
+            <div class="mb-8">
+                <input v-model="search" type="text" placeholder="Rechercher un évènement."
+                    class="w-full rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm text-white placeholder:text-gray-500 focus:border-[#06402B]/70 focus:ring-2 focus:ring-[#06402B]/30 focus:outline-none" />
+            </div>
             <section v-if="visiblePastEvents.length" class="space-y-5">
                 <Link v-for="event in visiblePastEvents" :key="event.id" :href="routes.show(event.slug).url"
                     class="group relative flex items-center gap-6 overflow-hidden rounded-2xl border border-white/8 bg-white/3 p-2.5 pr-8 transition-all duration-300 hover:border-white/15 hover:bg-white/6">
