@@ -1,13 +1,21 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
-import { Seo } from '@/types/seo';
+    import { Head } from '@inertiajs/vue3';
+    import { Seo } from '@/types/seo';
 
-const props = defineProps<{
-    seo: Seo;
-}>();
+    const props = defineProps<{
+        seo: Seo;
+    }>();
+
+    const getMetaUrl = (path: string) => {
+        if (path.startsWith('http://') || path.startsWith('https://')) {
+            return path;
+        }
+        return `/storage/${path}`;
+    };
 </script>
 
 <template>
+
     <Head>
         <title>{{ seo.title }}</title>
         <meta v-if="seo.description" name="description" :content="seo.description" />
@@ -17,16 +25,21 @@ const props = defineProps<{
 
         <!-- Open Graph -->
         <meta property="og:title" :content="seo.og_title || seo.title" />
-        <meta v-if="seo.og_description || seo.description" property="og:description" :content="seo.og_description || seo.description" />
-        <meta v-if="seo.og_image" property="og:image" :content="`/storage/${seo.og_image}`" />
+        <meta v-if="seo.og_description || seo.description" property="og:description"
+            :content="seo.og_description || seo.description" />
+        <meta v-if="seo.og_image" property="og:image" :content="getMetaUrl(seo.og_image)" />
         <meta property="og:type" :content="seo.og_type || 'website'" />
+        <meta v-if="seo.canonical_url" property="og:url" :content="seo.canonical_url" />
 
         <!-- Twitter -->
         <meta name="twitter:card" :content="seo.twitter_card || 'summary_large_image'" />
         <meta name="twitter:title" :content="seo.twitter_title || seo.title" />
-        <meta v-if="seo.twitter_description || seo.description" name="twitter:description" :content="seo.twitter_description || seo.description" />
-        <meta v-if="seo.twitter_image || seo.og_image" name="twitter:image" :content="`/storage/${seo.twitter_image || seo.og_image}`" />
-        
+        <meta v-if="seo.canonical_url" name="twitter:site" :content="seo.canonical_url">
+        <meta v-if="seo.twitter_description || seo.description" name="twitter:description"
+            :content="seo.twitter_description || seo.description" />
+        <meta v-if="seo.twitter_image || seo.og_image" name="twitter:image"
+            :content="getMetaUrl(seo.twitter_image || seo.og_image!)" />
+
         <component :is="'script'" v-if="seo.json_ld" type="application/ld+json" v-html="seo.json_ld" />
     </Head>
 </template>

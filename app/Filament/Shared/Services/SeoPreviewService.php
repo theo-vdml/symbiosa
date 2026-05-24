@@ -38,9 +38,15 @@ class SeoPreviewService
             }
         }
 
-        // 2. Defaults (Static strings)
+        // 2. Defaults (Static strings or callables)
         $defaults = method_exists($source, 'getSeoDefaults') ? $source->getSeoDefaults() : [];
-        return $defaults[$field] ?? '';
+        $default = $defaults[$field] ?? '';
+
+        if (is_callable($default)) {
+            return (string) $default($source);
+        }
+
+        return (string) $default;
     }
 
     /**
@@ -62,6 +68,16 @@ class SeoPreviewService
             $fallbackState = $get("../../{$fallbackField}") ?? $source->{$fallbackField} ?? null;
             if ($url = static::extractUrl($fallbackState)) return $url;
         }
+
+        // Priority 3: Defaults
+        $defaults = method_exists($source, 'getSeoDefaults') ? $source->getSeoDefaults() : [];
+        $defaultImage = $defaults['og_image'] ?? null;
+
+        if (is_callable($defaultImage)) {
+            $defaultImage = $defaultImage($source);
+        }
+
+        if ($url = static::extractUrl($defaultImage)) return $url;
 
         return "https://placehold.co/1200x650?text=No+Image";
     }

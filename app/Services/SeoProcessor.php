@@ -24,13 +24,16 @@ class SeoProcessor
 
             if (empty($value)) {
                 $value = $defaults[$field] ?? null;
+
+                if (is_callable($value)) {
+                    $value = $value($source);
+                }
             }
 
             $data[$field] = $value;
         }
 
         $data = static::applyTransformations($data);
-        $data = static::applyInheritance($data);
 
         return $data;
     }
@@ -65,15 +68,6 @@ class SeoProcessor
             $data['json_ld'] = json_encode($data['json_ld']);
         }
 
-        return $data;
-    }
-
-    protected static function applyInheritance(array $data): array
-    {
-        $data['og_title'] = $data['og_title'] ?? $data['title'] ?? null;
-        $data['og_description'] = $data['og_description'] ?? $data['description'] ?? null;
-        $data['twitter_title'] = $data['twitter_title'] ?? $data['og_title'] ?? $data['title'] ?? null;
-        $data['twitter_description'] = $data['twitter_description'] ?? $data['og_description'] ?? $data['description'] ?? null;
         return $data;
     }
 

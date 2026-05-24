@@ -39,7 +39,7 @@
                     class="shrink-0 transition-transform duration-300 hover:scale-110 p-2">
                     <img :src="sponsor.logo_url"
                         class="h-12 w-auto opacity-80 fill-white transition-all duration-300 hover:opacity-100"
-                        alt="Sponsor Logo" />
+                        :alt="'Logo du sponsor ' + sponsor.name" />
                 </a>
             </div>
 
@@ -49,7 +49,7 @@
                     class="shrink-0 transition-transform duration-300 hover:scale-110 p-2">
                     <img :src="sponsor.logo_url"
                         class="h-12 w-auto opacity-80 fill-white transition-all duration-300 hover:opacity-100"
-                        alt="Sponsor Logo" />
+                        :alt="'Logo du sponsor ' + sponsor.name" />
                 </a>
             </div>
         </div>

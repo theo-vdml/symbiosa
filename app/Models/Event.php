@@ -270,19 +270,25 @@ class Event extends Model implements HasMedia
     public function getSeoDefaults(): array
     {
         return [
-            "title" => "Un évènement symbiosa",
+            "title" => fn($record) => "$record->title - " . config('app.name'),
+            "og_title" => fn($record) => "$record->title - " . config('app.name'),
+            "twitter_title" => fn($record) => "$record->title - " . config('app.name'),
+            "description" => fn($record) => str()->limit(strip_tags($record->body), 150),
+            "og_description" => fn($record) => str()->limit(strip_tags($record->body), 150),
+            "twitter_description" => fn($record) => str()->limit(strip_tags($record->body), 150),
             "twitter_card" => "summary_large_image",
+            "canonical_url" => fn($record) => route('events.show', $record->slug),
         ];
     }
 
     public function getSeoFallbacks(): array
     {
         return [
-            "title" => ["title", "slug"],
-            "description" => ["description", "title"],
-            "og_title" => ["title", "slug"],
-            "og_description" => ["description", "title"],
+            "description" => "description",
+            "og_description" => "description",
+            "twitter_description" => "description",
             "og_image" => 'background_url',
+            "twitter_image" => 'background_url',
         ];
     }
 }
