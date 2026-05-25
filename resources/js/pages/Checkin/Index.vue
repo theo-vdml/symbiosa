@@ -56,13 +56,20 @@
 
     const isPopupOpen = computed(() => !!lastScanResult.value || !!selectedTicket.value);
 
-    // Block scanning for a short duration when a popup is closed
+    // Stop/Start scanner based on popup state
     watch(isPopupOpen, (isOpen, wasOpen) => {
-        if (!isOpen && wasOpen) {
+        if (isOpen) {
+            stopScanner();
+        } else if (wasOpen && activeTab.value === 'scan') {
+            // Re-start with a delay after closing popup
             scanDelayActive.value = true;
             setTimeout(() => {
-                scanDelayActive.value = false;
-            }, 2000);
+                if (!isPopupOpen.value && activeTab.value === 'scan') {
+                    startScanner();
+                } else {
+                    scanDelayActive.value = false;
+                }
+            }, 1500); // Wait 1.5s before starting the camera
         }
     });
 
@@ -147,11 +154,11 @@
     };
 
     const startScanner = async () => {
-        if (isScanning.value) return;
-        scanDelayActive.value = true;
+        if (isScanning.value || isPopupOpen.value) return;
         await nextTick();
         html5QrCode.value = new Html5Qrcode("reader");
         isScanning.value = true;
+        scanDelayActive.value = true; // Block processing while starting
         try {
             await html5QrCode.value.start(
                 { facingMode: "environment" },
@@ -165,9 +172,10 @@
                 (decodedText) => handleScan(decodedText),
                 () => { }
             );
+            // Small extra delay after camera is ready to avoid "ghost" scans
             setTimeout(() => {
                 scanDelayActive.value = false;
-            }, 2000);
+            }, 500);
         } catch (err) {
             console.error("Scanner error", err);
             isScanning.value = false;
@@ -221,7 +229,7 @@
     };
 
     watch(activeTab, (newTab) => {
-        if (newTab === 'scan') startScanner();
+        if (newTab === 'scan' && !isPopupOpen.value) startScanner();
         else stopScanner();
     });
 
