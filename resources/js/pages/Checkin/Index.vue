@@ -56,20 +56,20 @@
 
     const isPopupOpen = computed(() => !!lastScanResult.value || !!selectedTicket.value);
 
-    // Stop/Start scanner based on popup state
-    watch(isPopupOpen, (isOpen, wasOpen) => {
-        if (isOpen) {
+    // Stop/Start scanner based on popup and loading state
+    watch([isPopupOpen, isLoading], ([isOpen, isLoad], [wasOpen, wasLoad]) => {
+        if (isOpen || isLoad) {
             stopScanner();
-        } else if (wasOpen && activeTab.value === 'scan') {
-            // Re-start with a delay after closing popup
+        } else if (!isOpen && !isLoad && (wasOpen || wasLoad) && activeTab.value === 'scan') {
+            // Re-start with a delay after closing popup or finishing load
             scanDelayActive.value = true;
             setTimeout(() => {
-                if (!isPopupOpen.value && activeTab.value === 'scan') {
+                if (!isPopupOpen.value && !isLoading.value && activeTab.value === 'scan') {
                     startScanner();
                 } else {
                     scanDelayActive.value = false;
                 }
-            }, 1500); // Wait 1.5s before starting the camera
+            }, 750); // Reduced delay: 750ms
         }
     });
 
@@ -154,7 +154,7 @@
     };
 
     const startScanner = async () => {
-        if (isScanning.value || isPopupOpen.value) return;
+        if (isScanning.value || isPopupOpen.value || isLoading.value) return;
         await nextTick();
         html5QrCode.value = new Html5Qrcode("reader");
         isScanning.value = true;
@@ -172,10 +172,10 @@
                 (decodedText) => handleScan(decodedText),
                 () => { }
             );
-            // Small extra delay after camera is ready to avoid "ghost" scans
+            // Reduced extra delay after camera is ready: 250ms
             setTimeout(() => {
                 scanDelayActive.value = false;
-            }, 500);
+            }, 250);
         } catch (err) {
             console.error("Scanner error", err);
             isScanning.value = false;
@@ -229,7 +229,7 @@
     };
 
     watch(activeTab, (newTab) => {
-        if (newTab === 'scan' && !isPopupOpen.value) startScanner();
+        if (newTab === 'scan' && !isPopupOpen.value && !isLoading.value) startScanner();
         else stopScanner();
     });
 
