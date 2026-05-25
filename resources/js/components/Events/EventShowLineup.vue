@@ -26,7 +26,7 @@
                         ? 'md:col-span-2 h-80 md:h-96' : 'h-80'
                 ]">
                 <!-- Artist Image - Clean and visible -->
-                <img :src="artist.portrait_url" :alt="artist.name"
+                <img :src="artist.portrait_url" :alt="'Portrait de ' + artist.name"
                     class="absolute inset-0 h-full w-full object-cover transition-all duration-700 group-hover:scale-105" />
 
                 <!-- Luminous Overlays - More vibrant and light -->

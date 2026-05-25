@@ -63,7 +63,7 @@
                                         'mask-position': 'center',
                                         'transform': `rotate(${index % 2 === 0 ? 0 : 180}deg) scaleX(${index === 2 ? -1 : 1})`
                                     }">
-                                        <img :src="`/storage/${node.image}`" alt=""
+                                        <img :src="node.image" alt=""
                                             class="h-full w-full object-cover grayscale opacity-80"
                                             :style="{ transform: `scaleX(${index === 2 ? -1.1 : 1.1}) scaleY(1.1) rotate(${index % 2 === 0 ? 0 : -180}deg)` }" />
                                         <div

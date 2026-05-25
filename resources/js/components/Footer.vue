@@ -5,6 +5,7 @@
     const page = usePage();
     const footerLegalPages = computed(() => page.props.footerLegalPages as Array<{ title: string, slug: string }>);
     const contactEmails = computed(() => page.props.contactEmails as Array<{ label: string, email: string }>);
+    const asbl = computed(() => page.props.asbl as { name: string, address: string, vat: string | null });
 </script>
 
 <template>
@@ -23,7 +24,7 @@
                             </Link>
                         </li>
                         <li>
-                            <Link href="/agenda"
+                            <Link href="/events"
                                 class="text-base cursor-pointer transition-colors hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black">
                                 Calendrier
                             </Link>
@@ -67,14 +68,12 @@
                     class="flex flex-col items-center justify-center space-y-4 py-8 border-y border-black/10 md:py-0 md:border-y-0 md:border-x md:border-black/20">
                     <h3 class="sr-only">Coordonnées de l'association</h3>
                     <address class="text-center text-base space-y-1 not-italic">
-                        <p class="font-bold uppercase tracking-widest">Symbiosa ASBL</p>
-                        <p>Rue de la rue n°12</p>
-                        <p>5030 Gembloux,</p>
-                        <p>Belgique</p>
+                        <p class="font-bold uppercase tracking-widest">{{ asbl.name }}</p>
+                        <p class="whitespace-pre-line">{{ asbl.address }}</p>
                     </address>
-                    <div class="h-px w-8 bg-black/20"></div>
-                    <div class="text-xs">
-                        <p class="font-bold">TVA: <span translate="no">0120.9303.29029</span></p>
+                    <div v-if="asbl.vat" class="h-px w-8 bg-black/20"></div>
+                    <div v-if="asbl.vat" class="text-xs">
+                        <p class="font-bold">TVA: <span translate="no">{{ asbl.vat }}</span></p>
                     </div>
                 </div>
 

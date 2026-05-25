@@ -270,7 +270,9 @@ class Event extends Model implements HasMedia
     public function getSeoDefaults(): array
     {
         return [
-            "title" => "Un évènement symbiosa",
+            "title" => fn($record) => "$record->title - " . config('app.name'),
+            "description" => fn($record) => str()->limit(strip_tags($record->body), 150),
+            "canonical_url" => fn($record) => route('events.show', $record->slug),
             "twitter_card" => "summary_large_image",
         ];
     }
@@ -278,11 +280,8 @@ class Event extends Model implements HasMedia
     public function getSeoFallbacks(): array
     {
         return [
-            "title" => ["title", "slug"],
-            "description" => ["description", "title"],
-            "og_title" => ["title", "slug"],
-            "og_description" => ["description", "title"],
-            "og_image" => 'background_url',
+            "description" => "description",
+            "og_image" => ['media:background', 'media:poster'],
         ];
     }
 }

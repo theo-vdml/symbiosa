@@ -47,6 +47,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'footerLegalPages' => \App\Models\LegalPage::inFooter()->get(['title', 'slug']),
             'contactEmails' => app(\App\Settings\ContactSettings::class)->email_options,
+            'asbl' => app(\App\Settings\AsblSettings::class)->toArray(),
         ];
     }
 }

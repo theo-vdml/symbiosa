@@ -1,31 +1,34 @@
 <?php
 
-namespace App\Filament\Pages;
+namespace App\Filament\Resources\ContactPages;
 
 use App\Enums\NavigationGroups;
-use App\Settings\ContactSettings;
+use App\Filament\Resources\ContactPages\Pages\CreateContactPage;
+use App\Filament\Resources\ContactPages\Pages\EditContactPage;
+use App\Filament\Resources\ContactPages\Pages\ListContactPages;
+use App\Filament\Shared\Schemas\SeoSchema;
+use App\Models\ContactPage;
 use BackedEnum;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Pages\SettingsPage;
+use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Database\Eloquent\Model;
 use UnitEnum;
 
-class ManageContact extends SettingsPage
+class ContactPageResource extends Resource
 {
+    protected static ?string $model = ContactPage::class;
+
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroups::Pages;
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedEnvelope;
     protected static ?string $navigationLabel = "Contact";
-    protected static string|UnitEnum|null $navigationGroup = NavigationGroups::Pages;
     protected static ?int $navigationSort = 3;
-    protected ?string $heading = "Contact";
-    protected ?string $subheading = "Modifier la page de contact du site";
 
-    protected static string $settings = ContactSettings::class;
-
-    public function form(Schema $schema): Schema
+    public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
@@ -83,7 +86,7 @@ class ManageContact extends SettingsPage
                             ->itemLabel(fn(array $state): ?string => $state['question'] ?? null),
                     ]),
 
-                Section::make('Options de contact (Email)')
+                Section::make('Section E-mail')
                     ->columnSpanFull()
                     ->schema([
                         TextInput::make('email_heading')
@@ -91,28 +94,37 @@ class ManageContact extends SettingsPage
                             ->placeholder('Ex: Nous contacter par e-mail')
                             ->prefixIcon(Heroicon::AtSymbol)
                             ->required(),
-                        Repeater::make('email_options')
-                            ->label('Emails')
-                            ->schema([
-                                TextInput::make('label')
-                                    ->label('Libellé')
-                                    ->placeholder('Ex: Une question ?')
-                                    ->prefixIcon(Heroicon::Tag)
-                                    ->required(),
-                                TextInput::make('email')
-                                    ->label('Adresse e-mail')
-                                    ->placeholder('Ex: hi@symbiosa.be')
-                                    ->prefixIcon(Heroicon::Envelope)
-                                    ->email()
-                                    ->required(),
-                            ])
-                            ->columns(2)
-                            ->collapsible()
-                            ->itemLabel(fn(array $state): ?string => $state['label'] ?? null),
                     ]),
 
-                \App\Filament\Shared\Schemas\SeoSchema::make(withRelationship: false, prefix: 'seo')
+                SeoSchema::make()
                     ->columnSpanFull(),
             ]);
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => ListContactPages::route('/'),
+            'create' => CreateContactPage::route('/create'),
+            'edit' => EditContactPage::route('/{record}/edit'),
+        ];
+    }
+
+    public static function canCreate(): bool
+    {
+        return ContactPage::count() === 0;
+    }
+
+    public static function getUrl(?string $name = null, array $parameters = [], bool $isAbsolute = true, ?string $panel = null, ?Model $tenant = null, bool $shouldGuessMissingParameters = false, ?string $configuration = null): string
+    {
+        if ($name === 'index' || $name === null) {
+            $record = ContactPage::first();
+            if ($record) {
+                return parent::getUrl('edit', ['record' => $record], $isAbsolute, $panel, $tenant, $shouldGuessMissingParameters, $configuration);
+            }
+            return parent::getUrl('create', [], $isAbsolute, $panel, $tenant, $shouldGuessMissingParameters, $configuration);
+        }
+
+        return parent::getUrl($name, $parameters, $isAbsolute, $panel, $tenant, $shouldGuessMissingParameters, $configuration);
     }
 }

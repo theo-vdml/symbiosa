@@ -6,7 +6,11 @@
     import { Link } from '@inertiajs/vue3';
 
     const props = defineProps<{
+        preheading: string;
+        heading: string;
+        description: string;
         events: Event[];
+        seo: any;
     }>();
 
     const search = ref('');
@@ -56,10 +60,9 @@
 </script>
 
 <template>
-    <MainLayout title="Archives" has-background>
+    <MainLayout :seo="seo" has-background>
         <div class="relative z-10 mx-auto max-w-6xl px-4 pt-34 pb-32 md:px-10">
-            <PageHeader preheading="Archives" heading="Les souvenirs de Symbiosa"
-                description="Retrouvez tout nos évènements passés. Chaque édition est une capsule temporelle, un souvenir précieux de notre voyage à travers la musique électronique." />
+            <PageHeader :preheading="preheading" :heading="heading" :description="description" />
 
             <div class="mb-8">
                 <input v-model="search" type="text" placeholder="Rechercher un évènement."

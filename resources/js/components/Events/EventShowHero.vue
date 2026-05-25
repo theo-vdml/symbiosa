@@ -15,7 +15,8 @@
     <section class="relative h-[85vh] w-full overflow-hidden">
         <template v-if="event.background_url">
             <img :src="event.background_url" :srcset="event.background_responsive?.srcset"
-                sizes="(max-width: 768px) 200vw, 100vw" class="absolute inset-0 h-full w-full object-cover" alt="" />
+                sizes="(max-width: 768px) 200vw, 100vw" class="absolute inset-0 h-full w-full object-cover"
+                :alt="'Image de couverture de l\'événement ' + event.title" />
             <div class="absolute inset-0 bg-linear-to-t from-black via-black/40 to-black/20"></div>
             <div class="absolute inset-0 bg-[url('/noise.png')] opacity-[0.05] mix-blend-soft-light"></div>
         </template>

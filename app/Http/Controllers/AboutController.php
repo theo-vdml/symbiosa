@@ -2,16 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Settings\AboutPageSettings;
+use App\Models\AboutPage;
 use Inertia\Inertia;
 
 class AboutController extends Controller
 {
-    public function __invoke(AboutPageSettings $settings)
+    public function __invoke()
     {
+        $aboutPage = AboutPage::first();
+
+        $sections = $aboutPage?->sections()
+            ->get()
+            ->map(fn($section) => [
+                'title' => $section->title,
+                'content' => $section->content,
+                'image' => $section->getFirstMediaUrl('image'),
+            ]) ?? [];
+
         return Inertia::render('About', [
-            'sections' => $settings->sections ?? [],
-            'seo' => $settings->getSeoData(),
+            'sections' => $sections,
+            'seo' => $aboutPage?->getSeoData() ?? [],
         ]);
     }
 }
