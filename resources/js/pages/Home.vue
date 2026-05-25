@@ -40,8 +40,9 @@
         <div class="relative h-screen w-full overflow-hidden">
             <!-- Background Video with subtle scale animation -->
             <div class="absolute inset-0 scale-105 animate-slow-zoom">
-                <video ref="heroVideo" :data-src="props.heroVideoUrl || '/abstract.webm'" :poster="props.heroPosterUrl || undefined"
-                    autoplay loop muted playsinline class="h-full w-full object-cover"></video>
+                <video ref="heroVideo" :data-src="props.heroVideoUrl || '/abstract.webm'"
+                    :poster="props.heroPosterUrl || undefined" autoplay loop muted playsinline tabindex="-1"
+                    aria-hidden="true" class="h-full w-full object-cover"></video>
             </div>
 
             <!-- Overlays -->
@@ -82,7 +83,7 @@
             <!-- Scroll Indicator -->
             <div
                 class="absolute bottom-12 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-4 animate-fade-in [animation-delay:1500ms] opacity-0">
-                <span class="font-synonym text-[10px] tracking-[0.4em] text-white/30 uppercase rotate-0">Scroll</span>
+                <span class="font-synonym text-[10px] tracking-[0.4em] text-white/50 uppercase rotate-0">Scroll</span>
                 <div class="h-12 w-px bg-white/20 relative overflow-hidden">
                     <div class="absolute inset-0 bg-white/60 animate-scroll-line"></div>
                 </div>

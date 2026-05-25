@@ -20,7 +20,7 @@
         <!-- Full-screen Background Video with Rounded Mask -->
         <div class="absolute inset-0 z-0">
             <video ref="videoElement" data-src="/abstract.webm" autoplay loop muted playsinline
-                class="h-full w-full object-cover opacity-60 grayscale-[0.2]"></video>
+                class="h-full w-full object-cover opacity-60 grayscale-[0.2]" tabindex="-1" aria-hidden="true"></video>
 
             <!-- The "Melting Mask" Overlays -->
             <!-- 1. Central Portal Glow -->
@@ -48,7 +48,7 @@
                     </span>
 
                     <span
-                        class="block font-synonym text-2xl md:text-4xl lg:text-5xl italic text-white/40 opacity-0 animate-fade-in-up [animation-delay:400ms]">
+                        class="block font-synonym text-2xl md:text-4xl lg:text-5xl italic text-white/60 opacity-0 animate-fade-in-up [animation-delay:400ms]">
                         for
                     </span>
 

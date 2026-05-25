@@ -65,8 +65,12 @@
     <component :is="componentType" :href="href" :disabled="disabled || loading" :class="computedClasses"
         v-bind="$attrs">
         <Loader2 v-if="loading" class="w-4 h-4 animate-spin shrink-0" />
-        <slot name="left-icon" />
+        <span v-if="$slots['left-icon']" aria-hidden="true" class="inline-flex shrink-0">
+            <slot name="left-icon" />
+        </span>
         <slot />
-        <slot name="right-icon" />
+        <span v-if="$slots['right-icon']" aria-hidden="true" class="inline-flex shrink-0">
+            <slot name="right-icon" />
+        </span>
     </component>
 </template>

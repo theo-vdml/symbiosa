@@ -40,7 +40,8 @@
             <!-- Spotify Embed -->
             <div class="group relative">
                 <div class="relative overflow-hidden rounded-4xl border border-white/10 bg-[#121212] shadow-2xl">
-                    <iframe style="border-radius: 12px;" :src="`https://open.spotify.com/embed/playlist/${playlistId}${props.forceDark ? '?theme=0' : ''}`"
+                    <iframe title="Spotify Playlist Iframe" style="border-radius: 12px;"
+                        :src="`https://open.spotify.com/embed/playlist/${playlistId}${props.forceDark ? '?theme=0' : ''}`"
                         width="100%" height="500" allow="
                             autoplay;
                             clipboard-write;
