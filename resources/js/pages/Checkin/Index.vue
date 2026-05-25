@@ -39,6 +39,7 @@
     const localStats = ref({ ...props.stats });
     const html5QrCode = ref<Html5Qrcode | null>(null);
     const isScanning = ref(false);
+    const scanDelayActive = ref(false);
     const lastScanResult = ref<{
         status: 'success' | 'already_scanned' | 'invalid' | 'unauthorized' | 'error' | 'cancelled_checkin';
         message: string;
@@ -52,6 +53,18 @@
     const searchResults = ref<any[]>([]);
     const selectedTicket = ref<any>(null);
     const sessionHistory = ref<Array<any>>([]);
+
+    const isPopupOpen = computed(() => !!lastScanResult.value || !!selectedTicket.value);
+
+    // Block scanning for a short duration when a popup is closed
+    watch(isPopupOpen, (isOpen, wasOpen) => {
+        if (!isOpen && wasOpen) {
+            scanDelayActive.value = true;
+            setTimeout(() => {
+                scanDelayActive.value = false;
+            }, 2000);
+        }
+    });
 
     // Persistence: Load from local storage
     onMounted(() => {
@@ -135,6 +148,7 @@
 
     const startScanner = async () => {
         if (isScanning.value) return;
+        scanDelayActive.value = true;
         await nextTick();
         html5QrCode.value = new Html5Qrcode("reader");
         isScanning.value = true;
@@ -151,9 +165,13 @@
                 (decodedText) => handleScan(decodedText),
                 () => { }
             );
+            setTimeout(() => {
+                scanDelayActive.value = false;
+            }, 2000);
         } catch (err) {
             console.error("Scanner error", err);
             isScanning.value = false;
+            scanDelayActive.value = false;
         }
     };
 
@@ -166,7 +184,7 @@
     };
 
     const handleScan = (publicId: string) => {
-        if (isLoading.value) return;
+        if (isLoading.value || isPopupOpen.value || scanDelayActive.value) return;
         if (lastScanResult.value && lastScanResult.value.ticket?.public_id === publicId && Date.now() - lastScanResult.value.timestamp < 2000) return;
 
         isLoading.value = true;
