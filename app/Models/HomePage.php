@@ -48,16 +48,8 @@ class HomePage extends Model implements HasMedia
     public function getSeoDefaults(): array
     {
         return [
-            'title' => 'Symbiosa - Accueil',
-            'description' => "Collectif d'événementiel techno à Gembloux. Découvrez nos prochains événements et l'actualité de la scène.",
-        ];
-    }
-
-    public function getSeoFallbacks(): array
-    {
-        return [
-            'og_title' => ['seo_title'],
-            'twitter_title' => ['seo_title'],
+            'title' => 'Accueil - ' . config('app.name'),
+            "canonical_url" => fn() => route('home'),
         ];
     }
 }

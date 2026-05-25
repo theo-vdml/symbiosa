@@ -2,6 +2,7 @@
 
 namespace App\Filament\Shared\Services;
 
+use App\Services\SeoProcessor;
 use Filament\Schemas\Components\Utilities\Get;
 use Livewire\Component as Livewire;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -9,95 +10,78 @@ use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 class SeoPreviewService
 {
     /**
-     * Calcule la valeur finale (Saisie > Fallback > Default)
+     * Centralise la récupération des données complètes via le SeoProcessor
      */
-    public static function getComputedValue(Get $get, Livewire $livewire, string $field, string $p = ""): string
+    public static function getAnalysis(Get $get, Livewire $livewire): array
     {
-        $manual = $get("{$p}{$field}");
-        if (!empty($manual)) return $manual;
 
-        return static::getPlaceholder($get, $livewire, $field);
-    }
+        $source = method_exists($livewire, 'getRecord') ? $livewire->getRecord() : null;
 
-    /**
-     * Calcule le placeholder (Fallback > Default)
-     */
-    public static function getPlaceholder(Get $get, Livewire $livewire, string $field): string
-    {
-        $source = method_exists($livewire, 'getRecord') ? $livewire->getRecord() : $livewire;
-        if (!$source) return '';
+        $originalAttributes = [];
 
-        // 1. Fallbacks (Dynamic fields)
-        $fallbacks = method_exists($source, 'getSeoFallbacks') ? $source->getSeoFallbacks() : [];
-        if (!empty($fallbacks[$field])) {
-            $columns = is_array($fallbacks[$field]) ? $fallbacks[$field] : [$fallbacks[$field]];
-            foreach ($columns as $column) {
-                // Check form state then object property
-                $val = $get("../../{$column}") ?? $get($column) ?? $source->{$column} ?? null;
-                if (!empty($val)) return strip_tags((string) $val);
+        if ($source && property_exists($livewire, 'data')) {
+            $formData = $livewire->data ?? [];
+
+            // 2. SAUVEGARDE DE L'ÉTAT INITIAL : On garde les vrais attributs de côté
+            $originalAttributes = $source->getAttributes();
+
+            // 3. HYDRATATION TEMPORAIRE : On injecte les données dirty du formulaire
+            // directement dans le modèle original sans passer par un clone.
+            foreach ($formData as $key => $value) {
+                $source->setAttribute($key, $value);
             }
         }
 
-        // 2. Defaults (Static strings or callables)
-        $defaults = method_exists($source, 'getSeoDefaults') ? $source->getSeoDefaults() : [];
-        $default = $defaults[$field] ?? '';
+        // Si aucun modèle n'est trouvé, on fallback sur le composant Livewire
+        $source = $source ?? $livewire;
 
-        if (is_callable($default)) {
-            return (string) $default($source);
+        $baseData = [];
+        $fields = ['title', 'description', 'keywords', 'robots', 'canonical_url', 'og_title', 'og_description', 'og_image', 'twitter_card'];
+
+        foreach ($fields as $field) {
+            $baseData[$field] = $get("{$field}");
         }
 
-        return (string) $default;
+        // 2. On extrait les configurations du trait HasSEO sur le modèle source
+        $fallbacks = ($source && method_exists($source, 'getSeoFallbacks')) ? $source->getSeoFallbacks() : [];
+        $defaults = ($source && method_exists($source, 'getSeoDefaults')) ? $source->getSeoDefaults() : [];
+
+        // 3. On fait tourner le processeur principal unifié
+        $analysis = SeoProcessor::analyze($baseData, $fallbacks, $defaults, $source);
+
+        if ($source && method_exists($livewire, 'getRecord') && !empty($originalAttributes)) {
+            $source->setRawAttributes($originalAttributes);
+        }
+
+        // 4. Traitement à chaud de l'image (Filament Upload State)
+        $analysis['data']['og_image'] = static::resolveLivewireImageUrl($analysis['data']['og_image']);
+
+        return $analysis;
     }
 
     /**
-     * Résout l'URL de l'image pour la preview
+     * Transforme l'état d'un FileUpload (Object ou path) en URL valide pour la preview
      */
-    public static function getImageUrl(Get $get, Livewire $livewire, string $p = ""): string
-    {
-        // Priority 1: Current Upload
-        $imageState = $get("{$p}og_image");
-        if ($url = static::extractUrl($imageState)) return $url;
-
-        // Priority 2: Fallback field
-        $source = method_exists($livewire, 'getRecord') ? $livewire->getRecord() : $livewire;
-        if (!$source) return "https://placehold.co/1200x650?text=No+Image";
-        $fallbacks = method_exists($source, 'getSeoFallbacks') ? $source->getSeoFallbacks() : [];
-        $fallbackField = $fallbacks['og_image'] ?? null;
-
-        if ($fallbackField) {
-            $fallbackState = $get("../../{$fallbackField}") ?? $source->{$fallbackField} ?? null;
-            if ($url = static::extractUrl($fallbackState)) return $url;
-        }
-
-        // Priority 3: Defaults
-        $defaults = method_exists($source, 'getSeoDefaults') ? $source->getSeoDefaults() : [];
-        $defaultImage = $defaults['og_image'] ?? null;
-
-        if (is_callable($defaultImage)) {
-            $defaultImage = $defaultImage($source);
-        }
-
-        if ($url = static::extractUrl($defaultImage)) return $url;
-
-        return "https://placehold.co/1200x650?text=No+Image";
-    }
-
-    private static function extractUrl(mixed $state): ?string
+    protected static function resolveLivewireImageUrl(mixed $state): string
     {
         if ($state instanceof TemporaryUploadedFile) {
             try {
                 return $state->temporaryUrl();
             } catch (\Exception $e) {
-                return null;
+                return "https://placehold.co/1200x650?text=Upload+Error";
             }
         }
+
         if (is_array($state)) {
-            $file = reset($state);
-            return static::extractUrl($file);
+            return static::resolveLivewireImageUrl(reset($state));
         }
+
         if (is_string($state) && !empty($state)) {
-            return str_starts_with($state, 'http') ? $state : asset("storage/{$state}");
+            return (str_starts_with($state, 'http://') || str_starts_with($state, 'https://'))
+                ? $state
+                : asset('storage/' . $state);
         }
-        return null;
+
+        return "https://placehold.co/1200x650?text=No+Image+Selected";
     }
 }

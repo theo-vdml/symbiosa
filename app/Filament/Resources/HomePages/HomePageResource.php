@@ -143,7 +143,7 @@ class HomePageResource extends Resource
                             ]),
                     ]),
 
-                SeoSchema::make(withRelationship: true)
+                SeoSchema::make()
                     ->columnSpanFull(),
             ]);
     }

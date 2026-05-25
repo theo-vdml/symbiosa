@@ -271,13 +271,9 @@ class Event extends Model implements HasMedia
     {
         return [
             "title" => fn($record) => "$record->title - " . config('app.name'),
-            "og_title" => fn($record) => "$record->title - " . config('app.name'),
-            "twitter_title" => fn($record) => "$record->title - " . config('app.name'),
             "description" => fn($record) => str()->limit(strip_tags($record->body), 150),
-            "og_description" => fn($record) => str()->limit(strip_tags($record->body), 150),
-            "twitter_description" => fn($record) => str()->limit(strip_tags($record->body), 150),
-            "twitter_card" => "summary_large_image",
             "canonical_url" => fn($record) => route('events.show', $record->slug),
+            "twitter_card" => "summary_large_image",
         ];
     }
 
@@ -285,10 +281,7 @@ class Event extends Model implements HasMedia
     {
         return [
             "description" => "description",
-            "og_description" => "description",
-            "twitter_description" => "description",
-            "og_image" => 'background_url',
-            "twitter_image" => 'background_url',
+            "og_image" => ['media:background', 'media:poster'],
         ];
     }
 }

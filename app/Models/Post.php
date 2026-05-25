@@ -80,7 +80,8 @@ class Post extends Model implements HasMedia
     public function getSeoDefaults(): array
     {
         return [
-            "title" => "Un article symbiosa",
+            "title" => fn($record) => $record->title . ' - ' . config('app.name'),
+            "canonical_url" => fn($record) => route('news.show', $record->slug),
             "twitter_card" => "summary_large_image",
         ];
     }
@@ -88,11 +89,8 @@ class Post extends Model implements HasMedia
     public function getSeoFallbacks(): array
     {
         return [
-            "title" => ["title", "slug"],
-            "description" => ["excerpt", "title"],
-            "og_title" => ["title", "slug"],
-            "og_description" => ["excerpt", "title"],
-            "og_image" => 'cover_url',
+            "description" => 'excerpt',
+            "og_image" => 'media:cover',
         ];
     }
 }

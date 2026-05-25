@@ -34,4 +34,32 @@ class EditEventSeo extends EditRecord
         return $schema
             ->components(EventForm::getSeoSchema());
     }
+
+    /**
+     * Étape 1 : On vide le cache Eloquent de la relation pour être sûr
+     * de lire les nouvelles données écrites en BDD.
+     */
+    protected function afterSave(): void
+    {
+        $this->record->unsetRelation('seo');
+        $this->record->load('seo');
+    }
+
+    /**
+     * Étape 2 : CORRECTION DU BUG. On force Filament à recharger
+     * l'état du formulaire complet à partir du record fraîchement rafraîchi.
+     */
+    protected function afterFill(): void
+    {
+        // Laisser Filament faire son premier remplissage au chargement initial
+    }
+
+    protected function getSavedNotification(): ?\Filament\Notifications\Notification
+    {
+        // On profite de la fin du cycle de sauvegarde pour forcer Livewire
+        // à réinjecter le nouvel état de la BDD dans les inputs du formulaire.
+        $this->fillForm();
+
+        return parent::getSavedNotification();
+    }
 }
