@@ -9,13 +9,18 @@ class EventController extends Controller
 {
     public function index()
     {
+        $page = \App\Models\EventsPage::first() ?? new \App\Models\EventsPage();
         $events = Event::published()
             ->upcoming(includeOngoing: true)
             ->with('genres')
             ->get();
 
         return Inertia::render('Events/Index', [
+            'preheading' => $page->preheading ?? 'Calendrier',
+            'heading' => $page->heading ?? 'Événements à venir',
+            'description' => $page->description ?? '',
             'events' => $events,
+            'seo' => $page->getSeoData(),
         ]);
     }
     public function show(string $slug)

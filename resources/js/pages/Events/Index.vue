@@ -8,15 +8,18 @@
     import EventDetails from '@/components/Events/EventDetails.vue';
 
     const props = defineProps<{
+        preheading: string;
+        heading: string;
+        description: string;
         events: Event[];
+        seo: any;
     }>();
 </script>
 
 <template>
-    <MainLayout title="Calendrier" has-background>
+    <MainLayout :seo="seo" has-background>
         <div class="relative z-10 mx-auto max-w-6xl px-4 pt-34 pb-32 md:px-10">
-            <PageHeader preheading="Calendrier" heading="Tous les événements à venir"
-                description="Découvrez les prochaines expériences Symbiosa. Chaque événement est une immersion unique dans l'univers électronique." />
+            <PageHeader :preheading="preheading" :heading="heading" :description="description" />
 
             <div v-if="events.length > 0" class="relative mt-20 md:px-0">
                 <!-- Timeline Line -->

@@ -8,6 +8,10 @@
     import { Mail, HelpCircle, CheckCircle2, ArrowRight } from '@lucide/vue';
 
     defineProps<{
+        preheading: string;
+        heading: string;
+        description: string;
+        helpItems: { title: string; content: string }[];
         seo: Seo;
     }>();
 
@@ -30,8 +34,7 @@
     <MainLayout :seo="seo" has-background>
         <div class="relative z-10 mx-auto max-w-6xl px-4 pt-34 pb-32 md:px-10">
 
-            <PageHeader heading="Retrouvez vos <span class='text-[#51A687]'>billets</span>"
-                description="Si vous avez perdu l'accès à vos billets, entrez l'adresse email utilisée lors de votre commande ci-dessous. Nous vous renverrons vos accès pour tous les événements à venir." />
+            <PageHeader :preheading="preheading" :heading="heading" :description="description" />
 
             <div class="grid grid-cols-1 md:grid-cols-12 gap-12">
                 <!-- Form Section -->
@@ -70,34 +73,20 @@
 
                 <!-- Info Section -->
                 <div class="md:col-span-5 space-y-10">
-                    <div class="space-y-4">
+                    <div v-for="(item, index) in helpItems" :key="index" class="space-y-4">
                         <div class="flex items-center gap-3 text-[#51A687]">
-                            <Mail class="w-5 h-5" />
-                            <h3 class="font-bold text-sm uppercase tracking-wider">Délai d'envoi</h3>
+                            <h3 class="font-bold text-sm uppercase tracking-wider">{{ item.title }}</h3>
                         </div>
-                        <p class="text-gray-400 text-sm leading-relaxed">
-                            Les emails sont généralement expédiés dans les 5 minutes. N'oubliez pas de vérifier votre
-                            dossier "Indésirables" ou "Spam".
+                        <p class="text-gray-400 text-sm leading-relaxed whitespace-pre-line">
+                            {{ item.content }}
                         </p>
                     </div>
-
-                    <div class="space-y-4">
-                        <div class="flex items-center gap-3 text-[#51A687]">
-                            <HelpCircle class="w-5 h-5" />
-                            <h3 class="font-bold text-sm uppercase tracking-wider">Besoin d'aide ?</h3>
-                        </div>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-4">
-                            Si vous ne recevez rien ou si vous avez changé d'adresse email, notre équipe support peut
-                            intervenir manuellement.
-                        </p>
-                        <AppButton variant="ghost" href="/contact"
-                            class="px-0 h-auto group text-[#51A687] hover:text-white">
-                            Contactez-nous
-                            <template #right-icon>
-                                <ArrowRight class="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                            </template>
-                        </AppButton>
-                    </div>
+                    <AppButton variant="outline" href="/contact">
+                        Contactez-nous
+                        <template #right-icon>
+                            <ArrowRight class="w-4 h-4" />
+                        </template>
+                    </AppButton>
                 </div>
             </div>
         </div>

@@ -5,6 +5,9 @@
     import { Link } from '@inertiajs/vue3';
 
     interface NewsProps {
+        preheading: string
+        heading: string
+        description: string
         posts: {
             id: number
             title: string
@@ -26,6 +29,7 @@
             created_at: string
             updated_at: string
         }[]
+        seo: any
     }
 
     const props = defineProps<NewsProps>();
@@ -63,11 +67,10 @@
 </script>
 
 <template>
-    <MainLayout title="Actualités" has-background>
+    <MainLayout :seo="seo" has-background>
         <div class="relative z-10 mx-auto max-w-6xl px-4 pt-34 pb-32 md:px-10">
 
-            <PageHeader preheading="Actualités" heading="News & Stories"
-                description="Annonces, coulisses, aftermovies et portraits — tout ce qui fait vivre Symbiosa en dehors des nuits." />
+            <PageHeader :preheading="preheading" :heading="heading" :description="description" />
 
             <!-- Category filters -->
             <div class="mb-10 flex flex-wrap items-center gap-1.5" v-if="props.categories.length > 1">
@@ -109,7 +112,7 @@
                     <!-- Content -->
                     <div class="flex flex-1 flex-col gap-3 p-5">
                         <span class="text-[11px] font-medium text-gray-500 capitalize">{{ formatDate(news.published_at)
-                        }}</span>
+                            }}</span>
                         <h3
                             class="font-chillax text-lg leading-snug text-white transition-colors duration-300 group-hover:text-[#51A687] md:text-xl">
                             {{ news.title }}
