@@ -3,6 +3,7 @@
     import MainLayout from '@/layouts/MainLayout.vue';
     import PageHeader from '@/components/PageHeader.vue';
     import { Link } from '@inertiajs/vue3';
+    import { ArrowRight } from '@lucide/vue';
 
     interface NewsProps {
         preheading: string
@@ -73,31 +74,56 @@
             <PageHeader :preheading="preheading" :heading="heading" :description="description" />
 
             <!-- Category filters -->
-            <div class="mb-10 flex flex-wrap items-center gap-1.5" v-if="props.categories.length > 1">
-                <span class="mr-1 text-[10px] font-bold tracking-[0.2em] text-gray-500 uppercase">Catégorie</span>
-                <button type="button" @click="selectedCategories = []" :class="[
-                    'cursor-pointer rounded-full border px-2.5 py-1 text-[10px] font-bold tracking-[0.18em] uppercase transition-colors',
-                    selectedCategories.length === 0
-                        ? 'border-[#51A687] bg-[#51A687]/20 text-white'
-                        : 'border-white/15 bg-white/5 text-gray-300 hover:border-white/30',
-                ]">
+            <div 
+                class="mb-10 flex flex-wrap items-center gap-1.5" 
+                v-if="props.categories.length > 1"
+                role="group"
+                aria-label="Filtrer par catégorie"
+            >
+                <span class="mr-1 text-xs font-bold tracking-[0.2em] text-gray-500 uppercase">Catégories</span>
+                <button 
+                    type="button" 
+                    @click="selectedCategories = []" 
+                    :aria-pressed="selectedCategories.length === 0"
+                    :class="[
+                        'cursor-pointer rounded-full border px-3 py-1.5 text-[10px] font-bold tracking-[0.18em] uppercase transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#51A687]/50',
+                        selectedCategories.length === 0
+                            ? 'border-[#51A687] bg-[#51A687]/20 text-white'
+                            : 'border-white/15 bg-white/5 text-gray-300 hover:border-white/30',
+                    ]"
+                >
                     All
                 </button>
-                <button v-for="cat in props.categories" :key="cat.id" type="button" @click="toggleCategory(cat.id)"
+                <button 
+                    v-for="cat in props.categories" 
+                    :key="cat.id" 
+                    type="button" 
+                    @click="toggleCategory(cat.id)"
+                    :aria-pressed="selectedCategories.includes(cat.id)"
                     :class="[
-                        'cursor-pointer rounded-full border px-2.5 py-1 text-[10px] font-bold tracking-[0.18em] uppercase transition-colors',
+                        'cursor-pointer rounded-full border px-3 py-1.5 text-[10px] font-bold tracking-[0.18em] uppercase transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#51A687]/50',
                         selectedCategories.includes(cat.id)
                             ? 'border-[#51A687] bg-[#51A687]/20 text-white'
                             : 'border-white/15 bg-white/5 text-gray-300 hover:border-white/30',
-                    ]">
+                    ]"
+                >
                     {{ cat.name }}
                 </button>
             </div>
 
             <!-- News grid -->
-            <section v-if="filteredNews.length" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                <Link v-for="news in filteredNews" :key="news.id" :href="`/news/${news.slug}`"
-                    class="group relative flex flex-col overflow-hidden rounded-2xl border border-white/8 bg-white/2 transition-all duration-300 hover:border-white/18 hover:bg-white/5 hover:shadow-[0_0_40px_rgba(200,10,69,0.1)]">
+            <section 
+                v-if="filteredNews.length" 
+                class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+                aria-live="polite"
+            >
+                <Link 
+                    v-for="news in filteredNews" 
+                    :key="news.id" 
+                    :href="`/news/${news.slug}`"
+                    :aria-labelledby="`news-title-${news.id}`"
+                    class="group relative flex flex-col overflow-hidden rounded-2xl border border-white/8 bg-white/2 transition-all duration-300 hover:border-white/18 hover:bg-white/5 hover:shadow-[0_0_40px_rgba(200,10,69,0.1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#51A687]/50"
+                >
                     <!-- Image -->
                     <div class="relative aspect-16/10 overflow-hidden">
                         <img :src="news.thumbnail_url" :alt="news.title"
@@ -111,18 +137,26 @@
 
                     <!-- Content -->
                     <div class="flex flex-1 flex-col gap-3 p-5">
-                        <span class="text-[11px] font-medium text-gray-500 capitalize">{{ formatDate(news.published_at)
-                        }}</span>
+                        <time 
+                            :datetime="news.published_at"
+                            class="text-xs font-medium text-gray-500 capitalize"
+                        >
+                            {{ formatDate(news.published_at) }}
+                        </time>
                         <h3
-                            class="font-chillax text-lg leading-snug text-white transition-colors duration-300 group-hover:text-[#51A687] md:text-xl">
+                            :id="`news-title-${news.id}`"
+                            class="font-chillax text-lg leading-snug text-white transition-colors duration-300 group-hover:text-[#51A687] md:text-xl"
+                        >
                             {{ news.title }}
                         </h3>
                         <p class="line-clamp-3 text-sm leading-relaxed text-gray-400">
                             {{ news.excerpt }}
                         </p>
                         <p
-                            class="mt-auto pt-2 text-[10px] font-bold tracking-[0.14em] text-[#51A687] uppercase opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                            Lire la suite →
+                            class="flex items-center mt-auto pt-2 text-[10px] font-bold tracking-[0.14em] text-[#51A687] uppercase opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
+                        >
+                            Lire la suite
+                            <ArrowRight class="ml-1 inline-block h-3 w-3" aria-hidden="true" />
                         </p>
                     </div>
                 </Link>

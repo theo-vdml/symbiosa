@@ -4,6 +4,7 @@
     import PageHeader from '@/components/PageHeader.vue';
     import routes from '@/routes/events';
     import { Link } from '@inertiajs/vue3';
+    import { ArrowRight } from '@lucide/vue';
 
     const props = defineProps<{
         preheading: string;
@@ -65,7 +66,9 @@
             <PageHeader :preheading="preheading" :heading="heading" :description="description" />
 
             <div class="mb-8">
-                <input v-model="search" type="text" placeholder="Rechercher un évènement."
+                <label for="archive_query" class="sr-only">Rechercher un évènement dans les archives</label>
+                <input id="archive_query" v-model="search" type="text" placeholder="Rechercher un évènement."
+                    aria-label="Rechercher un évènement dans les archives"
                     class="w-full rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm text-white placeholder:text-gray-500 focus:border-[#06402B]/70 focus:ring-2 focus:ring-[#06402B]/30 focus:outline-none" />
             </div>
             <section v-if="visiblePastEvents.length" class="space-y-5">
@@ -101,12 +104,9 @@
                     <div class="shrink-0">
                         <div
                             class="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 transition-all duration-300 group-hover:border-[#51A687]/40 group-hover:bg-[#51A687]/10">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="text-white/30 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-white">
-                                <path d="M5 12h14m-7-7 7 7-7 7" />
-                            </svg>
+                            <ArrowRight
+                                class="h-5 w-5 text-white transition-colors duration-300 group-hover:text-[#51A687]"
+                                aria-label="Voir l'archive" />
                         </div>
                     </div>
                 </Link>

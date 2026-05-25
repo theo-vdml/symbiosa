@@ -7,7 +7,7 @@
 <template>
     <div class="mt-32 flex flex-col items-center text-center bg-black z-2 relative">
         <div class="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-[#51A687]/10 text-[#51A687]">
-            <CheckCircle class="h-6 w-6" />
+            <CheckCircle aria-hidden="true" class="h-6 w-6" />
         </div>
         <h3 class="font-chillax text-2xl text-white">
             C'est tout pour le moment !

@@ -41,7 +41,7 @@
                 <!-- Location -->
                 <div class="mb-4 flex items-center gap-2 text-gray-400 md:mb-6"
                     :class="!isEven ? 'md:flex-row-reverse' : ''">
-                    <MapPin class="h-3.5 w-3.5 md:h-5 md:w-5 text-[#51A687]/80" />
+                    <MapPin class="h-3.5 w-3.5 md:h-5 md:w-5 text-[#51A687]/80" aria-hidden="true" />
                     <span
                         class="text-[11px] md:text-lg font-bold md:font-medium tracking-[0.2em] md:tracking-wide uppercase">
                         {{ event.city }}, {{ event.country }}

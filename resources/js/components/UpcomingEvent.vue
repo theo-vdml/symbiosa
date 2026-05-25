@@ -20,7 +20,8 @@
         <div class="absolute inset-0 z-0">
             <!-- Priority 1: Event Background -->
             <img v-if="event.background_url" :src="event.background_url" :srcset="event.background_responsive?.srcset"
-                sizes="(max-width: 768px) 200vw, 100vw" class="h-full w-full object-cover" alt="" />
+                sizes="(max-width: 768px) 200vw, 100vw" class="h-full w-full object-cover"
+                :alt="`Visuel de l'événement ${event.title}`" />
 
             <!-- Priority 2: Branded Deep Gradient -->
             <template v-else>
@@ -47,7 +48,8 @@
                     <div class="relative group w-full max-w-70 md:max-w-sm lg:max-w-none">
                         <div
                             class="relative z-10 w-full aspect-3/4 overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
-                            <img :src="event.poster_url" :alt="event.title" class="h-full w-full object-cover" />
+                            <img :src="event.poster_url" :alt="`Affiche de l'événement ${event.title}`"
+                                class="h-full w-full object-cover" />
                         </div>
                     </div>
                 </div>

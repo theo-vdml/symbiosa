@@ -51,8 +51,8 @@
 
     // Shared styles that don't change much
     const imageClasses = "h-full w-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110";
-    const badgeClasses = "absolute left-4 top-4 md:left-6 md:top-6 rounded-full border border-[#51A687]/60 bg-[#51A687]/30 px-4 py-1.5 text-xs font-bold tracking-[0.18em] text-white uppercase backdrop-blur-sm";
-    const dateClasses = "text-xs font-medium text-gray-500 capitalize";
+    const badgeClasses = "absolute left-4 top-4 md:left-6 md:top-6 rounded-full border border-[#51A687]/60 bg-[#51A687]/50 px-4 py-1.5 text-xs font-bold tracking-[0.18em] text-white uppercase backdrop-blur-sm";
+    const dateClasses = "text-xs font-medium text-gray-300 capitalize";
     const footerLinkClasses = "mt-4 text-xs font-bold tracking-[0.14em] text-[#51A687] uppercase opacity-0 transition-opacity duration-200 group-hover:opacity-100 flex items-center";
 </script>
 
@@ -74,7 +74,7 @@
             <p :class="excerptClasses">{{ post.excerpt }}</p>
             <p :class="footerLinkClasses">
                 <span>Lire la suite</span>
-                <ArrowRight class="inline-block w-4 h-4 ml-1 -mt-0.5" />
+                <ArrowRight class="inline-block w-4 h-4 ml-1 -mt-0.5" aria-hidden="true" />
             </p>
         </div>
     </Link>
