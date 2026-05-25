@@ -112,7 +112,7 @@
                     <!-- Content -->
                     <div class="flex flex-1 flex-col gap-3 p-5">
                         <span class="text-[11px] font-medium text-gray-500 capitalize">{{ formatDate(news.published_at)
-                            }}</span>
+                        }}</span>
                         <h3
                             class="font-chillax text-lg leading-snug text-white transition-colors duration-300 group-hover:text-[#51A687] md:text-xl">
                             {{ news.title }}
