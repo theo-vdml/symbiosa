@@ -63,7 +63,7 @@
 
 <template>
     <component :is="componentType" :href="href" :disabled="disabled || loading" :class="computedClasses"
-        v-bind="$attrs">
+        v-bind="$attrs" :aria-busy="loading">
         <Loader2 v-if="loading" class="w-4 h-4 animate-spin shrink-0" />
         <span v-if="$slots['left-icon']" aria-hidden="true" class="inline-flex shrink-0">
             <slot name="left-icon" />

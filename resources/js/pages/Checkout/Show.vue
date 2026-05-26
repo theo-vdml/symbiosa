@@ -45,6 +45,7 @@
     });
 
     const timeLeft = ref('');
+    const timeLeftA11y = ref('');
     let timer: any = null;
 
     const calculateTimeLeft = () => {
@@ -54,6 +55,7 @@
 
         if (diff <= 0) {
             timeLeft.value = 'EXPIRÉ';
+            timeLeftA11y.value = 'Votre session a expiré.';
             if (timer) clearInterval(timer);
             return;
         }
@@ -61,6 +63,11 @@
         const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((diff % (1000 * 60)) / 1000);
         timeLeft.value = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+        // Update a11y string every minute or on initial load
+        if (seconds === 0 || timeLeftA11y.value === '') {
+            timeLeftA11y.value = `Temps restant pour finaliser votre commande : ${minutes} minute${minutes > 1 ? 's' : ''}.`;
+        }
     };
 
     const event = props.checkout.reservations[0]?.reservable?.event;
@@ -133,22 +140,29 @@
 <template>
     <MainLayout title="Finaliser ma commande">
 
-        <section v-if="EventController" class="relative h-[50vh] w-full overflow-hidden">
+        <section v-if="EventController"
+            class="relative min-h-[50vh] w-full overflow-hidden flex items-center justify-center py-24">
             <img v-if="event.background_url" :src="event.background_url" :srcset="event.background_responsive?.srcset"
                 sizes="(max-width: 768px) 200vw, 100vw"
                 class="absolute inset-0 h-full w-full object-cover grayscale opacity-30" alt="" />
             <div class="absolute inset-0 bg-linear-to-t from-black via-black/40 to-black/20"></div>
 
-            <div class="relative z-10 flex h-full flex-col items-center justify-end pb-20">
+            <div class="relative z-10 flex w-full flex-col items-center justify-center">
                 <HeroHeader size="lg">
                     <template #top>
-                        <!-- Timer Compact -->
-                        <div
-                            class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[#51A687]/15 border border-[#51A687]/30 text-[#51A687]">
-                            <Clock class="w-4 h-4" />
-                            <span class="text-xs font-bold tracking-[0.2em] uppercase">Temps restant : {{ timeLeft
+                        <section aria-label="Temps restant pour finaliser la commande" class="flex items-center gap-6">
+                            <!-- Timer Compact -->
+                            <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[#51A687]/15 border border-[#51A687]/30 text-[#51A687]"
+                                aria-hidden="true">
+                                <Clock class="w-4 h-4" />
+                                <span class="text-xs font-bold tracking-[0.2em] uppercase">Temps restant : {{ timeLeft
                                 }}</span>
-                        </div>
+                            </div>
+                            <!-- A11y Timer -->
+                            <div class="sr-only" aria-live="polite">
+                                {{ timeLeftA11y }}
+                            </div>
+                        </section>
                     </template>
 
                     Finaliser ma <span class="text-[#51A687]">commande</span>
@@ -178,7 +192,7 @@
 
         <div class="mx-auto max-w-3xl px-6 pb-24 pt-8 space-y-12">
             <!-- Flash Message -->
-            <div v-if="$page.props.flash.error || $page.props.flash.message"
+            <div v-if="$page.props.flash.error || $page.props.flash.message" role="alert"
                 class="p-6 rounded-4xl border flex gap-6 items-center"
                 :class="$page.props.flash.error ? 'border-red-500/40 bg-red-500/10' : 'border-[#51A687]/40 bg-[#51A687]/10'">
                 <div class="shrink-0 w-10 h-10 rounded-full flex items-center justify-center border"
@@ -198,12 +212,14 @@
             </div>
 
             <!-- Section 1 : Résumé de la commande -->
-            <section class="space-y-6">
+            <section class="space-y-6" aria-labelledby="step-1-title">
                 <div class="flex items-center gap-6 border-b border-white/20 pb-6">
-                    <div
-                        class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-[#51A687] text-[#51A687] font-chillax text-lg pt-0.5">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-[#51A687] text-[#51A687] font-chillax text-lg pt-0.5"
+                        aria-hidden="true">
                         1</div>
-                    <h2 class="font-chillax text-2xl text-white uppercase tracking-wider">Résumé de la commande</h2>
+                    <h2 id="step-1-title" class="font-chillax text-2xl text-white uppercase tracking-wider">
+                        <span class="sr-only">Étape 1 :</span> Résumé de la commande
+                    </h2>
                 </div>
 
                 <div class="space-y-4">
@@ -223,17 +239,21 @@
             </section>
 
             <!-- Section 2 : Vos Informations -->
-            <section class="space-y-6">
+            <section class="space-y-6" aria-labelledby="step-2-title">
                 <div class="flex items-center justify-between border-b border-white/20 pb-6">
                     <div class="flex items-center gap-6">
                         <div class="flex items-center justify-center w-10 h-10 rounded-full border-2 text-[#51A687] font-chillax text-lg pt-0.5"
-                            :class="currentStep >= 2 ? 'border-[#51A687]' : 'border-white/20 text-white/20'">
+                            :class="currentStep >= 2 ? 'border-[#51A687]' : 'border-white/20 text-white/20'"
+                            aria-hidden="true">
                             2</div>
-                        <h2 class="font-chillax text-2xl text-white uppercase tracking-wider">Vos Informations</h2>
+                        <h2 id="step-2-title" class="font-chillax text-2xl text-white uppercase tracking-wider"
+                            :aria-current="currentStep === 2 ? 'step' : undefined">
+                            <span class="sr-only">Étape 2 :</span> Vos Informations
+                        </h2>
                     </div>
 
                     <AppButton v-if="currentStep > 2" variant="outline" size="sm" @click="handleResetVerification"
-                        :loading="isResetting" class="text-[10px]">
+                        :loading="isResetting" class="text-[10px]" aria-label="Modifier mes informations">
                         Modifier mes infos
                     </AppButton>
 
@@ -242,9 +262,9 @@
                 <div class="space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <CheckoutInput v-model="form.name" placeholder="Nom Complet" :icon="User"
-                            :error="form.errors.name" :disabled="currentStep > 2" />
+                            :error="form.errors.name" :disabled="currentStep > 2" autocomplete="name" />
                         <CheckoutInput v-model="form.email" type="email" placeholder="Adresse Email" :icon="Mail"
-                            :error="form.errors.email" :disabled="currentStep > 2" />
+                            :error="form.errors.email" :disabled="currentStep > 2" autocomplete="email" />
                     </div>
 
                     <div v-if="currentStep === 2" class="flex justify-end">
@@ -260,7 +280,8 @@
 
                 <!-- Verified Badge -->
                 <div v-if="currentStep === 4"
-                    class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#51A687]/15 border border-[#51A687]/30 text-[#51A687]">
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#51A687]/15 border border-[#51A687]/30 text-[#51A687]"
+                    role="status">
                     <CheckCircle2 class="w-3.5 h-3.5" />
                     <span class="text-[10px] font-bold uppercase tracking-widest">Email vérifié : <span
                             class="text-white">{{
@@ -270,18 +291,23 @@
             </section>
 
             <!-- Section 3 : Vérification Email -->
-            <section v-if="currentStep === 3" class="space-y-6 animate-in fade-in duration-300">
+            <section v-if="currentStep === 3" class="space-y-6 animate-in fade-in duration-300"
+                aria-labelledby="step-3-title">
                 <div class="flex items-center gap-6 border-b border-white/20 pb-6">
-                    <div
-                        class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-[#51A687] text-[#51A687] font-chillax text-lg pt-0.5">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-[#51A687] text-[#51A687] font-chillax text-lg pt-0.5"
+                        aria-hidden="true">
                         3</div>
-                    <h2 class="font-chillax text-2xl text-white uppercase tracking-wider">Vérification</h2>
+                    <h2 id="step-3-title" class="font-chillax text-2xl text-white uppercase tracking-wider"
+                        aria-current="step">
+                        <span class="sr-only">Étape 3 :</span> Vérification
+                    </h2>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
                     <div class="space-y-2">
                         <CheckoutInput v-model="verificationForm.code" placeholder="Code à 6 chiffres"
-                            :icon="ShieldCheck" :error="verificationForm.errors.code" :maxlength="6" />
+                            :icon="ShieldCheck" :error="verificationForm.errors.code" :maxlength="6"
+                            autocomplete="one-time-code" inputmode="numeric" />
                         <p class="text-[10px] text-white/40 uppercase tracking-widest ml-5">
                             Envoyé à <span class="text-white">{{ form.email }}</span>
                         </p>
@@ -295,15 +321,19 @@
             </section>
 
             <!-- Section 4 : Paiement & Validation -->
-            <section class="space-y-6">
+            <section class="space-y-6" aria-labelledby="step-4-title">
                 <div class="flex items-center gap-6 border-b border-white/20 pb-6">
                     <div class="flex items-center justify-center w-10 h-10 rounded-full border-2 font-chillax text-lg pt-0.5"
-                        :class="currentStep >= 4 ? 'border-[#51A687] text-[#51A687]' : 'border-white/20 text-white/30'">
+                        :class="currentStep >= 4 ? 'border-[#51A687] text-[#51A687]' : 'border-white/20 text-white/30'"
+                        aria-hidden="true">
                         {{ currentStep === 3 ? '4' : '3' }}
                     </div>
-                    <h2 class="font-chillax text-2xl text-white uppercase tracking-wider flex items-center gap-3">
+                    <h2 id="step-4-title"
+                        class="font-chillax text-2xl text-white uppercase tracking-wider flex items-center gap-3"
+                        :aria-current="currentStep === 4 ? 'step' : undefined">
+                        <span class="sr-only">Étape {{ currentStep === 3 ? '4' : '3' }} :</span>
                         Paiement
-                        <Lock v-if="currentStep < 4" class="w-4 h-4 text-white/20" />
+                        <Lock v-if="currentStep < 4" class="w-4 h-4 text-white/20" aria-hidden="true" />
                     </h2>
                 </div>
 
@@ -327,24 +357,31 @@
                                 <label class="flex items-start gap-4 cursor-pointer group/legal">
                                     <div class="relative flex items-center justify-center mt-0.5 shrink-0">
                                         <input v-model="form['accept_' + page.slug.replace(/-/g, '_')]" type="checkbox"
-                                            class="peer sr-only" />
+                                            class="peer sr-only"
+                                            :aria-invalid="!!form.errors['accept_' + page.slug.replace(/-/g, '_')]"
+                                            :aria-describedby="form.errors['accept_' + page.slug.replace(/-/g, '_')] ? `error-${page.slug}` : undefined" />
                                         <div class="w-5 h-5 rounded-md border-2 border-white/20 bg-white/5 transition-all duration-300 peer-checked:bg-[#51A687] peer-checked:border-[#51A687]"
+                                            aria-hidden="true"
                                             :class="{ 'border-red-500/50': form.errors['accept_' + page.slug.replace(/-/g, '_')] }">
                                         </div>
                                         <svg class="absolute w-3 h-3 text-black opacity-0 transition-opacity peer-checked:opacity-100"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4"
+                                            aria-hidden="true">
                                             <path d="M5 13l4 4L19 7" />
                                         </svg>
                                     </div>
                                     <span
                                         class="text-[10px] text-white/60 uppercase tracking-widest leading-relaxed font-medium">
                                         J'ai lu et j'accepte <a :href="`/legal/${page.slug}`" target="_blank"
-                                            class="text-white hover:text-[#51A687] underline underline-offset-4 transition-colors font-bold">{{
+                                            class="text-white hover:text-[#51A687] underline underline-offset-4 transition-colors font-bold"
+                                            :aria-label="`Lire les ${page.title} (s'ouvre dans un nouvel onglet)`">{{
                                                 page.title }}</a>.
                                     </span>
                                 </label>
                                 <p v-if="form.errors['accept_' + page.slug.replace(/-/g, '_')]"
-                                    class="text-[10px] text-red-400 font-bold uppercase tracking-widest ml-9">
+                                    :id="`error-${page.slug}`"
+                                    class="text-[10px] text-red-400 font-bold uppercase tracking-widest ml-9"
+                                    role="alert">
                                     {{ form.errors['accept_' + page.slug.replace(/-/g, '_')] }}
                                 </p>
                             </div>
