@@ -85,18 +85,18 @@
         </section>
 
         <!-- Content Area -->
-        <div class="relative z-10 max-w-xl mx-auto px-6 py-20">
+        <main class="relative z-10 max-w-xl mx-auto px-6 py-20">
 
             <!-- PROCESSING -->
-            <div v-if="isProcessing" class="text-center space-y-8 animate-fade-in">
-                <Loader2 class="w-10 h-10 text-[#51A687] animate-spin mx-auto" />
+            <div v-if="isProcessing" class="text-center space-y-8 animate-fade-in" role="status" aria-live="polite">
+                <Loader2 class="w-10 h-10 text-[#51A687] animate-spin mx-auto" aria-hidden="true" />
                 <p class="font-synonym text-gray-300 text-base uppercase tracking-widest leading-relaxed">
                     Nous attendons la validation de votre paiement par Stripe...
                 </p>
             </div>
 
             <!-- SUCCESS -->
-            <div v-else-if="isCompleted" class="space-y-12 animate-fade-in-up">
+            <div v-else-if="isCompleted" class="space-y-12 animate-fade-in-up" role="status" aria-live="polite">
                 <div class="space-y-4">
                     <p class="text-gray-300 text-center text-lg mb-8 leading-relaxed">
                         Votre commande est validée. Les billets ont été envoyés par mail à
@@ -104,16 +104,17 @@
                     </p>
 
                     <!-- Items List (Same style as Checkout page) -->
-                    <div class="space-y-3">
+                    <section aria-label="Détails de la commande" class="space-y-3">
                         <div v-for="reservation in checkout.reservations" :key="reservation.id"
                             class="flex justify-between items-center py-5 px-8 rounded-2xl bg-white/5 border border-white/10">
                             <div class="space-y-1">
-                                <p class="text-white text-sm font-bold uppercase">{{ reservation.reservable.name }}</p>
+                                <h3 class="text-white text-sm font-bold uppercase">{{ reservation.reservable.name }}</h3>
                                 <p class="text-xs text-gray-400 uppercase tracking-widest">{{ reservation.quantity }}
                                     unité(s)
                                 </p>
                             </div>
                             <p class="text-white font-chillax text-lg">
+                                <span class="sr-only">Prix :</span>
                                 {{ formatEuro((reservation.unit_price * reservation.quantity) / 100) }}
                             </p>
                         </div>
@@ -126,7 +127,7 @@
                                 }}
                             </p>
                         </div>
-                    </div>
+                    </section>
                 </div>
 
                 <div class="flex flex-col gap-4 pt-8">
@@ -149,8 +150,8 @@
             </div>
 
             <!-- ERROR -->
-            <div v-else class="text-center space-y-10 animate-fade-in">
-                <AlertCircle class="w-12 h-12 text-red-500 mx-auto" />
+            <div v-else class="text-center space-y-10 animate-fade-in" role="alert">
+                <AlertCircle class="w-12 h-12 text-red-500 mx-auto" aria-hidden="true" />
                 <p class="font-synonym text-gray-300 text-lg uppercase tracking-widest leading-relaxed">
                     La transaction a échoué ou la session a expiré.
                 </p>
@@ -159,6 +160,6 @@
                 </AppButton>
             </div>
 
-        </div>
+        </main>
     </MainLayout>
 </template>

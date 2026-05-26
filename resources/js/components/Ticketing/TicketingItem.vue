@@ -64,33 +64,36 @@
 
         <div class="flex items-center justify-between sm:justify-end gap-10">
             <div class="text-right">
-                <p class="text-2xl font-chillax text-white tracking-tighter">{{
-                    price }}€
+                <p class="text-2xl font-chillax text-white tracking-tighter">
+                    <span class="sr-only">Prix : </span>{{ price }}€
                 </p>
             </div>
 
             <!-- Consistent size container for both selector and badges -->
             <div class="w-45 flex justify-end">
                 <div v-if="!disabled"
-                    class="flex items-center gap-6 bg-black/40 rounded-full p-1.5 border border-white/10 shadow-inner w-full justify-between">
+                    class="flex items-center gap-6 bg-black/40 rounded-full p-1.5 border border-white/10 shadow-inner w-full justify-between"
+                    role="group" :aria-label="`Quantité pour ${title}`">
                     <button @click="removeItem"
                         class="h-10 w-10 flex items-center justify-center rounded-full bg-white/5 text-white hover:bg-[#51A687] hover:text-black transition-all duration-300 disabled:opacity-10"
-                        :disabled="quantity === 0">
-                        <Minus class="w-4 h-4" />
+                        :disabled="quantity === 0"
+                        :aria-label="`Retirer un ${title}`">
+                        <Minus class="w-4 h-4" aria-hidden="true" />
                     </button>
-                    <span class="w-6 text-center font-chillax text-2xl text-white">{{
-                        quantity
-                        }}</span>
+                    <span class="w-6 text-center font-chillax text-2xl text-white" aria-live="polite">
+                        <span class="sr-only">Quantité sélectionnée : </span>{{ quantity }}
+                    </span>
                     <button @click="addItem"
                         class="h-10 w-10 flex items-center justify-center rounded-full bg-white/5 text-white hover:bg-[#51A687] hover:text-black transition-all duration-300 disabled:opacity-10"
-                        :disabled="quantity === maxAllowed">
-                        <Plus class="w-4 h-4" />
+                        :disabled="quantity === maxAllowed"
+                        :aria-label="`Ajouter un ${title}`">
+                        <Plus class="w-4 h-4" aria-hidden="true" />
                     </button>
                 </div>
                 <div v-else
                     class="flex items-center justify-center w-full h-13.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md">
                     <span class="text-[10px] font-bold tracking-[0.3em] uppercase text-white">
-                        {{ disabled_reason }}
+                        <span class="sr-only">Statut : </span>{{ disabled_reason }}
                     </span>
                 </div>
             </div>
