@@ -20,6 +20,27 @@ class CheckinList extends Model
         'public_url_password',
     ];
 
+    protected $casts = [
+        'public_url_password' => 'hashed',
+    ];
+
+    public function hasPublicPassword(): bool
+    {
+        return filled($this->public_url_password);
+    }
+
+    /**
+     * Value stored in the session once the public password is accepted.
+     * Derived from the current hash, so changing or removing the password
+     * invalidates every existing session for this list.
+     */
+    public function publicAccessFingerprint(): ?string
+    {
+        return $this->hasPublicPassword()
+            ? hash_hmac('sha256', (string) $this->public_url_password, (string) config('app.key'))
+            : null;
+    }
+
     protected static function booted()
     {
         static::creating(function ($checkinList) {

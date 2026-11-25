@@ -7,6 +7,7 @@ use App\Models\EventAddon;
 use App\Models\IssuedTicket;
 use App\Models\TicketType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
 class CheckinController extends Controller
@@ -20,7 +21,7 @@ class CheckinController extends Controller
     {
         $checkinList = CheckinList::where('public_url_token', $token)->firstOrFail();
 
-        if ($checkinList->public_url_password && !session("checkin_auth_{$checkinList->id}")) {
+        if (!$this->hasPublicAccess($checkinList)) {
             return Inertia::render('Checkin/Password', [
                 'checkinList' => [
                     'id' => $checkinList->id,
@@ -41,8 +42,10 @@ class CheckinController extends Controller
             'password' => 'required|string',
         ]);
 
-        if ($request->password === $checkinList->public_url_password) {
-            session(["checkin_auth_{$checkinList->id}" => true]);
+        if ($checkinList->hasPublicPassword() && Hash::check($request->password, $checkinList->public_url_password)) {
+            $request->session()->regenerate();
+            $request->session()->put("checkin_auth_{$checkinList->id}", $checkinList->publicAccessFingerprint());
+
             return redirect()->route('checkin.public', ['token' => $token]);
         }
 
@@ -104,7 +107,7 @@ class CheckinController extends Controller
     {
         $checkinList = CheckinList::where('public_url_token', $token)->firstOrFail();
 
-        if ($checkinList->public_url_password && !session("checkin_auth_{$checkinList->id}")) {
+        if (!$this->hasPublicAccess($checkinList)) {
             return response()->json(['success' => false, 'message' => 'Non autorisé'], 401);
         }
 
@@ -122,7 +125,7 @@ class CheckinController extends Controller
     {
         $checkinList = CheckinList::where('public_url_token', $token)->firstOrFail();
 
-        if ($checkinList->public_url_password && !session("checkin_auth_{$checkinList->id}")) {
+        if (!$this->hasPublicAccess($checkinList)) {
             return response()->json(['success' => false, 'message' => 'Non autorisé'], 401);
         }
 
@@ -161,7 +164,7 @@ class CheckinController extends Controller
     {
         $checkinList = CheckinList::where('public_url_token', $token)->firstOrFail();
 
-        if ($checkinList->public_url_password && !session("checkin_auth_{$checkinList->id}")) {
+        if (!$this->hasPublicAccess($checkinList)) {
             return response()->json(['success' => false, 'message' => 'Non autorisé'], 401);
         }
 
@@ -172,7 +175,7 @@ class CheckinController extends Controller
     {
         $checkinList = CheckinList::where('public_url_token', $token)->firstOrFail();
 
-        if ($checkinList->public_url_password && !session("checkin_auth_{$checkinList->id}")) {
+        if (!$this->hasPublicAccess($checkinList)) {
             return response()->json(['success' => false, 'message' => 'Non autorisé'], 401);
         }
 
@@ -229,6 +232,21 @@ class CheckinController extends Controller
                 'scanned' => $this->getTicketsQuery($checkinList)->whereNotNull('checked_in_at')->count(),
             ]
         ]));
+    }
+
+    /**
+     * Public access is granted when the list has no password, or when the session
+     * holds the fingerprint of the list's current password.
+     */
+    protected function hasPublicAccess(CheckinList $checkinList): bool
+    {
+        if (!$checkinList->hasPublicPassword()) {
+            return true;
+        }
+
+        $granted = session("checkin_auth_{$checkinList->id}");
+
+        return is_string($granted) && hash_equals($checkinList->publicAccessFingerprint(), $granted);
     }
 
     /**
