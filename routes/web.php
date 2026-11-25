@@ -58,7 +58,9 @@ Route::get('/checkout/{checkout:uuid}/cancel', [\App\Http\Controllers\CheckoutCo
 
 Route::get('/checkin/{token}', [\App\Http\Controllers\CheckinController::class, 'publicShow'])->name('checkin.public');
 Route::get('/checkin/{token}/search', [\App\Http\Controllers\CheckinController::class, 'publicSearch'])->name('checkin.public_search');
-Route::post('/checkin/{token}/auth', [\App\Http\Controllers\CheckinController::class, 'authenticate'])->name('checkin.authenticate');
+Route::post('/checkin/{token}/auth', [\App\Http\Controllers\CheckinController::class, 'authenticate'])
+    ->middleware('throttle:checkin-auth')
+    ->name('checkin.authenticate');
 Route::post('/checkin/{token}/scan', [\App\Http\Controllers\CheckinController::class, 'publicScan'])->name('checkin.public_scan');
 Route::post('/checkin/{token}/tickets/{issuedTicket}/toggle', [\App\Http\Controllers\CheckinController::class, 'publicToggleCheckin'])->name('checkin.public_toggle');
 Route::get('/checkin/{token}/tickets/{issuedTicket}/status', [\App\Http\Controllers\CheckinController::class, 'publicTicketStatus'])->name('checkin.public_status');
