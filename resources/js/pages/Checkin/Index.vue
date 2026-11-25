@@ -200,9 +200,13 @@
         router.post(scanUrl, { public_id: publicId }, { preserveState: true, preserveScroll: true, onFinish: () => { isLoading.value = false; } });
     };
 
+    const ticketUrl = (ticketId: number, action: 'toggle' | 'status') => props.isPublic
+        ? `/checkin/${props.checkinList.public_url_token}/tickets/${ticketId}/${action}`
+        : `/checkin/list/${props.checkinList.id}/tickets/${ticketId}/${action}`;
+
     const toggleTicketStatus = (ticket: any) => {
         isLoading.value = true;
-        router.post(`/checkin/tickets/${ticket.id}/toggle`, {}, { preserveState: true, preserveScroll: true, onFinish: () => { isLoading.value = false; } });
+        router.post(ticketUrl(ticket.id, 'toggle'), {}, { preserveState: true, preserveScroll: true, onFinish: () => { isLoading.value = false; } });
     };
 
     const openTicketDetails = async (ticket: any) => {
@@ -210,7 +214,8 @@
         isModalLoading.value = true;
         // Fetch fresh status to ensure we show the latest state
         try {
-            const response = await fetch(`/checkin/tickets/${ticket.id}/status`);
+            const response = await fetch(ticketUrl(ticket.id, 'status'), { headers: { Accept: 'application/json' } });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const data = await response.json();
             if (selectedTicket.value && selectedTicket.value.id === ticket.id) {
                 selectedTicket.value = data;
