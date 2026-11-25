@@ -6,6 +6,8 @@ use App\Enums\EventNavigationGroups;
 use App\Filament\Resources\Events\EventResource;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
@@ -102,11 +104,27 @@ class ListEventCheckinLists extends ManageRelatedRecords
                             ->relationship('addons', 'name', fn($query) => $query->where('event_id', $this->record->id))
                             ->preload(),
                         TextInput::make('public_url_password')
-                            ->label('Mot de passe (optionnel)')
+                            ->label('Nouveau mot de passe (optionnel)')
                             ->password()
-                            ->helperText('Laissez vide pour ne pas changer. Effacez pour supprimer le mot de passe.')
+                            ->revealable()
+                            ->helperText('Laissez vide pour conserver le mot de passe actuel.')
+                            ->disabled(fn (Get $get) => (bool) $get('remove_public_url_password'))
                             ->dehydrated(fn ($state) => filled($state)),
-                    ]),
+                        Toggle::make('remove_public_url_password')
+                            ->label('Supprimer le mot de passe')
+                            ->helperText('La liste sera accessible à toute personne disposant de l\'URL publique.')
+                            ->visible(fn ($record) => $record?->hasPublicPassword())
+                            ->live(),
+                    ])
+                    ->mutateDataUsing(function (array $data): array {
+                        if ($data['remove_public_url_password'] ?? false) {
+                            $data['public_url_password'] = null;
+                        }
+
+                        unset($data['remove_public_url_password']);
+
+                        return $data;
+                    }),
                 DeleteAction::make(),
             ]);
     }
