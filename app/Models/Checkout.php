@@ -35,6 +35,12 @@ use Illuminate\Support\Carbon;
  */
 class Checkout extends Model
 {
+    /** Minutes during which an email verification code can be used. */
+    public const VERIFICATION_CODE_TTL = 15;
+
+    /** Wrong codes allowed before the code is invalidated and must be re-sent. */
+    public const VERIFICATION_MAX_ATTEMPTS = 5;
+
     protected $fillable = [
         'uuid',
         'event_id',
@@ -49,6 +55,8 @@ class Checkout extends Model
         'cancelled_at',
         'email_verified_at',
         'email_verification_code',
+        'email_verification_sent_at',
+        'email_verification_attempts',
     ];
 
     /**
@@ -71,6 +79,8 @@ class Checkout extends Model
         'completed_at' => 'datetime',
         'cancelled_at' => 'datetime',
         'email_verified_at' => 'datetime',
+        'email_verification_sent_at' => 'datetime',
+        'email_verification_attempts' => 'integer',
         'accepted_legal_pages' => 'array',
     ];
 
