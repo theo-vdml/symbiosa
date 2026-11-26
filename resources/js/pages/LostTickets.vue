@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useForm, usePage } from '@inertiajs/vue3';
-import { Mail, HelpCircle, CheckCircle2, ArrowRight } from '@lucide/vue';
+import { CheckCircle2, ArrowRight } from '@lucide/vue';
 import { computed } from 'vue';
 import AppButton from '@/components/AppButton.vue';
 import PageHeader from '@/components/PageHeader.vue';

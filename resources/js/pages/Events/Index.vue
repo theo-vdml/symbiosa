@@ -5,9 +5,8 @@ import EventListEnd from '@/components/Events/EventListEnd.vue';
 import EventPoster from '@/components/Events/EventPoster.vue';
 import PageHeader from '@/components/PageHeader.vue';
 import MainLayout from '@/layouts/MainLayout.vue';
-import EventListItem from '@/components/Events/EventListItem.vue';
 
-const props = defineProps<{
+defineProps<{
     preheading: string;
     heading: string;
     description: string;

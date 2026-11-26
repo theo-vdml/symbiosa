@@ -1,13 +1,6 @@
 <script setup lang="ts">
 import { router } from '@inertiajs/vue3';
-import {
-    CheckCircle2,
-    Calendar,
-    MapPin,
-    Loader2,
-    Download,
-    AlertCircle,
-} from '@lucide/vue';
+import { Calendar, MapPin, Loader2, Download, AlertCircle } from '@lucide/vue';
 import { useIntervalFn } from '@vueuse/core';
 import { computed, onMounted, onUnmounted } from 'vue';
 import AppButton from '@/components/AppButton.vue';

@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import AppButton from '@/components/AppButton.vue';
-import Footer from '@/components/Footer.vue';
 import Header from '@/components/Header.vue';
 
 const props = defineProps<{

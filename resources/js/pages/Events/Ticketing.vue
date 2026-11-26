@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Link, useForm } from '@inertiajs/vue3';
 import { Ticket, Calendar, MapPin, Info } from '@lucide/vue';
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import AppButton from '@/components/AppButton.vue';
 import HeroHeader from '@/components/HeroHeader.vue';
 import TicketingItem from '@/components/Ticketing/TicketingItem.vue';

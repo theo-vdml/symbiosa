@@ -4,10 +4,8 @@ import {
     Search,
     X,
     Check,
-    ChevronRight,
     Loader2,
     History,
-    User,
     AlertCircle,
     CheckCircle2,
     XCircle,
@@ -264,7 +262,9 @@ const stopScanner = async () => {
     if (html5QrCode.value && isScanning.value) {
         try {
             await html5QrCode.value.stop();
-        } catch (e) {}
+        } catch {
+            // Scanner already stopped
+        }
 
         html5QrCode.value = null;
         isScanning.value = false;

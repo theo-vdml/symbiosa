@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
 import AppButton from '@/components/AppButton.vue';
 import checkinRoute from '@/routes/checkin';
 

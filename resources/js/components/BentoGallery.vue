@@ -8,7 +8,7 @@ interface Props {
     images: GalleryImage[];
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 </script>
 
 <template>

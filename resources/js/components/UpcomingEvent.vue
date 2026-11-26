@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Calendar, MapPin } from '@lucide/vue';
 import AppButton from '@/components/AppButton.vue';
 import { useEventDates } from '@/composables/useEventDates';
 import events from '@/routes/events';

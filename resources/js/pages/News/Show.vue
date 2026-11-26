@@ -2,7 +2,7 @@
 import MainLayout from '@/layouts/MainLayout.vue';
 import type { Seo } from '@/types/seo';
 
-const props = defineProps<{
+defineProps<{
     post: {
         id: number;
         title: string;

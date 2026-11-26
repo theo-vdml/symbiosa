@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import MainLayout from '@/layouts/MainLayout.vue';
 
-const props = defineProps<{
+defineProps<{
     page: {
         id: number;
         title: string;

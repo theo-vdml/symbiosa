@@ -2,7 +2,7 @@
 import { useId } from 'vue';
 import type { Component } from 'vue';
 
-const props = defineProps<{
+defineProps<{
     modelValue: string;
     type?: string;
     placeholder?: string;
