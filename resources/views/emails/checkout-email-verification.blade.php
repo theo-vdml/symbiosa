@@ -76,7 +76,7 @@
             <p>Ou cliquez simplement sur le bouton ci-dessous pour vérifier automatiquement votre email :</p>
             <a href="{{ $verificationUrl }}" class="button">Vérifier mon email</a>
 
-            <p>Ce code expirera en même temps que votre session de réservation.</p>
+            <p>Ce code est valable {{ \App\Models\Checkout::VERIFICATION_CODE_TTL }} minutes.</p>
             <p>Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet email.</p>
         </div>
         <div class="footer">

@@ -75,20 +75,20 @@ class CheckoutController extends Controller
         if ($request->has('reset_verification')) {
             $checkout->update([
                 'email_verification_code' => null,
+                'email_verification_sent_at' => null,
+                'email_verification_attempts' => 0,
                 'email_verified_at' => null,
             ]);
 
             return redirect()->route('checkout.show', $checkout->uuid);
         }
 
-        if ($request->has('verification_code')) {
-            if ((string) $checkout->email_verification_code === (string) $request->verification_code) {
-                $checkout->update([
-                    'email_verified_at' => now(),
-                ]);
+        // Link from the verification email; redirect so the code does not stay in the URL.
+        if ($request->filled('verification_code')) {
+            $error = $this->attemptEmailVerification($checkout, (string) $request->query('verification_code'));
 
-                return redirect()->route('checkout.show', $checkout->uuid)->with('message', 'Email vérifié avec succès !');
-            }
+            return redirect()->route('checkout.show', $checkout->uuid)
+                ->with($error ? 'error' : 'message', $error ?? 'Email vérifié avec succès !');
         }
 
         if ($checkout->completed_at) {
@@ -235,12 +235,18 @@ class CheckoutController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
-        $code = str_pad((string) rand(1, 999999), 6, '0', STR_PAD_LEFT);
+        if ($checkout->completed_at || $checkout->cancelled_at || $checkout->stripe_session_id || $checkout->expires_at->isPast()) {
+            return redirect()->back()->with('error', 'Cette commande ne peut plus être modifiée.');
+        }
+
+        $code = sprintf('%06d', random_int(0, 999999));
 
         $checkout->update([
             'customer_email' => $request->email,
             'customer_name' => $request->name,
-            'email_verification_code' => (string) $code,
+            'email_verification_code' => $code,
+            'email_verification_sent_at' => now(),
+            'email_verification_attempts' => 0,
             'email_verified_at' => null,
         ]);
 
@@ -260,17 +266,51 @@ class CheckoutController extends Controller
             'code' => 'required|string',
         ]);
 
-        $checkout = $checkout->fresh();
+        $error = $this->attemptEmailVerification($checkout->fresh(), (string) $request->code);
 
-        if ($checkout->email_verification_code && (string) $checkout->email_verification_code === (string) $request->code) {
-            $checkout->update([
-                'email_verified_at' => now(),
-            ]);
-
-            return redirect()->back();
+        if ($error) {
+            return redirect()->back()->withErrors(['code' => $error]);
         }
 
-        return redirect()->back()->withErrors(['code' => 'Code invalide.']);
+        return redirect()->back();
+    }
+
+    /**
+     * Checks a verification code, counting the attempt.
+     *
+     * @return string|null An error message, or null when the email is now verified.
+     */
+    private function attemptEmailVerification(Checkout $checkout, string $code): ?string
+    {
+        if ($checkout->email_verified_at) {
+            return null;
+        }
+
+        if (blank($checkout->email_verification_code)) {
+            return 'Aucun code en attente. Demandez un nouveau code.';
+        }
+
+        $expired = $checkout->email_verification_sent_at === null
+            || $checkout->email_verification_sent_at->addMinutes(Checkout::VERIFICATION_CODE_TTL)->isPast();
+
+        if ($expired || $checkout->email_verification_attempts >= Checkout::VERIFICATION_MAX_ATTEMPTS) {
+            $checkout->update(['email_verification_code' => null]);
+
+            return 'Ce code a expiré ou a été trop de fois mal saisi. Demandez un nouveau code.';
+        }
+
+        $checkout->increment('email_verification_attempts');
+
+        if (! hash_equals((string) $checkout->email_verification_code, trim($code))) {
+            return 'Code invalide.';
+        }
+
+        $checkout->update([
+            'email_verified_at' => now(),
+            'email_verification_code' => null,
+        ]);
+
+        return null;
     }
 
     /**
