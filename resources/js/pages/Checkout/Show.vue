@@ -48,7 +48,7 @@ const currentStep = computed(() => {
         return 4;
     }
 
-    if (props.checkout.email_verification_code) {
+    if (props.checkout.verification_pending) {
         return 3;
     }
 
