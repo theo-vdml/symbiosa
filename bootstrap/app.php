@@ -21,6 +21,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->trustProxies(at: '*');
 
+        // There is no `login` route: guests hitting `auth` routes go to the Filament login.
+        $middleware->redirectGuestsTo(fn () => route('filament.admin.auth.login'));
+
         $middleware->web(append: [
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
