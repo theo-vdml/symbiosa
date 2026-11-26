@@ -1,6 +1,9 @@
 <?php
 
+use App\Enums\PublicationStatus;
+use App\Models\Event;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 /*
@@ -44,7 +47,36 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+/**
+ * Create an event. Defaults to a draft one week from now; pass attributes to override.
+ *
+ * @param  array<string, mixed>  $attributes
+ */
+function makeEvent(array $attributes = []): Event
 {
-    // ..
+    return Event::create([
+        'title' => 'Event '.Str::random(6),
+        'slug' => 'event-'.Str::lower(Str::random(8)),
+        'start_at' => now()->addWeek(),
+        'end_at' => now()->addWeek()->addHours(6),
+        'city' => 'Bruxelles',
+        'country' => 'Belgique',
+        'description' => 'Description',
+        ...$attributes,
+    ]);
+}
+
+/**
+ * Create a published event whose ticketing is open.
+ *
+ * @param  array<string, mixed>  $attributes
+ */
+function makeOnSaleEvent(array $attributes = []): Event
+{
+    return makeEvent([
+        'status' => PublicationStatus::Published,
+        'published_at' => now()->subDay(),
+        'ticketing_starts_at' => now()->subDay(),
+        ...$attributes,
+    ]);
 }
