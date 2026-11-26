@@ -28,10 +28,9 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Checkout holdingStock() Filtre les sessions qui bloquent encore du stock
  * @method static \Illuminate\Database\Eloquent\Builder|Checkout isCompleted() Filtre les sessions payées
  * @method static \Illuminate\Database\Eloquent\Builder|Checkout isCancelled() Filtre les sessions annulées manuellement
- * @method static \Illuminate\Database\Eloquent\Builder|Checkout isPending() Filtre les sessions ni payées ni annulées
- * @method static \Illuminate\Database\Eloquent\Builder|Checkout isExpired() Filtre les sessions expirées (non payées, non annulées, et dont la date d'expiration est passée)
- * @method static \Illuminate\Database\Eloquent\Builder|Checkout withinExpirationWindow() Filtre les sessions dont le timer de base est valide
- * @method static \Illuminate\Database\Eloquent\Builder|Checkout hasRecentStripeActivity() Filtre les sessions avec une activité Stripe < 20min
+ * @method static \Illuminate\Database\Eloquent\Builder|Checkout isPending() Filtre les sessions ni payées ni annulées, encore dans leur délai
+ * @method static \Illuminate\Database\Eloquent\Builder|Checkout isExpired() Filtre les sessions non payées, non annulées, dont le délai est passé
+ * @method static \Illuminate\Database\Eloquent\Builder|Checkout withinExpirationWindow() Filtre les sessions dont le délai (expires_at) n'est pas passé
  */
 class Checkout extends Model
 {
@@ -40,6 +39,12 @@ class Checkout extends Model
 
     /** Wrong codes allowed before the code is invalidated and must be re-sent. */
     public const VERIFICATION_MAX_ATTEMPTS = 5;
+
+    /** Lifetime of a Stripe Checkout session (Stripe's minimum is 30 minutes). */
+    public const STRIPE_SESSION_TTL = 30;
+
+    /** Extra time stock stays held after the Stripe session expires, for late webhooks. */
+    public const STRIPE_WEBHOOK_GRACE = 5;
 
     protected $fillable = [
         'uuid',
@@ -118,34 +123,28 @@ class Checkout extends Model
         return $query->where('expires_at', '>', now());
     }
 
-    public function scopeHasRecentStripeActivity(Builder $query)
-    {
-        return $query->whereNotNull('stripe_session_id');
-    }
-
+    /**
+     * Unpaid checkouts hold stock until expires_at only. When a Stripe session is
+     * opened, expires_at is pushed to the session's own expiry (plus a grace
+     * period), so stock is held exactly as long as the order can still be paid.
+     */
     public function scopeIsPending(Builder $query)
     {
         return $query->whereNull('completed_at')
             ->whereNull('cancelled_at')
-            ->where(function (Builder $sub) {
-                $sub->withinExpirationWindow()
-                    ->orWhere(fn ($sub2) => $sub2->hasRecentStripeActivity());
-            });
+            ->withinExpirationWindow();
     }
 
     public function scopeIsExpired(Builder $query)
     {
         return $query->whereNull('completed_at')
             ->whereNull('cancelled_at')
-            ->whereNot(function (Builder $sub) {
-                $sub->withinExpirationWindow()
-                    ->orWhere(fn ($sub2) => $sub2->hasRecentStripeActivity());
-            });
+            ->where('expires_at', '<=', now());
     }
 
     /**
-     * Détermine si le checkout bloque actuellement des inventaires (billets, addons).
-     * Combine la validité temporelle et l'activité des intents Stripe.
+     * Détermine si le checkout bloque actuellement des inventaires (billets, addons) :
+     * payé, ou en attente et encore dans son délai.
      *
      * @return Builder
      */
@@ -172,12 +171,12 @@ class Checkout extends Model
                 return CheckoutStatus::CANCELLED;
             }
 
-            if ($this->stripe_session_id) {
-                return CheckoutStatus::PROCESSING;
+            if ($this->expires_at->isPast()) {
+                return CheckoutStatus::EXPIRED;
             }
 
-            if ($this?->expires_at->isPast()) {
-                return CheckoutStatus::EXPIRED;
+            if ($this->stripe_session_id) {
+                return CheckoutStatus::PROCESSING;
             }
 
             return CheckoutStatus::PENDING;

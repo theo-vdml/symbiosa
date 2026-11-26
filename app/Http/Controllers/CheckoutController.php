@@ -19,6 +19,8 @@ use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Str;
 use Stripe\Checkout\Session;
+use Stripe\Exception\ApiErrorException;
+use Stripe\Exception\InvalidRequestException;
 
 class CheckoutController extends Controller
 {
@@ -45,6 +47,11 @@ class CheckoutController extends Controller
 
         try {
             $checkout = DB::transaction(function () use ($request, $event) {
+                // Serialize reservations per event: a concurrent checkout waits here until this
+                // one commits, then sees its reservations in the stock count (no overselling).
+                // Must be the first query of the transaction so the stock reads happen after it.
+                Event::whereKey($event->getKey())->lockForUpdate()->first();
+
                 $checkout = Checkout::create([
                     'uuid' => (string) Str::uuid(),
                     'expires_at' => now()->addMinutes(15),
@@ -92,23 +99,32 @@ class CheckoutController extends Controller
         }
 
         if ($checkout->completed_at) {
-            // Le checkout est déjà complété, rediriger vers la page de succès
             return redirect()->route('checkout.success', $checkout->uuid);
-        } elseif ($checkout->stripe_session_id) {
-            // Une session de paiement est en cours, vérifier son statut auprès de Stripe
-            $session = Session::retrieve($checkout->stripe_session_id);
-            if ($session) {
-                return redirect()->to($session->url);
-            } else {
-                // La session Stripe n'existe plus, réinitialiser le checkout pour permettre une nouvelle tentative
-                $checkout->update([
-                    'stripe_session_id' => null,
-                ]);
+        }
+
+        if ($checkout->stripe_session_id) {
+            try {
+                $session = $this->retrieveStripeSession($checkout->stripe_session_id);
+
+                if ($session?->status === 'open' && $session->url) {
+                    return Inertia::location($session->url);
+                }
+
+                if ($session?->status === 'complete') {
+                    // Paid: the webhook issues the tickets, the success page polls for them.
+                    return redirect()->route('checkout.success', $checkout->uuid);
+                }
+
+                // Expired or unknown session: allow a new payment attempt.
+                $checkout->update(['stripe_session_id' => null]);
+            } catch (ApiErrorException $e) {
+                report($e);
+                session()->now('error', 'Impossible de vérifier votre paiement en cours. Réessayez dans un instant.');
             }
-        } elseif ($checkout->expires_at->isPast()) {
-            // La session a expiré, rediriger vers la page de sélection des billets avec un message d'erreur
-            $event = $checkout->event;
-            $slug = $event?->slug;
+        }
+
+        if ($checkout->expires_at->isPast()) {
+            $slug = $checkout->event?->slug;
 
             return redirect()->route($slug ? 'events.ticketing' : 'events.index', $slug ? ['slug' => $slug] : [])
                 ->with('error', 'Votre session a expiré. Veuillez recommencer votre sélection.');
@@ -170,6 +186,8 @@ class CheckoutController extends Controller
         $event = $checkout->event;
         $eventMetadata = $event->stripe_metadata ?? [];
 
+        $stripeExpiresAt = now()->addMinutes(Checkout::STRIPE_SESSION_TTL);
+
         $session = Session::create([
             'payment_method_types' => ['card', 'bancontact'],
             'line_items' => $lineItems,
@@ -178,7 +196,7 @@ class CheckoutController extends Controller
             'cancel_url' => route('checkout.cancel_payment', $checkout->uuid),
             'customer_email' => $checkout->customer_email,
             'client_reference_id' => $checkout->uuid,
-            'expires_at' => now()->addMinutes(30)->timestamp,
+            'expires_at' => $stripeExpiresAt->timestamp,
             'metadata' => array_merge([
                 'checkout_uuid' => $checkout->uuid,
             ], $eventMetadata),
@@ -189,8 +207,10 @@ class CheckoutController extends Controller
             ],
         ]);
 
+        // Hold the stock for as long as this session can be paid.
         $checkout->update([
             'stripe_session_id' => $session->id,
+            'expires_at' => $stripeExpiresAt->addMinutes(Checkout::STRIPE_WEBHOOK_GRACE),
         ]);
 
         return Inertia::location($session->url);
@@ -218,14 +238,56 @@ class CheckoutController extends Controller
 
     public function cancel_payment(Checkout $checkout)
     {
-        if (! $checkout->cancelled_at) {
-            $checkout->update([
-                'stripe_session_id' => null,
-            ]);
+        if ($checkout->completed_at) {
+            return redirect()->route('checkout.success', $checkout->uuid);
+        }
+
+        if ($checkout->stripe_session_id) {
+            try {
+                $session = $this->retrieveStripeSession($checkout->stripe_session_id);
+
+                if ($session?->status === 'complete') {
+                    return redirect()->route('checkout.success', $checkout->uuid);
+                }
+
+                // Expire it on Stripe's side too, otherwise the buyer could still pay it
+                // (e.g. from another tab) after we stopped expecting that payment.
+                if ($session?->status === 'open') {
+                    $session->expire();
+                }
+            } catch (InvalidRequestException $e) {
+                // Already completed or expired in the meantime: the webhook settles it.
+                report($e);
+            } catch (ApiErrorException $e) {
+                report($e);
+
+                return redirect()->route('checkout.show', $checkout->uuid)
+                    ->with('error', 'Impossible d\'annuler le paiement pour le moment. Réessayez dans un instant.');
+            }
+
+            $checkout->update(['stripe_session_id' => null]);
         }
 
         return redirect()->route('checkout.show', $checkout->uuid)
             ->with('error', 'Le paiement a été annulé. Vous pouvez réessayer de payer ou revenir à la sélection des billets.');
+    }
+
+    /**
+     * @return Session|null null when Stripe does not know this session
+     *
+     * @throws ApiErrorException on other Stripe errors (network, auth, rate limit...)
+     */
+    private function retrieveStripeSession(string $sessionId): ?Session
+    {
+        try {
+            return Session::retrieve($sessionId);
+        } catch (InvalidRequestException $e) {
+            if ($e->getStripeCode() === 'resource_missing') {
+                return null;
+            }
+
+            throw $e;
+        }
     }
 
     public function sendVerificationEmail(Request $request, Checkout $checkout)
