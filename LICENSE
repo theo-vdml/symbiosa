@@ -1,24 +1,57 @@
-Copyright (c) 2002 theo-vdml
+Copyright (c) 2026 Théo Vandormael (theo-vdml) et Symbiosa ASBL.
+Tous droits réservés.
 
-DROITS D'AUTEUR ET LICENCE D'UTILISATION NON COMMERCIALE
+LICENCE PROPRIÉTAIRE — USAGE RÉSERVÉ
 
-Le présent logiciel et la documentation associée (le "Logiciel") sont la propriété exclusive de [Nom de votre ASBL ou Votre Nom/Prénom].
+Le présent logiciel, son code source, sa documentation et ses ressources
+graphiques (ensemble, le « Logiciel ») sont protégés par le droit d'auteur
+(Livre XI du Code de droit économique belge).
 
-L'autorisation est accordée par la présente à toute personne obtenant une copie de ce Logiciel :
+1. TITULAIRES DES DROITS
 
-1. ATTRIBUTION (BY) :
-   Vous devez créditer l'auteur original (theo-vdml) et fournir un lien vers le dépôt d'origine en cas de réutilisation, modification ou redistribution du code source.
+   Les droits d'auteur sur le Logiciel appartiennent à Théo Vandormael
+   (l'« Auteur ») et à Symbiosa ASBL (l'« ASBL »), ensemble les « Titulaires ».
 
-2. UTILISATION NON COMMERCIALE UNIQUEMENT (NC) :
-   Vous êtes autorisé(e) à consulter, étudier, copier, modifier et exécuter ce Logiciel à des fins personnelles, éducatives, de recherche ou pour le compte d'organisations à but non lucratif.
-   
-   IL EST STRICTEMENT INTERDIT d'utiliser, de vendre, de louer, de sous-licencier ou d'exploiter tout ou partie de ce Logiciel (ou de ses dérivés) à des fins commerciales, directes ou indirectes, sans l'accord préalable écrit et explicite du titulaire des droits.
+2. DROITS DE L'ASBL
 
-3. CONDITION DE MODIFICATION :
-   Si vous modifiez ce Logiciel, vous devez indiquer clairement que des modifications ont été apportées. Toute version dérivée reste soumise aux conditions de la présente licence.
+   L'Auteur concède à l'ASBL, à titre gratuit, pour le monde entier et pour
+   toute la durée de protection du droit d'auteur, le droit irrévocable
+   d'utiliser, reproduire, modifier, adapter, maintenir, déployer et exploiter
+   le Logiciel pour les besoins de ses activités. L'ASBL peut faire exercer ces
+   droits pour son compte par des prestataires ou bénévoles qu'elle désigne,
+   sans que ceux-ci n'acquièrent de droit propre sur le Logiciel.
 
-EXCLUSION DE GARANTIE ET LIMITATION DE RESPONSABILITÉ :
+   Ces droits sont acquis à l'ASBL et ne lui sont pas retirés si l'Auteur cesse
+   de contribuer au Logiciel.
 
-LE LOGICIEL EST FOURNI "EN L'ÉTAT", SANS GARANTIE D'AUCUNE SORTE, EXPRESSE OU IMPLICITE, Y COMPRIS MAIS SANS S'Y LIMITER, LES GARANTIES DE QUALITÉ MARCHANDE, D'ADÉQUATION À UN USAGE PARTICULIER ET DE NON-CONTREFAÇON.
+3. INTERDICTION POUR TOUTE AUTRE PERSONNE
 
-EN AUCUN CAS LES AUTEURS OU TITULAIRES DU DROIT D'AUTEUR NE POURRONT ÊTRE TENUS RESPONSABLES DE TOUTE RÉCLAMATION, DOMMAGE OU AUTRE RESPONSABILITÉ, QUE CE SOIT DANS UNE ACTION EN CONTRAT, DÉLIT OU AUTRE, PROVENANT DE, DE L'UTILISATION OU D'AUTRES MANIPULATIONS DU LOGICIEL.
+   À l'exception des Titulaires, il est interdit à toute personne physique ou
+   morale, sans l'autorisation préalable et écrite des Titulaires :
+   - d'utiliser, copier, reproduire ou exécuter tout ou partie du Logiciel ;
+   - de le modifier, l'adapter ou en créer des œuvres dérivées ;
+   - de le distribuer, publier, vendre, louer, concéder en sous-licence ou le
+     mettre à disposition de tiers, sous quelque forme que ce soit.
+
+   Le fait que le code source soit consultable (par exemple sur un dépôt
+   public) ne confère aucun droit d'utilisation.
+
+4. COMPOSANTS TIERS
+
+   Les bibliothèques et composants tiers utilisés par le Logiciel restent
+   soumis à leurs propres licences. La présente licence ne s'applique qu'au code
+   et aux ressources propres au Logiciel.
+
+5. EXCLUSION DE GARANTIE
+
+   LE LOGICIEL EST FOURNI « EN L'ÉTAT », SANS GARANTIE D'AUCUNE SORTE, EXPRESSE
+   OU IMPLICITE. DANS LES LIMITES PERMISES PAR LA LOI, LES TITULAIRES NE
+   POURRONT ÊTRE TENUS RESPONSABLES D'AUCUN DOMMAGE RÉSULTANT DE L'UTILISATION
+   OU DE L'IMPOSSIBILITÉ D'UTILISER LE LOGICIEL.
+
+6. DROIT APPLICABLE
+
+   La présente licence est régie par le droit belge. Tout litige relève de la
+   compétence des tribunaux belges.
+
+Pour toute demande d'autorisation : contacter Symbiosa ASBL.

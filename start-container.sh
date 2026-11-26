@@ -4,8 +4,7 @@ set -e
 
 if [ "$IS_LARAVEL" = "true" ]; then
   if [ "$RAILPACK_SKIP_MIGRATIONS" != "true" ]; then
-    # Run migrations and seeding
-    echo "Running migrations and seeding database ..."
+    echo "Running migrations ..."
     php artisan migrate --force
   fi
 
@@ -16,18 +15,8 @@ if [ "$IS_LARAVEL" = "true" ]; then
 
   echo "Optimizing Filament admin panel ..."
   php artisan filament:optimize
-
-#   echo "Starting Laravel queue worker ..."
-#   php artisan queue:work \
-#     --sleep=3 \
-#     --tries=3 \
-#     --timeout=60 &
-
-#   echo "Starting Laravel server ..."
 fi
 
-# Start the FrankenPHP server
-# docker-php-entrypoint --config /Caddyfile --adapter caddyfile 2>&1
-
-echo "Starting Supervisor (managing FrankenPHP & Queue Worker)..."
+# Supervisor runs both FrankenPHP and the queue worker (see supervisord.conf).
+echo "Starting Supervisor (FrankenPHP + queue worker) ..."
 exec /usr/bin/supervisord -c /app/supervisord.conf
