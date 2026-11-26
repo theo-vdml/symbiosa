@@ -8,6 +8,7 @@ use App\Traits\HasSEO;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -68,6 +69,23 @@ class Event extends Model implements HasMedia
         'ticket_pdf_content',
         'stripe_metadata',
     ];
+
+    /**
+     * Admin-only attributes, stripped from every serialization sent to the browser.
+     *
+     * Not in $hidden on purpose: Filament fills its edit forms with
+     * attributesToArray(), which honours $hidden and would blank these fields.
+     */
+    public const INTERNAL_ATTRIBUTES = [
+        'stripe_metadata',
+        'ticket_email_content',
+        'ticket_pdf_content',
+    ];
+
+    public function toArray(): array
+    {
+        return Arr::except(parent::toArray(), self::INTERNAL_ATTRIBUTES);
+    }
 
     protected $appends = ['min_price', 'date', 'start_time', 'end_time', 'is_ticketing_open', 'ticketing_status', 'is_archived', 'photo_count', 'poster_url', 'background_url', 'background_responsive', 'gallery_urls'];
 
