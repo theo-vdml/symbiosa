@@ -11,6 +11,8 @@ interface Event {
     id: number;
     title: string;
     slug: string;
+    // Ambient file: a top-level `import type` would turn it into a module and hide these globals.
+    // eslint-disable-next-line @typescript-eslint/consistent-type-imports
     seo?: import('@/types/seo').Seo;
     start_at: string;
     end_at: string;

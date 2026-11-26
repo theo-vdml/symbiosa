@@ -10,7 +10,7 @@ import MainLayout from '@/layouts/MainLayout.vue';
 import type { Seo } from '@/types/seo';
 import events from '@/routes/events';
 
-const props = defineProps<{
+defineProps<{
     event: Event;
     seo: Seo;
 }>();

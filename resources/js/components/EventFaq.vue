@@ -4,7 +4,7 @@ interface FaqItem {
     answer: string;
 }
 
-const props = defineProps<{
+defineProps<{
     faq: FaqItem[];
 }>();
 </script>

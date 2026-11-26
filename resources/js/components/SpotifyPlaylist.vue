@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ArrowRight } from '@lucide/vue';
 import AppButton from '@/components/AppButton.vue';
 
 interface Props {

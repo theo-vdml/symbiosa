@@ -2,7 +2,7 @@
 import { Head } from '@inertiajs/vue3';
 import type { Seo } from '@/types/seo';
 
-const props = defineProps<{
+defineProps<{
     seo: Seo;
 }>();
 
@@ -72,11 +72,14 @@ const getMetaUrl = (path: string) => {
             :content="getMetaUrl(seo.twitter_image || seo.og_image!)"
         />
 
+        <!-- JSON-LD must be injected raw; Vue cannot render a <script> tag directly -->
+        <!-- eslint-disable vue/no-v-text-v-html-on-component -->
         <component
             :is="'script'"
             v-if="seo.json_ld"
             type="application/ld+json"
             v-html="seo.json_ld"
         />
+        <!-- eslint-enable vue/no-v-text-v-html-on-component -->
     </Head>
 </template>

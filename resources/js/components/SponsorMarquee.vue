@@ -2,7 +2,7 @@
 import { useElementSize } from '@vueuse/core';
 import { ref, computed } from 'vue';
 
-const props = defineProps<{
+defineProps<{
     sponsors: Sponsor[];
 }>();
 
