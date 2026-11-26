@@ -22,6 +22,11 @@ use Stripe\Checkout\Session;
 
 class CheckoutController extends Controller
 {
+    /**
+     * Default per-order cap when a ticket type or addon has none (matches the ticketing UI).
+     */
+    private const DEFAULT_MAX_PER_ORDER = 10;
+
     public function store(Request $request, Event $event)
     {
         $request->validate([
@@ -32,28 +37,33 @@ class CheckoutController extends Controller
             'items.*.priceId' => 'nullable|required_if:items.*.type,ticket|integer',
         ]);
 
+        $isPublished = Event::published()->whereKey($event->getKey())->exists();
+
+        if (! $isPublished || ! $event->is_ticketing_open) {
+            return redirect()->back()->with('error', 'La billetterie n\'est pas accessible pour le moment.');
+        }
+
         try {
             $checkout = DB::transaction(function () use ($request, $event) {
-
                 $checkout = Checkout::create([
                     'uuid' => (string) Str::uuid(),
                     'expires_at' => now()->addMinutes(15),
                     'event_id' => $event->id,
                 ]);
 
-                foreach ($request->items as $item) {
-                    if ($item['type'] === 'ticket') {
-                        $this->handleTicketReservation($checkout, $item);
-                    } else {
-                        $this->handleAddonReservation($checkout, $item);
-                    }
-                }
+                $tickets = collect($request->items)->where('type', 'ticket');
+                $addons = collect($request->items)->where('type', 'addon');
+
+                $this->reserveTickets($checkout, $event, $tickets->all());
+                $this->reserveAddons($checkout, $event, $addons->all());
 
                 return $checkout;
             });
         } catch (ValidationException $e) {
             return redirect()->back()->with('error', collect($e->errors())->flatten()->first());
         } catch (\Exception $e) {
+            report($e);
+
             return redirect()->back()->with('error', 'Une erreur est survenue lors de la réservation.');
         }
 
@@ -263,54 +273,116 @@ class CheckoutController extends Controller
         return redirect()->back()->withErrors(['code' => 'Code invalide.']);
     }
 
-    private function handleTicketReservation(Checkout $checkout, array $item)
+    /**
+     * @param  array<int, array{qty: int, priceId: int}>  $items
+     */
+    private function reserveTickets(Checkout $checkout, Event $event, array $items): void
     {
-        $price = TicketPrice::with('ticketType')->findOrFail($item['priceId']);
-        /** @var TicketType $ticketType */
-        $ticketType = $price->ticketType;
-
-        if (! $ticketType->hasStockFor($item['qty'])) {
-            throw ValidationException::withMessages([
-                'cart' => "Il ne reste plus assez de places pour '{$ticketType->name}'.",
-            ]);
+        if ($items === []) {
+            return;
         }
 
-        if ($price->status !== ReservableStatus::OPEN) {
-            throw ValidationException::withMessages([
-                'cart' => "Le tarif pour '{$ticketType->name} - {$price->name}' a changé ou n'est plus disponible.",
-            ]);
+        // Only prices of this event's ticket types can be booked.
+        $prices = TicketPrice::with('ticketType')
+            ->whereIn('id', array_column($items, 'priceId'))
+            ->whereHas('ticketType', fn ($query) => $query->where('event_id', $event->id))
+            ->get()
+            ->keyBy('id');
+
+        $quantitiesByType = [];
+
+        foreach ($items as $item) {
+            $price = $prices->get($item['priceId']) ?? throw $this->unavailableItem();
+            $ticketType = $price->ticketType;
+
+            if ($price->status !== ReservableStatus::OPEN) {
+                throw ValidationException::withMessages([
+                    'cart' => "Le tarif pour '{$ticketType->name} - {$price->name}' a changé ou n'est plus disponible.",
+                ]);
+            }
+
+            $quantitiesByType[$ticketType->id] = ($quantitiesByType[$ticketType->id] ?? 0) + $item['qty'];
         }
 
-        $checkout->reservations()->create([
-            'reservable_id' => $ticketType->id,
-            'reservable_type' => TicketType::class,
-            'ticket_price_id' => $price->id,
-            'quantity' => $item['qty'],
-            'unit_price' => $price->price,
-        ]);
+        // Stock and per-order limits apply to the total quantity of each ticket type.
+        foreach ($quantitiesByType as $ticketTypeId => $quantity) {
+            $ticketType = $prices->firstWhere('ticket_type_id', $ticketTypeId)->ticketType;
+            $this->ensureQuantityAllowed($ticketType->name, $quantity, $ticketType->max_per_order, $ticketType->hasStockFor($quantity));
+        }
+
+        foreach ($items as $item) {
+            $price = $prices->get($item['priceId']);
+
+            $checkout->reservations()->create([
+                'reservable_id' => $price->ticket_type_id,
+                'reservable_type' => TicketType::class,
+                'ticket_price_id' => $price->id,
+                'quantity' => $item['qty'],
+                'unit_price' => $price->price,
+            ]);
+        }
     }
 
-    private function handleAddonReservation(Checkout $checkout, array $item)
+    /**
+     * @param  array<int, array{qty: int, id: int}>  $items
+     */
+    private function reserveAddons(Checkout $checkout, Event $event, array $items): void
     {
-        $addon = EventAddon::findOrFail($item['id']);
+        if ($items === []) {
+            return;
+        }
 
-        if ($addon->status !== ReservableStatus::OPEN) {
+        // Only this event's addons can be booked.
+        $addons = $event->addons()->whereIn('event_addons.id', array_column($items, 'id'))->get()->keyBy('id');
+
+        $quantities = [];
+
+        foreach ($items as $item) {
+            $addon = $addons->get($item['id']) ?? throw $this->unavailableItem();
+
+            if ($addon->status !== ReservableStatus::OPEN) {
+                throw ValidationException::withMessages([
+                    'cart' => "L'addon '{$addon->name}' n'est plus disponible.",
+                ]);
+            }
+
+            $quantities[$addon->id] = ($quantities[$addon->id] ?? 0) + $item['qty'];
+        }
+
+        foreach ($quantities as $addonId => $quantity) {
+            $addon = $addons->get($addonId);
+            $this->ensureQuantityAllowed($addon->name, $quantity, $addon->max_per_order, $addon->hasStockFor($quantity));
+
+            $checkout->reservations()->create([
+                'reservable_id' => $addon->id,
+                'reservable_type' => EventAddon::class,
+                'quantity' => $quantity,
+                'unit_price' => $addon->price,
+            ]);
+        }
+    }
+
+    private function ensureQuantityAllowed(string $name, int $quantity, ?int $maxPerOrder, bool $hasStock): void
+    {
+        $max = $maxPerOrder ?: self::DEFAULT_MAX_PER_ORDER;
+
+        if ($quantity > $max) {
             throw ValidationException::withMessages([
-                'cart' => "L'addon '{$addon->name}' n'est plus disponible.",
+                'cart' => "Vous pouvez commander au maximum {$max} × '{$name}' par commande.",
             ]);
         }
 
-        if (! $addon->hasStockFor($item['qty'])) {
+        if (! $hasStock) {
             throw ValidationException::withMessages([
-                'cart' => "Il ne reste plus assez de stock pour l'addon '{$addon->name}'.",
+                'cart' => "Il ne reste plus assez de places pour '{$name}'.",
             ]);
         }
+    }
 
-        $checkout->reservations()->create([
-            'reservable_id' => $addon->id,
-            'reservable_type' => EventAddon::class,
-            'quantity' => $item['qty'],
-            'unit_price' => $addon->price,
+    private function unavailableItem(): ValidationException
+    {
+        return ValidationException::withMessages([
+            'cart' => 'Un article de votre panier n\'est pas disponible pour cet événement.',
         ]);
     }
 
