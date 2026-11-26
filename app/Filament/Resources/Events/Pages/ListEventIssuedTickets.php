@@ -7,10 +7,10 @@ use App\Filament\Resources\Events\EventResource;
 use App\Filament\Resources\IssuedTickets\Schemas\IssuedTicketInfolist;
 use App\Filament\Resources\IssuedTickets\Tables\IssuedTicketTable;
 use Filament\Resources\Pages\ManageRelatedRecords;
-use Filament\Tables\Table;
-use Illuminate\Contracts\Support\Htmlable;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use UnitEnum;
 
 class ListEventIssuedTickets extends ManageRelatedRecords
@@ -27,7 +27,7 @@ class ListEventIssuedTickets extends ManageRelatedRecords
 
     public function getTitle(): string|Htmlable
     {
-        return $this->record->title . ' - Tickets';
+        return $this->record->title.' - Tickets';
     }
 
     protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedQrCode;

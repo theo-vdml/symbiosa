@@ -6,7 +6,6 @@ use App\Traits\HasSEO;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class HomePage extends Model implements HasMedia
@@ -48,8 +47,8 @@ class HomePage extends Model implements HasMedia
     public function getSeoDefaults(): array
     {
         return [
-            'title' => 'Accueil - ' . config('app.name'),
-            "canonical_url" => fn() => route('home'),
+            'title' => 'Accueil - '.config('app.name'),
+            'canonical_url' => fn () => route('home'),
         ];
     }
 }

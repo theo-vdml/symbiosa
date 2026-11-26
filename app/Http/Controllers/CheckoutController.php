@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CheckoutStatus;
 use App\Enums\ReservableStatus;
+use App\Mail\CheckoutEmailVerificationMail;
 use App\Models\Checkout;
 use App\Models\Event;
 use App\Models\EventAddon;
+use App\Models\LegalPage;
 use App\Models\TicketPrice;
 use App\Models\TicketType;
+use App\Services\TicketPdfService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
-use App\Mail\CheckoutEmailVerificationMail;
-use App\Services\TicketPdfService;
-use App\Enums\CheckoutStatus;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
-use Stripe\Checkout\Session;
 use Str;
+use Stripe\Checkout\Session;
 
 class CheckoutController extends Controller
 {
@@ -66,14 +67,16 @@ class CheckoutController extends Controller
                 'email_verification_code' => null,
                 'email_verified_at' => null,
             ]);
+
             return redirect()->route('checkout.show', $checkout->uuid);
         }
 
         if ($request->has('verification_code')) {
-            if ((string)$checkout->email_verification_code === (string)$request->verification_code) {
+            if ((string) $checkout->email_verification_code === (string) $request->verification_code) {
                 $checkout->update([
                     'email_verified_at' => now(),
                 ]);
+
                 return redirect()->route('checkout.show', $checkout->uuid)->with('message', 'Email vérifié avec succès !');
             }
         }
@@ -81,7 +84,7 @@ class CheckoutController extends Controller
         if ($checkout->completed_at) {
             // Le checkout est déjà complété, rediriger vers la page de succès
             return redirect()->route('checkout.success', $checkout->uuid);
-        } else if ($checkout->stripe_session_id) {
+        } elseif ($checkout->stripe_session_id) {
             // Une session de paiement est en cours, vérifier son statut auprès de Stripe
             $session = Session::retrieve($checkout->stripe_session_id);
             if ($session) {
@@ -92,7 +95,7 @@ class CheckoutController extends Controller
                     'stripe_session_id' => null,
                 ]);
             }
-        } else if ($checkout->expires_at->isPast()) {
+        } elseif ($checkout->expires_at->isPast()) {
             // La session a expiré, rediriger vers la page de sélection des billets avec un message d'erreur
             $event = $checkout->event;
             $slug = $event?->slug;
@@ -101,7 +104,7 @@ class CheckoutController extends Controller
                 ->with('error', 'Votre session a expiré. Veuillez recommencer votre sélection.');
         }
 
-        $legalPages = \App\Models\LegalPage::requiresAcceptance()->get();
+        $legalPages = LegalPage::requiresAcceptance()->get();
 
         return Inertia::render('Checkout/Show', [
             'checkout' => $checkout->load('reservations.reservable.event'),
@@ -111,7 +114,7 @@ class CheckoutController extends Controller
 
     public function checkout(Request $request, Checkout $checkout)
     {
-        $legalPagesRequiringAcceptance = \App\Models\LegalPage::requiresAcceptance()->with('latestVersion')->get();
+        $legalPagesRequiringAcceptance = LegalPage::requiresAcceptance()->with('latestVersion')->get();
 
         $rules = [
             'name' => 'required|string|max:255',
@@ -119,12 +122,12 @@ class CheckoutController extends Controller
         ];
 
         foreach ($legalPagesRequiringAcceptance as $page) {
-            $rules['accept_' . str_replace('-', '_', $page->slug)] = 'accepted';
+            $rules['accept_'.str_replace('-', '_', $page->slug)] = 'accepted';
         }
 
         $request->validate($rules);
 
-        if (!$checkout->email_verified_at || $checkout->customer_email !== $request->email) {
+        if (! $checkout->email_verified_at || $checkout->customer_email !== $request->email) {
             return redirect()->back()->with('error', 'Veuillez vérifier votre adresse email avant de continuer.');
         }
 
@@ -205,7 +208,7 @@ class CheckoutController extends Controller
 
     public function cancel_payment(Checkout $checkout)
     {
-        if (!$checkout->cancelled_at) {
+        if (! $checkout->cancelled_at) {
             $checkout->update([
                 'stripe_session_id' => null,
             ]);
@@ -222,18 +225,18 @@ class CheckoutController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
-        $code = str_pad((string)rand(1, 999999), 6, '0', STR_PAD_LEFT);
+        $code = str_pad((string) rand(1, 999999), 6, '0', STR_PAD_LEFT);
 
         $checkout->update([
             'customer_email' => $request->email,
             'customer_name' => $request->name,
-            'email_verification_code' => (string)$code,
+            'email_verification_code' => (string) $code,
             'email_verified_at' => null,
         ]);
 
         $verificationUrl = route('checkout.show', [
             'checkout' => $checkout->uuid,
-            'verification_code' => $code
+            'verification_code' => $code,
         ]);
 
         Mail::to($request->email)->send(new CheckoutEmailVerificationMail($checkout, $code, $verificationUrl));
@@ -249,7 +252,7 @@ class CheckoutController extends Controller
 
         $checkout = $checkout->fresh();
 
-        if ($checkout->email_verification_code && (string)$checkout->email_verification_code === (string)$request->code) {
+        if ($checkout->email_verification_code && (string) $checkout->email_verification_code === (string) $request->code) {
             $checkout->update([
                 'email_verified_at' => now(),
             ]);
@@ -266,18 +269,17 @@ class CheckoutController extends Controller
         /** @var TicketType $ticketType */
         $ticketType = $price->ticketType;
 
-        if (!$ticketType->hasStockFor($item['qty'])) {
+        if (! $ticketType->hasStockFor($item['qty'])) {
             throw ValidationException::withMessages([
-                'cart' => "Il ne reste plus assez de places pour '{$ticketType->name}'."
+                'cart' => "Il ne reste plus assez de places pour '{$ticketType->name}'.",
             ]);
         }
 
         if ($price->status !== ReservableStatus::OPEN) {
             throw ValidationException::withMessages([
-                'cart' => "Le tarif pour '{$ticketType->name} - {$price->name}' a changé ou n'est plus disponible."
+                'cart' => "Le tarif pour '{$ticketType->name} - {$price->name}' a changé ou n'est plus disponible.",
             ]);
         }
-
 
         $checkout->reservations()->create([
             'reservable_id' => $ticketType->id,
@@ -294,13 +296,13 @@ class CheckoutController extends Controller
 
         if ($addon->status !== ReservableStatus::OPEN) {
             throw ValidationException::withMessages([
-                'cart' => "L'addon '{$addon->name}' n'est plus disponible."
+                'cart' => "L'addon '{$addon->name}' n'est plus disponible.",
             ]);
         }
 
-        if (!$addon->hasStockFor($item['qty'])) {
+        if (! $addon->hasStockFor($item['qty'])) {
             throw ValidationException::withMessages([
-                'cart' => "Il ne reste plus assez de stock pour l'addon '{$addon->name}'."
+                'cart' => "Il ne reste plus assez de stock pour l'addon '{$addon->name}'.",
             ]);
         }
 

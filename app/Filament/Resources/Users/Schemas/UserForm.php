@@ -28,8 +28,8 @@ class UserForm
                     ->label('Mot de passe')
                     ->prefixIcon(Heroicon::LockClosed)
                     ->password()
-                    ->dehydrated(fn($state) => filled($state))
-                    ->required(fn(string $context): bool => $context === 'create'),
+                    ->dehydrated(fn ($state) => filled($state))
+                    ->required(fn (string $context): bool => $context === 'create'),
             ]);
     }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\IssuedTickets\Tables;
 
-use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 
 class IssuedTicketTable
 {
@@ -24,7 +24,7 @@ class IssuedTicketTable
                     })
                     ->searchable()
                     ->sortable(['events.start_at'])
-                    ->hidden(!$withEvent),
+                    ->hidden(! $withEvent),
 
                 TextColumn::make('type')
                     ->label('Type')
@@ -40,7 +40,7 @@ class IssuedTicketTable
                 TextColumn::make('product')
                     ->label('Nom')
                     ->state(function ($record) {
-                        return $record->reservable->name  . ($record->ticketPrice ? ' - ' . $record->ticketPrice->name : '');
+                        return $record->reservable->name.($record->ticketPrice ? ' - '.$record->ticketPrice->name : '');
                     })
                     ->placeholder('N/A'),
 

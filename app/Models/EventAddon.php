@@ -54,7 +54,7 @@ class EventAddon extends Model implements Reservable
     {
         static::deleting(function ($addon) {
             if ($addon->reservations()->exists() || $addon->issuedTickets()->exists()) {
-                throw new \Exception("Impossible de supprimer cet extra car des réservations ou des billets y sont liés.");
+                throw new \Exception('Impossible de supprimer cet extra car des réservations ou des billets y sont liés.');
             }
         });
     }
@@ -81,8 +81,8 @@ class EventAddon extends Model implements Reservable
     protected function priceInEuro(): Attribute
     {
         return Attribute::make(
-            get: fn($value, $attributes) => isset($attributes['price']) ? $attributes['price'] / 100 : 0,
-            set: fn($value) => [
+            get: fn ($value, $attributes) => isset($attributes['price']) ? $attributes['price'] / 100 : 0,
+            set: fn ($value) => [
                 'price' => (int) ($value * 100),
             ],
         );

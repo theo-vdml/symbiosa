@@ -29,13 +29,13 @@ class IssuedTicket extends Model
     protected static function booted()
     {
         static::creating(function ($ticket) {
-            $ticket->public_id = 'PENDING-' . Str::random(10);
+            $ticket->public_id = 'PENDING-'.Str::random(10);
         });
 
         static::created(function ($ticket) {
             $hash = Hashids::encode($ticket->id);
 
-            $ticket->public_id = 'SY-' . substr($hash, 0, 3) . '-' . substr($hash, 3);
+            $ticket->public_id = 'SY-'.substr($hash, 0, 3).'-'.substr($hash, 3);
             $ticket->saveQuietly();
         });
     }

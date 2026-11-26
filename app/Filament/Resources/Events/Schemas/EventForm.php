@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Events\Schemas;
 
+use App\Filament\Shared\Schemas\SeoSchema;
+use App\Models\Artist;
 use App\Models\Sponsor;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
@@ -13,13 +15,14 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\ViewField;
-use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\Str;
 
 class EventForm
 {
@@ -52,7 +55,7 @@ class EventForm
 
                         Tab::make('Sponsors')
                             ->icon(Heroicon::Heart)
-                            ->schema(static::getSponsorsSchema())
+                            ->schema(static::getSponsorsSchema()),
 
                     ]),
             ]);
@@ -70,7 +73,7 @@ class EventForm
                         ->placeholder('Donnez un nom à l\'événement')
                         ->required()
                         ->live(onBlur: true)
-                        ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', \Illuminate\Support\Str::slug($state))),
+                        ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
 
                     TextInput::make('slug')
                         ->label('Slug')
@@ -137,8 +140,8 @@ class EventForm
                                 ->hintAction(
                                     Action::make('gembloux_shortcut')
                                         ->label('Gembloux')
-                                        ->action(fn(TextInput $component) => $component->state('Gembloux'))
-                                        ->visible(fn(TextInput $component) => $component->getState() !== 'Gembloux')
+                                        ->action(fn (TextInput $component) => $component->state('Gembloux'))
+                                        ->visible(fn (TextInput $component) => $component->getState() !== 'Gembloux')
                                 )
                                 ->required(),
 
@@ -149,8 +152,8 @@ class EventForm
                                 ->hintAction(
                                     Action::make('belgium_shortcut')
                                         ->label('Belgique')
-                                        ->action(fn(TextInput $component) => $component->state('Belgique'))
-                                        ->visible(fn(TextInput $component) => $component->getState() !== 'Belgique')
+                                        ->action(fn (TextInput $component) => $component->state('Belgique'))
+                                        ->visible(fn (TextInput $component) => $component->getState() !== 'Belgique')
                                 )
                                 ->required(),
                         ]),
@@ -158,7 +161,7 @@ class EventForm
                     TextInput::make('address')
                         ->label('Adresse complète')
                         ->prefixIcon(Heroicon::MapPin)
-                        ->placeholder('Entrez l\'adresse complète du lieu de l\'événement')
+                        ->placeholder('Entrez l\'adresse complète du lieu de l\'événement'),
                 ]),
         ];
     }
@@ -194,7 +197,7 @@ class EventForm
                         ->relationship('genres', 'name')
                         ->preload()
                         ->searchable()
-                        ->quickAdd(label: "Nouveau genre: {search}", resetSearch: true),
+                        ->quickAdd(label: 'Nouveau genre: {search}', resetSearch: true),
                 ]),
 
             Section::make('Autre')
@@ -210,8 +213,8 @@ class EventForm
                             Action::make('no_dress_code')
                                 ->label('Pas de dress code')
                                 ->icon(Heroicon::XMark)
-                                ->action(fn(TextInput $component) => $component->state(null))
-                                ->disabled(fn(TextInput $component) => $component->getState() === null)
+                                ->action(fn (TextInput $component) => $component->state(null))
+                                ->disabled(fn (TextInput $component) => $component->getState() === null)
                         )
                         ->live(),
 
@@ -224,15 +227,15 @@ class EventForm
                         ->hintAction(
                             Action::make('18_plus')
                                 ->label('18 ans et plus')
-                                ->action(fn(TextInput $component) => $component->state(18))
-                                ->visible(fn(TextInput $component) => $component->getState() !== 18.00)
+                                ->action(fn (TextInput $component) => $component->state(18))
+                                ->visible(fn (TextInput $component) => $component->getState() !== 18.00)
                         )
                         ->suffixAction(
                             Action::make('no_age_limit')
                                 ->label('Pas de limite d\'âge')
                                 ->icon(Heroicon::XMark)
-                                ->action(fn(TextInput $component) => $component->state(null))
-                                ->disabled(fn(TextInput $component) => $component->getState() === null)
+                                ->action(fn (TextInput $component) => $component->state(null))
+                                ->disabled(fn (TextInput $component) => $component->getState() === null)
                         )
                         ->live(),
                 ]),
@@ -271,7 +274,7 @@ class EventForm
                                 ->imageEditor()
                                 ->optimize('webp'),
                         ]),
-                ])
+                ]),
         ];
     }
 
@@ -287,7 +290,7 @@ class EventForm
                         ->addActionLabel('Ajouter une question')
                         ->defaultItems(0)
                         ->deleteAction(
-                            fn(Action $action) => $action->requiresConfirmation(),
+                            fn (Action $action) => $action->requiresConfirmation(),
                         )
                         ->schema([
                             TextInput::make('question')
@@ -301,9 +304,9 @@ class EventForm
                                 ->placeholder('Entrez la réponse à cette question')
                                 ->autosize()
                                 ->rows(1)
-                                ->required()
-                        ])
-                ])
+                                ->required(),
+                        ]),
+                ]),
         ];
     }
 
@@ -381,19 +384,18 @@ class EventForm
                                 ->live(),
                         ])
                         ->itemLabel(
-                            fn(array $state): ?string =>
-                            isset($state['sponsor_id'])
+                            fn (array $state): ?string => isset($state['sponsor_id'])
                                 ? Sponsor::find($state['sponsor_id'])?->name
                                 : 'Nouveau Sponsor'
                         )
                         ->deleteAction(
-                            fn(Action $action) => $action->requiresConfirmation(),
+                            fn (Action $action) => $action->requiresConfirmation(),
                         )
                         ->defaultItems(0)
                         ->reorderable()
                         ->orderColumn('sort_order')
-                        ->grid(2)
-                ])
+                        ->grid(2),
+                ]),
         ];
     }
 
@@ -437,29 +439,28 @@ class EventForm
                                 ->live(),
                         ])
                         ->itemLabel(
-                            fn(array $state): ?string =>
-                            isset($state['artist_id'])
-                                ? \App\Models\Artist::find($state['artist_id'])?->name
+                            fn (array $state): ?string => isset($state['artist_id'])
+                                ? Artist::find($state['artist_id'])?->name
                                 : 'Nouvel Artiste'
                         )
                         ->defaultItems(0)
                         ->reorderable()
                         ->orderColumn('sort_order')
                         ->deleteAction(
-                            fn(Action $action) => $action->requiresConfirmation(),
+                            fn (Action $action) => $action->requiresConfirmation(),
                         )
                         ->grid([
                             'md' => 1,
                             'xl' => 2,
-                        ])
-                ])
+                        ]),
+                ]),
         ];
     }
 
     public static function getSeoSchema(): array
     {
         return [
-            \App\Filament\Shared\Schemas\SeoSchema::make(),
+            SeoSchema::make(),
         ];
     }
 
@@ -488,7 +489,7 @@ class EventForm
                 ->relationship('genres', 'name')
                 ->preload()
                 ->searchable()
-                ->quickAdd(label: "Nouveau genre: {search}", resetSearch: true),
+                ->quickAdd(label: 'Nouveau genre: {search}', resetSearch: true),
             Textarea::make('biography')
                 ->label('Biographie')
                 ->columnSpanFull(),

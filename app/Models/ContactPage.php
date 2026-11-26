@@ -26,15 +26,15 @@ class ContactPage extends Model
     public function getSeoDefaults(): array
     {
         return [
-            'title' => ($this->heading ?? 'Contact') . ' - ' . config('app.name'),
-            "canonical_url" => fn() => route('contact'),
+            'title' => ($this->heading ?? 'Contact').' - '.config('app.name'),
+            'canonical_url' => fn () => route('contact'),
         ];
     }
 
     public function getSeoFallbacks(): array
     {
         return [
-            'description' => 'description'
+            'description' => 'description',
         ];
     }
 }

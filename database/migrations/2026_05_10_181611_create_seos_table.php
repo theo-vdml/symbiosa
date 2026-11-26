@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('seos', function (Blueprint $table) {
             $table->id();
             $table->morphs('model');
-            
+
             $table->string('title')->nullable();
             $table->text('description')->nullable();
             $table->json('keywords')->nullable();

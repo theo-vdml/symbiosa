@@ -13,6 +13,7 @@ export function useLightbox(images: () => any[] | undefined) {
     const openLightbox = (index: number) => {
         isLightboxImageLoaded.value = false;
         selectedImageIndex.value = index;
+
         if (typeof document !== 'undefined') {
             document.body.style.overflow = 'hidden';
         }
@@ -20,6 +21,7 @@ export function useLightbox(images: () => any[] | undefined) {
 
     const closeLightbox = () => {
         selectedImageIndex.value = null;
+
         if (typeof document !== 'undefined') {
             document.body.style.overflow = '';
         }
@@ -27,21 +29,35 @@ export function useLightbox(images: () => any[] | undefined) {
 
     const nextImage = () => {
         const imageList = images();
-        if (selectedImageIndex.value === null || !imageList) return;
+
+        if (selectedImageIndex.value === null || !imageList) {
+            return;
+        }
+
         isLightboxImageLoaded.value = false;
-        selectedImageIndex.value = (selectedImageIndex.value + 1) % imageList.length;
+        selectedImageIndex.value =
+            (selectedImageIndex.value + 1) % imageList.length;
     };
 
     const prevImage = () => {
         const imageList = images();
-        if (selectedImageIndex.value === null || !imageList) return;
+
+        if (selectedImageIndex.value === null || !imageList) {
+            return;
+        }
+
         isLightboxImageLoaded.value = false;
-        selectedImageIndex.value = (selectedImageIndex.value - 1 + imageList.length) % imageList.length;
+        selectedImageIndex.value =
+            (selectedImageIndex.value - 1 + imageList.length) %
+            imageList.length;
     };
 
     const downloadImage = async (filenamePrefix = 'symbiosa-image') => {
         const imageList = images();
-        if (selectedImageIndex.value === null || !imageList) return;
+
+        if (selectedImageIndex.value === null || !imageList) {
+            return;
+        }
 
         try {
             const currentImage = imageList[selectedImageIndex.value];
@@ -52,7 +68,9 @@ export function useLightbox(images: () => any[] | undefined) {
 
             const link = document.createElement('a');
             link.href = url;
-            link.download = currentImage.file_name || `${filenamePrefix}-${selectedImageIndex.value + 1}.jpg`;
+            link.download =
+                currentImage.file_name ||
+                `${filenamePrefix}-${selectedImageIndex.value + 1}.jpg`;
             document.body.appendChild(link);
             link.click();
 
@@ -68,12 +86,23 @@ export function useLightbox(images: () => any[] | undefined) {
     // Keyboard navigation
     if (typeof window !== 'undefined') {
         const handleKeydown = (e: KeyboardEvent) => {
-            if (!isLightboxOpen.value) return;
-            if (e.key === 'Escape') closeLightbox();
-            if (e.key === 'ArrowRight') nextImage();
-            if (e.key === 'ArrowLeft') prevImage();
+            if (!isLightboxOpen.value) {
+                return;
+            }
+
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+
+            if (e.key === 'ArrowRight') {
+                nextImage();
+            }
+
+            if (e.key === 'ArrowLeft') {
+                prevImage();
+            }
         };
-        
+
         window.addEventListener('keydown', handleKeydown);
     }
 
@@ -87,6 +116,6 @@ export function useLightbox(images: () => any[] | undefined) {
         closeLightbox,
         nextImage,
         prevImage,
-        downloadImage
+        downloadImage,
     };
 }

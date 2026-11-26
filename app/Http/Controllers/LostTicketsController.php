@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\ResendLostTicketsJob;
+use App\Models\LostTicketPage;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -10,14 +11,14 @@ class LostTicketsController extends Controller
 {
     public function show()
     {
-        $page = \App\Models\LostTicketPage::first() ?? new \App\Models\LostTicketPage();
+        $page = LostTicketPage::first() ?? new LostTicketPage;
 
         return Inertia::render('LostTickets', [
             'preheading' => $page->preheading ?? 'Support',
             'heading' => $page->heading ?? 'Retrouvez vos billets',
             'description' => $page->description ?? 'Entrez votre adresse e-mail ci-dessous pour recevoir vos billets associés à cette adresse pour des événements à venir.',
             'helpItems' => $page->help_items ?? [],
-            'seo' => $page->getSeoData()
+            'seo' => $page->getSeoData(),
         ]);
     }
 

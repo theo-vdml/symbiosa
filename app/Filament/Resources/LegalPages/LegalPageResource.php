@@ -12,8 +12,8 @@ use App\Filament\Resources\LegalPages\Tables\LegalPagesTable;
 use App\Models\LegalPage;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables\Table;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Table;
 
 class LegalPageResource extends Resource
 {

@@ -8,7 +8,7 @@ use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 use Filament\Support\Icons\Heroicon;
 
-enum CheckoutStatus: string implements HasLabel, HasColor, HasIcon
+enum CheckoutStatus: string implements HasColor, HasIcon, HasLabel
 {
     case COMPLETED = 'completed';
     case CANCELLED = 'cancelled';
@@ -38,7 +38,7 @@ enum CheckoutStatus: string implements HasLabel, HasColor, HasIcon
         };
     }
 
-    public function getIcon(): string | BackedEnum
+    public function getIcon(): string|BackedEnum
     {
         return match ($this) {
             self::COMPLETED => Heroicon::Check,

@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Enums\CheckoutStatus;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\Checkout
@@ -15,14 +17,13 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
  * @property string $customer_email
  * @property string|null $customer_name
  * @property string|null $stripe_session_id
- * @property \Illuminate\Support\Carbon $expires_at
- * @property \Illuminate\Support\Carbon|null $completed_at
- * @property \Illuminate\Support\Carbon|null $cancelled_at
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
- *
- * @property-read \App\Enums\CheckoutStatus $status Statut calculé de la session
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Reservation[] $reservations
+ * @property Carbon $expires_at
+ * @property Carbon|null $completed_at
+ * @property Carbon|null $cancelled_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property-read CheckoutStatus $status Statut calculé de la session
+ * @property-read Collection|Reservation[] $reservations
  *
  * @method static \Illuminate\Database\Eloquent\Builder|Checkout holdingStock() Filtre les sessions qui bloquent encore du stock
  * @method static \Illuminate\Database\Eloquent\Builder|Checkout isCompleted() Filtre les sessions payées
@@ -103,7 +104,7 @@ class Checkout extends Model
             ->whereNull('cancelled_at')
             ->where(function (Builder $sub) {
                 $sub->withinExpirationWindow()
-                    ->orWhere(fn($sub2) => $sub2->hasRecentStripeActivity());
+                    ->orWhere(fn ($sub2) => $sub2->hasRecentStripeActivity());
             });
     }
 
@@ -113,7 +114,7 @@ class Checkout extends Model
             ->whereNull('cancelled_at')
             ->whereNot(function (Builder $sub) {
                 $sub->withinExpirationWindow()
-                    ->orWhere(fn($sub2) => $sub2->hasRecentStripeActivity());
+                    ->orWhere(fn ($sub2) => $sub2->hasRecentStripeActivity());
             });
     }
 
@@ -121,13 +122,12 @@ class Checkout extends Model
      * Détermine si le checkout bloque actuellement des inventaires (billets, addons).
      * Combine la validité temporelle et l'activité des intents Stripe.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     public function scopeHoldingStock(Builder $query)
     {
         return $query->where(function (Builder $q) {
-            $q->isCompleted()->orWhere(fn($sub) => $sub->isPending());
+            $q->isCompleted()->orWhere(fn ($sub) => $sub->isPending());
         });
     }
 
@@ -136,14 +136,16 @@ class Checkout extends Model
     /**
      * Accessor pour le statut métier du Checkout.
      * Déduit dynamiquement l'état à partir des différents timestamps et de l'activité Stripe.
-     *
-     * @return \Illuminate\Database\Eloquent\Casts\Attribute
      */
     protected function status(): Attribute
     {
         return Attribute::get(function (): CheckoutStatus {
-            if ($this->completed_at) return CheckoutStatus::COMPLETED;
-            if ($this->cancelled_at) return CheckoutStatus::CANCELLED;
+            if ($this->completed_at) {
+                return CheckoutStatus::COMPLETED;
+            }
+            if ($this->cancelled_at) {
+                return CheckoutStatus::CANCELLED;
+            }
 
             if ($this->stripe_session_id) {
                 return CheckoutStatus::PROCESSING;

@@ -9,7 +9,7 @@ class GalleryHeroWidget extends Widget
 {
     protected string $view = 'filament.resources.events.widgets.gallery-hero-widget';
 
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
     public ?Model $record = null;
 }

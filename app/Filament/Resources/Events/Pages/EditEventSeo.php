@@ -6,6 +6,7 @@ use App\Enums\EventNavigationGroups;
 use App\Filament\Resources\Events\EventResource;
 use App\Filament\Resources\Events\Schemas\EventForm;
 use BackedEnum;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -24,7 +25,7 @@ class EditEventSeo extends EditRecord
 
     public function getTitle(): string|Htmlable
     {
-        return $this->record->title . ' - SEO';
+        return $this->record->title.' - SEO';
     }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedGlobeAlt;
@@ -54,7 +55,7 @@ class EditEventSeo extends EditRecord
         // Laisser Filament faire son premier remplissage au chargement initial
     }
 
-    protected function getSavedNotification(): ?\Filament\Notifications\Notification
+    protected function getSavedNotification(): ?Notification
     {
         // On profite de la fin du cycle de sauvegarde pour forcer Livewire
         // à réinjecter le nouvel état de la BDD dans les inputs du formulaire.

@@ -6,9 +6,9 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
-use Illuminate\Support\Str;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\Str;
 
 class GenreForm
 {
@@ -35,7 +35,9 @@ class GenreForm
                             ->icon(Heroicon::Sparkles)
                             ->action(function (Set $set, Get $get) {
                                 $name = $get('name');
-                                if (blank($name)) return;
+                                if (blank($name)) {
+                                    return;
+                                }
                                 $set('slug', Str::slug($name));
                             })
                     )

@@ -22,8 +22,8 @@ class AboutPage extends Model implements HasMedia
     public function getSeoDefaults(): array
     {
         return [
-            'title' => fn() => "À propos - " . config('app.name'),
-            "canonical_url" => fn() => route('about'),
+            'title' => fn () => 'À propos - '.config('app.name'),
+            'canonical_url' => fn () => route('about'),
         ];
     }
 }

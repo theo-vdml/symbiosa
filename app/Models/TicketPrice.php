@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use App\Enums\ReservableStatus;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class TicketPrice extends Model
 {
@@ -48,7 +48,7 @@ class TicketPrice extends Model
     {
         static::deleting(function ($ticketPrice) {
             if ($ticketPrice->reservations()->exists() || $ticketPrice->issuedTickets()->exists()) {
-                throw new \Exception("Impossible de supprimer ce prix car des réservations ou des billets y sont liés.");
+                throw new \Exception('Impossible de supprimer ce prix car des réservations ou des billets y sont liés.');
             }
         });
     }
@@ -81,8 +81,8 @@ class TicketPrice extends Model
     protected function priceInEuro(): Attribute
     {
         return Attribute::make(
-            get: fn($value, $attributes) => isset($attributes['price']) ? $attributes['price'] / 100 : 0,
-            set: fn($value) => [
+            get: fn ($value, $attributes) => isset($attributes['price']) ? $attributes['price'] / 100 : 0,
+            set: fn ($value) => [
                 'price' => (int) ($value * 100),
             ],
         );

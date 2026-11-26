@@ -4,6 +4,9 @@ namespace App\Filament\Resources\Events\Pages;
 
 use App\Enums\EventNavigationGroups;
 use App\Filament\Resources\Events\EventResource;
+use App\Models\EventAddon;
+use App\Models\IssuedTicket;
+use App\Models\Reservation;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
@@ -25,13 +28,14 @@ class EditEventAddons extends EditRecord
     protected static string $resource = EventResource::class;
 
     protected static ?string $navigationLabel = 'Extras';
+
     protected static string|UnitEnum|null $navigationGroup = EventNavigationGroups::Ticketing;
 
     protected static ?string $breadcrumb = 'Extras';
 
     public function getTitle(): string|Htmlable
     {
-        return $this->record->title . ' - Extras';
+        return $this->record->title.' - Extras';
     }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedGift;
@@ -45,7 +49,7 @@ class EditEventAddons extends EditRecord
                     ->warning()
                     ->heading('Action requise : module de billetterie désactivé')
                     ->description('Définissez une date d\'ouverture pour activer le module de billetterie. Tant que cette date n\'est pas renseignée, les options d\'achat de billets ne seront pas visibles par les utilisateurs.')
-                    ->visible(fn() => !$this->record->ticketing_starts_at),
+                    ->visible(fn () => ! $this->record->ticketing_starts_at),
 
                 Section::make('Extras')
                     ->description('Gérez les différents extras disponibles pour cet événement, leurs prix, capacités et disponibilités.')
@@ -57,22 +61,23 @@ class EditEventAddons extends EditRecord
                             ->relationship()
                             ->orderColumn('sort_order')
                             ->itemLabel(
-                                fn(array $state): ?string =>
-                                isset($state['name']) ? $state['name'] : 'Nouvel extra'
+                                fn (array $state): ?string => isset($state['name']) ? $state['name'] : 'Nouvel extra'
                             )
                             ->addActionLabel('Ajouter un extra')
                             ->deleteAction(
                                 fn (Action $action) => $action->before(function (Action $action, array $arguments) {
                                     $recordId = $arguments['item'] ?? null;
                                     $recordId = str_replace('record-', '', $recordId);
-                                    if (!$recordId) return;
+                                    if (! $recordId) {
+                                        return;
+                                    }
 
-                                    $hasDeps = \App\Models\Reservation::where('reservable_type', \App\Models\EventAddon::class)
+                                    $hasDeps = Reservation::where('reservable_type', EventAddon::class)
                                         ->where('reservable_id', $recordId)
                                         ->exists() ||
-                                        \App\Models\IssuedTicket::where('reservable_type', \App\Models\EventAddon::class)
-                                        ->where('reservable_id', $recordId)
-                                        ->exists();
+                                        IssuedTicket::where('reservable_type', EventAddon::class)
+                                            ->where('reservable_id', $recordId)
+                                            ->exists();
 
                                     if ($hasDeps) {
                                         Notification::make()
@@ -148,7 +153,7 @@ class EditEventAddons extends EditRecord
                                             ->minValue(1)
                                             ->columnSpan(3),
                                     ]),
-                            ])
+                            ]),
                     ]),
 
             ]);

@@ -7,7 +7,6 @@ use App\Filament\Resources\Events\EventResource;
 use App\Services\TicketPdfService;
 use Filament\Actions\Action;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
@@ -47,9 +46,9 @@ class IssuedTicketInfolist
                         //     ]),
 
                         Action::make('toggleCheckIn')
-                            ->label(fn($record) => $record->checked_in_at ? 'Annuler le scan' : 'Valider le ticket')
-                            ->icon(fn($record) => $record->checked_in_at ? 'heroicon-m-x-circle' : 'heroicon-m-check-badge')
-                            ->color(fn($record) => $record->checked_in_at ? 'gray' : 'success')
+                            ->label(fn ($record) => $record->checked_in_at ? 'Annuler le scan' : 'Valider le ticket')
+                            ->icon(fn ($record) => $record->checked_in_at ? 'heroicon-m-x-circle' : 'heroicon-m-check-badge')
+                            ->color(fn ($record) => $record->checked_in_at ? 'gray' : 'success')
                             ->size('lg')
                             ->requiresConfirmation()
                             ->extraAttributes(['class' => 'w-full justify-center'])
@@ -70,13 +69,13 @@ class IssuedTicketInfolist
                             ->size('sm')
                             ->action(function ($record, TicketPdfService $pdfService) {
                                 $pdf = $pdfService->generate($record->event, $record);
-                                $filename = $record->public_id . '.pdf';
+                                $filename = $record->public_id.'.pdf';
 
                                 return response()->streamDownload(
-                                    fn() => print($pdf->output()),
+                                    fn () => print ($pdf->output()),
                                     $filename
                                 );
-                            })
+                            }),
                     ])
                     ->schema([
                         TextEntry::make('reservable.name')
@@ -117,7 +116,7 @@ class IssuedTicketInfolist
                             ->label('Heure du scan')
                             ->dateTime('H:i:s (d/m/Y)')
                             ->icon('heroicon-m-qr-code')
-                            ->visible(fn($record) => $record->checked_in_at !== null),
+                            ->visible(fn ($record) => $record->checked_in_at !== null),
                     ]),
 
                 Section::make('Événement')
@@ -128,7 +127,7 @@ class IssuedTicketInfolist
                             ->icon('heroicon-m-arrow-top-right-on-square')
                             ->color('gray')
                             ->size('sm')
-                            ->url(fn($record) => EventResource::getUrl('edit', ['record' => $record->event])),
+                            ->url(fn ($record) => EventResource::getUrl('edit', ['record' => $record->event])),
                     ])
                     ->schema([
                         TextEntry::make('event.title')
@@ -159,7 +158,7 @@ class IssuedTicketInfolist
                             ->icon('heroicon-m-arrow-top-right-on-square')
                             ->color('gray')
                             ->size('sm')
-                            ->url(fn($record) => CheckoutResource::getUrl('view', ['record' => $record->checkout])),
+                            ->url(fn ($record) => CheckoutResource::getUrl('view', ['record' => $record->checkout])),
                     ])
                     ->schema([
                         TextEntry::make('checkout.customer_name')

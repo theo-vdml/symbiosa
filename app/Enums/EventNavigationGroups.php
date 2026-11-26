@@ -12,7 +12,6 @@ enum EventNavigationGroups implements HasLabel
     case Partners;
     case Archives;
 
-
     public function getLabel(): string
     {
         return match ($this) {

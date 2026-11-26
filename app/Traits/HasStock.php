@@ -31,7 +31,7 @@ trait HasStock
         return Attribute::get(function (): mixed {
             return Reservation::where('reservable_type', get_class($this))
                 ->where('reservable_id', $this->getKey())
-                ->whereHas('checkout', fn($q) => $q->holdingStock())
+                ->whereHas('checkout', fn ($q) => $q->holdingStock())
                 ->sum('quantity');
         });
     }
@@ -46,8 +46,11 @@ trait HasStock
      */
     protected function availableStock(): Attribute
     {
-        return Attribute::get(function (): int|null {
-            if (!$this->capacity) return null;
+        return Attribute::get(function (): ?int {
+            if (! $this->capacity) {
+                return null;
+            }
+
             return max(0, $this->capacity - $this->reserved_stock);
         });
     }
@@ -55,12 +58,15 @@ trait HasStock
     /**
      * Determine if the model has enough available stock for a specific quantity.
      *
-     * @param int $requestedQty The quantity to check against availability.
+     * @param  int  $requestedQty  The quantity to check against availability.
      * @return bool True if stock is infinite or sufficient, false otherwise.
      */
     public function hasStockFor(int $requestedQty): bool
     {
-        if (!$this->capacity) return true;
+        if (! $this->capacity) {
+            return true;
+        }
+
         return $requestedQty <= $this->available_stock;
     }
 }

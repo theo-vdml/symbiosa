@@ -16,13 +16,13 @@ return new class extends Migration
             $table->string('heading');
             $table->string('subheading');
             $table->text('description');
-            
+
             $table->string('faq_heading');
             $table->text('faq_description');
             $table->json('faq_items');
 
             $table->string('email_heading');
-            
+
             $table->timestamps();
         });
     }

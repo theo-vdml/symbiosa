@@ -17,8 +17,6 @@ trait HasSEO
      * The keys should correspond to SEO fields (e.g., 'title', 'description').
      * The values can be either a single column name or an array of column names
      * to check in order for a non-empty value.
-     *
-     * @return array
      */
     public function getSeoFallbacks(): array
     {
@@ -29,8 +27,6 @@ trait HasSEO
      * Define default values for SEO fields if both the base data and fallbacks are empty.
      *
      * The keys should correspond to SEO fields (e.g., 'title', 'description').
-     *
-     * @return array
      */
     public function getSeoDefaults(): array
     {
@@ -47,8 +43,6 @@ trait HasSEO
 
     /**
      * Get the processed SEO data for the model.
-     *
-     * @return array
      */
     public function getSeoData(): array
     {

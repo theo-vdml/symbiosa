@@ -24,8 +24,11 @@ class ContactPageResource extends Resource
     protected static ?string $model = ContactPage::class;
 
     protected static string|UnitEnum|null $navigationGroup = NavigationGroups::Pages;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedEnvelope;
-    protected static ?string $navigationLabel = "Contact";
+
+    protected static ?string $navigationLabel = 'Contact';
+
     protected static ?int $navigationSort = 3;
 
     public static function form(Schema $schema): Schema
@@ -83,7 +86,7 @@ class ContactPageResource extends Resource
                                     ->autosize(),
                             ])
                             ->collapsible()
-                            ->itemLabel(fn(array $state): ?string => $state['question'] ?? null),
+                            ->itemLabel(fn (array $state): ?string => $state['question'] ?? null),
                     ]),
 
                 Section::make('Section E-mail')
@@ -122,6 +125,7 @@ class ContactPageResource extends Resource
             if ($record) {
                 return parent::getUrl('edit', ['record' => $record], $isAbsolute, $panel, $tenant, $shouldGuessMissingParameters, $configuration);
             }
+
             return parent::getUrl('create', [], $isAbsolute, $panel, $tenant, $shouldGuessMissingParameters, $configuration);
         }
 

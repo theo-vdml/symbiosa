@@ -24,7 +24,7 @@ class EditEventCopywritting extends EditRecord
 
     public function getTitle(): string|Htmlable
     {
-        return $this->record->title . ' - Contenu de la page';
+        return $this->record->title.' - Contenu de la page';
     }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPencilSquare;

@@ -1,4 +1,5 @@
-import { computed, toValue, type MaybeRefOrGetter } from 'vue';
+import { computed, toValue } from 'vue';
+import type { MaybeRefOrGetter } from 'vue';
 
 const dateTimeFormatLocale = 'fr-FR';
 
@@ -35,57 +36,71 @@ export function useEventDates(
 ) {
     const getSafeValue = (key: keyof EventWithDates) => {
         const event = toValue(eventParam);
-        if (!event || !event[key]) return null;
+
+        if (!event || !event[key]) {
+            return null;
+        }
+
         return new Date(event[key]);
     };
 
     const startLong = computed(() => {
         const date = getSafeValue('start_at');
+
         return date ? longFormatter.format(date) : '';
     });
 
     const startWeekday = computed(() => {
         const date = getSafeValue('start_at');
+
         return date ? weekdayFormatter.format(date) : '';
     });
 
     const startDay = computed(() => {
         const date = getSafeValue('start_at');
+
         return date ? dayFormatter.format(date) : '';
     });
 
     const startMonth = computed(() => {
         const date = getSafeValue('start_at');
+
         return date ? monthFormatter.format(date) : '';
     });
 
     const startTime = computed(() => {
         const date = getSafeValue('start_at');
+
         return date ? timeFormatter.format(date) : '';
     });
 
     const endLong = computed(() => {
         const date = getSafeValue('end_at');
+
         return date ? longFormatter.format(date) : '';
     });
 
     const endWeekday = computed(() => {
         const date = getSafeValue('end_at');
+
         return date ? weekdayFormatter.format(date) : '';
     });
 
     const endDay = computed(() => {
         const date = getSafeValue('end_at');
+
         return date ? dayFormatter.format(date) : '';
     });
 
     const endMonth = computed(() => {
         const date = getSafeValue('end_at');
+
         return date ? monthFormatter.format(date) : '';
     });
 
     const endTime = computed(() => {
         const date = getSafeValue('end_at');
+
         return date ? timeFormatter.format(date) : '';
     });
 

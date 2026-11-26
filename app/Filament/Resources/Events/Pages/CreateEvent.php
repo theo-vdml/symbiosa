@@ -6,7 +6,6 @@ use App\Filament\Resources\Events\EventResource;
 use App\Filament\Resources\Events\Schemas\EventForm;
 use Filament\Resources\Pages\Concerns\HasWizard;
 use Filament\Resources\Pages\CreateRecord;
-use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Support\Icons\Heroicon;
 

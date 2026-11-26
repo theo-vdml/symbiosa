@@ -23,15 +23,15 @@ class LostTicketPage extends Model
     public function getSeoDefaults(): array
     {
         return [
-            'title' => fn() => ($this->heading ?? 'Support') . ' - ' . config('app.name'),
-            "canonical_url" => fn() => route('lost-tickets.show'),
+            'title' => fn () => ($this->heading ?? 'Support').' - '.config('app.name'),
+            'canonical_url' => fn () => route('lost-tickets.show'),
         ];
     }
 
     public function getSeoFallbacks(): array
     {
         return [
-            'description' => 'description'
+            'description' => 'description',
         ];
     }
 }

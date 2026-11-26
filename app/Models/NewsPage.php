@@ -18,15 +18,15 @@ class NewsPage extends Model
     public function getSeoDefaults(): array
     {
         return [
-            'title' => ($this->heading ?? 'Actualités') . ' - ' . config('app.name'),
-            "canonical_url" => fn() => route('news.index'),
+            'title' => ($this->heading ?? 'Actualités').' - '.config('app.name'),
+            'canonical_url' => fn () => route('news.index'),
         ];
     }
 
     public function getSeoFallbacks(): array
     {
         return [
-            'description' => 'description'
+            'description' => 'description',
         ];
     }
 }

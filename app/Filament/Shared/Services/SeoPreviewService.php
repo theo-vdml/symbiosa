@@ -49,7 +49,7 @@ class SeoPreviewService
         // 3. On fait tourner le processeur principal unifié
         $analysis = SeoProcessor::analyze($baseData, $fallbacks, $defaults, $source);
 
-        if ($source && method_exists($livewire, 'getRecord') && !empty($originalAttributes)) {
+        if ($source && method_exists($livewire, 'getRecord') && ! empty($originalAttributes)) {
             $source->setRawAttributes($originalAttributes);
         }
 
@@ -68,7 +68,7 @@ class SeoPreviewService
             try {
                 return $state->temporaryUrl();
             } catch (\Exception $e) {
-                return "https://placehold.co/1200x650?text=Upload+Error";
+                return 'https://placehold.co/1200x650?text=Upload+Error';
             }
         }
 
@@ -76,12 +76,12 @@ class SeoPreviewService
             return static::resolveLivewireImageUrl(reset($state));
         }
 
-        if (is_string($state) && !empty($state)) {
+        if (is_string($state) && ! empty($state)) {
             return (str_starts_with($state, 'http://') || str_starts_with($state, 'https://'))
                 ? $state
-                : asset('storage/' . $state);
+                : asset('storage/'.$state);
         }
 
-        return "https://placehold.co/1200x650?text=No+Image+Selected";
+        return 'https://placehold.co/1200x650?text=No+Image+Selected';
     }
 }

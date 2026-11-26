@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\CheckinList;
 use Carbon\CarbonImmutable;
 use Filament\Livewire\Notifications;
 use Filament\Support\Enums\Alignment;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Stripe\Stripe;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -41,7 +43,7 @@ class AppServiceProvider extends ServiceProvider
         Notifications::verticalAlignment(VerticalAlignment::Start);
 
         if (config('services.stripe.secret')) {
-            \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+            Stripe::setApiKey(config('services.stripe.secret'));
         }
     }
 
@@ -50,7 +52,7 @@ class AppServiceProvider extends ServiceProvider
         // Check-in list password: 5 attempts/min per IP and list, 20/min per list
         // overall (the global cap still holds if client IPs are spoofed).
         RateLimiter::for('checkin-auth', function (Request $request) {
-            $token = (string) \App\Models\CheckinList::where('public_url_token', (string) $request->route('token'))
+            $token = (string) CheckinList::where('public_url_token', (string) $request->route('token'))
                 ->firstOrFail()
                 ->public_url_token;
             $tooMany = fn () => back()->withErrors([
@@ -76,13 +78,13 @@ class AppServiceProvider extends ServiceProvider
         );
 
         Password::defaults(
-            fn(): ?Password => app()->isProduction()
+            fn (): ?Password => app()->isProduction()
                 ? Password::min(12)
-                ->mixedCase()
-                ->letters()
-                ->numbers()
-                ->symbols()
-                ->uncompromised()
+                    ->mixedCase()
+                    ->letters()
+                    ->numbers()
+                    ->symbols()
+                    ->uncompromised()
                 : null,
         );
     }

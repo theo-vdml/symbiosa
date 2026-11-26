@@ -24,7 +24,7 @@ class EditEventVisuals extends EditRecord
 
     public function getTitle(): string|Htmlable
     {
-        return $this->record->title . ' - Identité visuelle';
+        return $this->record->title.' - Identité visuelle';
     }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSwatch;

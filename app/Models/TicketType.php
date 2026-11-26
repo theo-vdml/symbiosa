@@ -23,7 +23,7 @@ class TicketType extends Model implements Reservable
         'reserved_count',
         'available_from',
         'max_per_order',
-        'sort_order'
+        'sort_order',
     ];
 
     protected $casts = [
@@ -59,17 +59,16 @@ class TicketType extends Model implements Reservable
     {
         static::deleting(function ($ticketType) {
             if ($ticketType->reservations()->exists() || $ticketType->issuedTickets()->exists()) {
-                throw new \Exception("Impossible de supprimer ce type de billet car des réservations ou des billets y sont liés.");
+                throw new \Exception('Impossible de supprimer ce type de billet car des réservations ou des billets y sont liés.');
             }
         });
     }
 
     // --- Attributes (Logic) ---
 
-
     protected function activePrice(): Attribute
     {
-        return Attribute::get(fn(): mixed => $this->prices->first(function (TicketPrice $price): bool {
+        return Attribute::get(fn (): mixed => $this->prices->first(function (TicketPrice $price): bool {
 
             $isTimeValid = $price->available_until === null
                 || $price->available_until->isFuture();
@@ -92,7 +91,7 @@ class TicketType extends Model implements Reservable
                 return ReservableStatus::SOLD_OUT;
             }
 
-            if (!$this->active_price) {
+            if (! $this->active_price) {
                 return ReservableStatus::SOLD_OUT;
             }
 

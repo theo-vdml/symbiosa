@@ -23,6 +23,7 @@ class CategoryResource extends Resource
     protected static string|UnitEnum|null $navigationGroup = NavigationGroups::News;
 
     protected static ?string $modelLabel = 'Catégorie';
+
     protected static ?string $pluralModelLabel = 'Catégories';
 
     public static function form(Schema $schema): Schema

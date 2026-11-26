@@ -24,7 +24,7 @@ class EditEventSponsors extends EditRecord
 
     public function getTitle(): string|Htmlable
     {
-        return $this->record->title . ' - Sponsors';
+        return $this->record->title.' - Sponsors';
     }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedHeart;

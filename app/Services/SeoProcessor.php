@@ -13,11 +13,15 @@ use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 class SeoProcessor
 {
     protected array $baseData = [];
+
     protected array $fallbacks = [];
+
     protected array $defaults = [];
+
     protected mixed $source = null;
 
     protected array $resolved = [];
+
     protected array $resolving = []; // Lock mechanism to prevent infinite loops
 
     public function __construct(array $baseData, array $fallbacks = [], array $defaults = [], mixed $source = null)
@@ -35,6 +39,7 @@ class SeoProcessor
     public static function make(array $baseData, array $fallbacks = [], array $defaults = [], mixed $source = null): array
     {
         $processor = new static($baseData, $fallbacks, $defaults, $source);
+
         return $processor->run();
     }
 
@@ -61,124 +66,153 @@ class SeoProcessor
         // 1. Title Metrics
         $titleLength = mb_strlen($data['title'] ?? '');
         $titleStatus = 'good';
-        if ($titleLength === 0) $titleStatus = 'empty';
-        elseif ($titleLength < 30) $titleStatus = 'warning';
-        elseif ($titleLength > 60) $titleStatus = 'danger';
+        if ($titleLength === 0) {
+            $titleStatus = 'empty';
+        } elseif ($titleLength < 30) {
+            $titleStatus = 'warning';
+        } elseif ($titleLength > 60) {
+            $titleStatus = 'danger';
+        }
 
         // 2. Description Metrics
         $descLength = mb_strlen($data['description'] ?? '');
         $descStatus = 'good';
-        if ($descLength === 0) $descStatus = 'empty';
-        elseif ($descLength < 120) $descStatus = 'warning';
-        elseif ($descLength > 160) $descStatus = 'danger';
+        if ($descLength === 0) {
+            $descStatus = 'empty';
+        } elseif ($descLength < 120) {
+            $descStatus = 'warning';
+        } elseif ($descLength > 160) {
+            $descStatus = 'danger';
+        }
 
         // 3. Keywords Metrics
-        $keywordsCount = !empty($data['keywords']) ? count(explode(',', $data['keywords'])) : 0;
+        $keywordsCount = ! empty($data['keywords']) ? count(explode(',', $data['keywords'])) : 0;
         $keywordsStatus = 'good';
-        if ($keywordsCount === 0) $keywordsStatus = 'warning';
-        elseif ($keywordsCount > 10) $keywordsStatus = 'danger'; // Keyword stuffing potentiel
+        if ($keywordsCount === 0) {
+            $keywordsStatus = 'warning';
+        } elseif ($keywordsCount > 10) {
+            $keywordsStatus = 'danger';
+        } // Keyword stuffing potentiel
 
         // 4. Robots Indexation
         $robots = $data['robots'] ?? 'index, follow';
         $robotsStatus = str_contains($robots, 'noindex') ? 'danger' : 'good';
 
         // 5. Canonical URL
-        $hasCanonical = !empty($data['canonical_url']);
+        $hasCanonical = ! empty($data['canonical_url']);
         $canonicalStatus = $hasCanonical ? 'good' : 'warning';
 
         // 6. Open Graph Image Presence
-        $hasOgImage = !empty($data['og_image']) && !str_contains($data['og_image'], 'No+Image+Selected');
+        $hasOgImage = ! empty($data['og_image']) && ! str_contains($data['og_image'], 'No+Image+Selected');
         $ogImageStatus = $hasOgImage ? 'good' : 'danger';
 
         // 7. Title Consistency (Est-ce que le titre OG est différent ou calqué sur le titre SEO ?)
         $ogTitle = $data['og_title'] ?? '';
         $title = $data['title'] ?? '';
-        $isConsistent = !empty($ogTitle) && $ogTitle !== $title;
-        $consistencyStatus = !empty($ogTitle) ? 'good' : 'empty';
+        $isConsistent = ! empty($ogTitle) && $ogTitle !== $title;
+        $consistencyStatus = ! empty($ogTitle) ? 'good' : 'empty';
 
         // --- CALCUL DU SCORE GLOBAL (Sur 100) ---
         $score = 100;
-        if ($titleStatus === 'empty') $score -= 25;
-        if ($titleStatus === 'warning' || $titleStatus === 'danger') $score -= 10;
+        if ($titleStatus === 'empty') {
+            $score -= 25;
+        }
+        if ($titleStatus === 'warning' || $titleStatus === 'danger') {
+            $score -= 10;
+        }
 
-        if ($descStatus === 'empty') $score -= 25;
-        if ($descStatus === 'warning' || $descStatus === 'danger') $score -= 10;
+        if ($descStatus === 'empty') {
+            $score -= 25;
+        }
+        if ($descStatus === 'warning' || $descStatus === 'danger') {
+            $score -= 10;
+        }
 
-        if ($keywordsStatus === 'warning') $score -= 1;
-        if ($keywordsStatus === 'danger') $score -= 5;
-        if ($robotsStatus === 'danger') $score -= 15;
-        if ($canonicalStatus === 'warning') $score -= 5;
-        if ($ogImageStatus === 'danger') $score -= 15;
+        if ($keywordsStatus === 'warning') {
+            $score -= 1;
+        }
+        if ($keywordsStatus === 'danger') {
+            $score -= 5;
+        }
+        if ($robotsStatus === 'danger') {
+            $score -= 15;
+        }
+        if ($canonicalStatus === 'warning') {
+            $score -= 5;
+        }
+        if ($ogImageStatus === 'danger') {
+            $score -= 15;
+        }
 
         return [
             'data' => $data,
             'score' => max(0, $score),
             'metrics' => [
                 'title' => [
-                    'label'  => 'Titre SEO',
-                    'value'  => "{$titleLength} / 60 car.",
+                    'label' => 'Titre SEO',
+                    'value' => "{$titleLength} / 60 car.",
                     'status' => $titleStatus,
-                    'help'   => match ($titleStatus) {
-                        'empty'   => 'Balise requise pour l\'indexation et le positionnement.',
+                    'help' => match ($titleStatus) {
+                        'empty' => 'Balise requise pour l\'indexation et le positionnement.',
                         'warning' => 'Longueur insuffisante. Intégrez vos mots-clés principaux.',
-                        'danger'  => 'Longueur excessive. Le titre sera tronqué dans les résultats de recherche.',
-                        default   => 'Longueur optimale.'
-                    }
+                        'danger' => 'Longueur excessive. Le titre sera tronqué dans les résultats de recherche.',
+                        default => 'Longueur optimale.'
+                    },
                 ],
                 'description' => [
-                    'label'  => 'Meta Description',
-                    'value'  => "{$descLength} / 160 car.",
+                    'label' => 'Meta Description',
+                    'value' => "{$descLength} / 160 car.",
                     'status' => $descStatus,
-                    'help'   => match ($descStatus) {
-                        'empty'   => 'Absente. Recommandée pour optimiser le taux de clic (CTR).',
+                    'help' => match ($descStatus) {
+                        'empty' => 'Absente. Recommandée pour optimiser le taux de clic (CTR).',
                         'warning' => 'Longueur insuffisante pour décrire efficacement le contenu.',
-                        'danger'  => 'Longueur excessive. Le texte sera tronqué à l\'affichage.',
-                        default   => 'Longueur optimale.'
-                    }
+                        'danger' => 'Longueur excessive. Le texte sera tronqué à l\'affichage.',
+                        default => 'Longueur optimale.'
+                    },
                 ],
                 'keywords' => [
-                    'label'  => 'Mots-clés',
-                    'value'  => "{$keywordsCount} / 10",
+                    'label' => 'Mots-clés',
+                    'value' => "{$keywordsCount} / 10",
                     'status' => $keywordsStatus,
-                    'help'   => match (true) {
+                    'help' => match (true) {
                         $keywordsCount > 10 => 'Densité excessive. Risque de sur-optimisation (keyword stuffing).',
                         $keywordsCount === 0 => 'Optionnel. Permet de documenter la structure sémantique de la page.',
-                        default              => 'Volume de mots-clés conforme aux recommandations.'
-                    }
+                        default => 'Volume de mots-clés conforme aux recommandations.'
+                    },
                 ],
                 'robots' => [
-                    'label'  => 'Indexation (Robots)',
-                    'value'  => $robotsStatus === 'danger' ? 'Désactivée (noindex)' : 'Activée (index)',
+                    'label' => 'Indexation (Robots)',
+                    'value' => $robotsStatus === 'danger' ? 'Désactivée (noindex)' : 'Activée (index)',
                     'status' => $robotsStatus,
-                    'help'   => $robotsStatus === 'danger'
+                    'help' => $robotsStatus === 'danger'
                         ? 'Directive restrictive détectée : la page est masquée pour les moteurs de recherche.'
-                        : 'La page est accessible et indexable par les robots d\'exploration.'
+                        : 'La page est accessible et indexable par les robots d\'exploration.',
                 ],
                 'canonical' => [
-                    'label'  => 'URL Canonique',
-                    'value'  => $hasCanonical ? 'Configurée' : 'Non spécifiée',
+                    'label' => 'URL Canonique',
+                    'value' => $hasCanonical ? 'Configurée' : 'Non spécifiée',
                     'status' => $canonicalStatus,
-                    'help'   => $hasCanonical
+                    'help' => $hasCanonical
                         ? 'Indique explicitement l\'URL de référence pour éviter le contenu dupliqué.'
-                        : 'Absence de balise de centralisation du signal SEO (risque de duplicate content).'
+                        : 'Absence de balise de centralisation du signal SEO (risque de duplicate content).',
                 ],
                 'og_image' => [
-                    'label'  => 'Image Open Graph',
-                    'value'  => $hasOgImage ? 'Définie' : 'Manquante',
+                    'label' => 'Image Open Graph',
+                    'value' => $hasOgImage ? 'Définie' : 'Manquante',
                     'status' => $ogImageStatus,
-                    'help'   => $hasOgImage
+                    'help' => $hasOgImage
                         ? 'Assure un affichage visuel optimal lors des partages sur les plateformes sociales.'
-                        : 'Aucun visuel associé. Les partages utiliseront une image par défaut ou aléatoire.'
+                        : 'Aucun visuel associé. Les partages utiliseront une image par défaut ou aléatoire.',
                 ],
                 'og_title' => [
-                    'label'  => 'Titre Open Graph',
-                    'value'  => $isConsistent ? 'Personnalisé' : 'Hérité du SEO',
+                    'label' => 'Titre Open Graph',
+                    'value' => $isConsistent ? 'Personnalisé' : 'Hérité du SEO',
                     'status' => $consistencyStatus,
-                    'help'   => $isConsistent
+                    'help' => $isConsistent
                         ? 'Titre spécifiquement optimisé pour les flux et réseaux sociaux.'
-                        : 'Utilise la balise Titre SEO par défaut en l\'absence de valeur spécifique.'
+                        : 'Utilise la balise Titre SEO par défaut en l\'absence de valeur spécifique.',
                 ],
-            ]
+            ],
         ];
     }
 
@@ -204,7 +238,7 @@ class SeoProcessor
         $value = $this->baseData[$field] ?? null;
 
         // Step B: If empty, execute localized or global fallbacks
-        if (empty($value) && !empty($this->fallbacks[$field])) {
+        if (empty($value) && ! empty($this->fallbacks[$field])) {
             $value = $this->resolveFallback($this->fallbacks[$field]);
         }
 
@@ -227,7 +261,7 @@ class SeoProcessor
      * Evaluate fallback rules.
      * Differentiates between model attributes ('title') and computed SEO values ('seo:title').
      */
-    protected function resolveFallback(mixed $fallbackRules): string|null
+    protected function resolveFallback(mixed $fallbackRules): ?string
     {
         $rules = is_array($fallbackRules) ? $fallbackRules : [$fallbackRules];
 
@@ -238,9 +272,10 @@ class SeoProcessor
 
                 // Recursively resolve the target SEO field immediately
                 $value = $this->resolveField($seoField);
-                if (!empty($value)) {
+                if (! empty($value)) {
                     return (string) $value;
                 }
+
                 continue;
             }
 
@@ -263,26 +298,27 @@ class SeoProcessor
                         try {
                             return $value->temporaryUrl();
                         } catch (\Exception $e) {
-                            return "https://placehold.co/1200x650?text=Upload+Error";
+                            return 'https://placehold.co/1200x650?text=Upload+Error';
                         }
                     }
 
                     if (empty($value)) {
-                        return "https://placehold.co/1200x650?text=No+Image+Selected";
+                        return 'https://placehold.co/1200x650?text=No+Image+Selected';
                     }
                 }
 
                 $value = $this->source?->getFirstMediaUrl($collection);
-                if (!empty($value)) {
+                if (! empty($value)) {
                     return (string) $value;
-                };
+                }
+
                 continue;
             }
 
             // Otherwise, target a standard attribute or relationship on the model source
             if ($this->source) {
                 $value = data_get($this->source, $rule);
-                if (!empty($value)) {
+                if (! empty($value)) {
                     return (string) $value;
                 }
             }
@@ -298,11 +334,11 @@ class SeoProcessor
     protected function getGlobalFallbacks(): array
     {
         return [
-            'og_title'            => 'seo:title',
-            'og_description'      => 'seo:description',
-            'twitter_title'       => ['seo:og_title', 'seo:title'],
+            'og_title' => 'seo:title',
+            'og_description' => 'seo:description',
+            'twitter_title' => ['seo:og_title', 'seo:title'],
             'twitter_description' => ['seo:og_description', 'seo:description'],
-            'twitter_image'       => 'seo:og_image',
+            'twitter_image' => 'seo:og_image',
         ];
     }
 
@@ -333,7 +369,7 @@ class SeoProcessor
             'twitter_image',
 
             // Structured data
-            'json_ld'
+            'json_ld',
         ];
     }
 

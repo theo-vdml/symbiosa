@@ -24,6 +24,7 @@ class ListAboutPages extends ListRecords
 
         if ($record) {
             redirect(static::$resource::getUrl('edit', ['record' => $record]));
+
             return;
         }
 

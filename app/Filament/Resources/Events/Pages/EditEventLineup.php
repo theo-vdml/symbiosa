@@ -24,7 +24,7 @@ class EditEventLineup extends EditRecord
 
     public function getTitle(): string|Htmlable
     {
-        return $this->record->title . ' - Lineup';
+        return $this->record->title.' - Lineup';
     }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;

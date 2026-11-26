@@ -6,8 +6,8 @@ use App\Enums\NavigationGroups;
 use App\Filament\Shared\Schemas\SeoSchema;
 use App\Models\NewsPage;
 use BackedEnum;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -20,8 +20,11 @@ class NewsPageResource extends Resource
     protected static ?string $model = NewsPage::class;
 
     protected static UnitEnum|string|null $navigationGroup = NavigationGroups::Pages;
+
     protected static BackedEnum|string|null $navigationIcon = Heroicon::Newspaper;
-    protected static ?string $navigationLabel = "Actualités";
+
+    protected static ?string $navigationLabel = 'Actualités';
+
     protected static ?int $navigationSort = 3;
 
     public static function form(Schema $schema): Schema
@@ -68,6 +71,7 @@ class NewsPageResource extends Resource
             if ($record) {
                 return parent::getUrl('edit', ['record' => $record], $isAbsolute, $panel, $tenant, $shouldGuessMissingParameters, $configuration);
             }
+
             return parent::getUrl('create', [], $isAbsolute, $panel, $tenant, $shouldGuessMissingParameters, $configuration);
         }
 

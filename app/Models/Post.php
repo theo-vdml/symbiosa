@@ -60,6 +60,7 @@ class Post extends Model implements HasMedia
     public function getCoverResponsiveAttribute(): array
     {
         $media = $this->getFirstMedia('cover');
+
         return $media ? [
             'src' => $media->getUrl(),
             'srcset' => $media->getSrcset(),
@@ -71,7 +72,6 @@ class Post extends Model implements HasMedia
         return $this->getFirstMediaUrl('cover', 'thumbnail');
     }
 
-
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
@@ -80,17 +80,17 @@ class Post extends Model implements HasMedia
     public function getSeoDefaults(): array
     {
         return [
-            "title" => fn($record) => $record->title . ' - ' . config('app.name'),
-            "canonical_url" => fn($record) => route('news.show', $record->slug),
-            "twitter_card" => "summary_large_image",
+            'title' => fn ($record) => $record->title.' - '.config('app.name'),
+            'canonical_url' => fn ($record) => route('news.show', $record->slug),
+            'twitter_card' => 'summary_large_image',
         ];
     }
 
     public function getSeoFallbacks(): array
     {
         return [
-            "description" => 'excerpt',
-            "og_image" => 'media:cover',
+            'description' => 'excerpt',
+            'og_image' => 'media:cover',
         ];
     }
 }

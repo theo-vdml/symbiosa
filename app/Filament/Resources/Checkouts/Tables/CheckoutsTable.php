@@ -31,7 +31,7 @@ class CheckoutsTable
                     ->toggleable(),
 
                 TextColumn::make('event.title')
-                    ->hidden(!$withEvent)
+                    ->hidden(! $withEvent)
                     ->label('Événement')
                     ->description(function ($record) {
                         return $record->event?->date?->format('d/m/Y');
@@ -87,14 +87,14 @@ class CheckoutsTable
                             'isCancelled' => $query->isCancelled(),
                             default => $query,
                         };
-                    })
+                    }),
             ])
             ->recordActions([
                 ViewAction::make()
                     ->slideOver()
                     ->label('Détails')
                     ->color('primary')
-                    ->icon(Heroicon::Eye)
+                    ->icon(Heroicon::Eye),
             ])
             ->headerActions([]);
     }

@@ -4,19 +4,19 @@ namespace App\Filament\Resources\Events\Pages;
 
 use App\Enums\EventNavigationGroups;
 use App\Filament\Resources\Events\EventResource;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Schemas\Components\Utilities\Get;
-use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Resources\Pages\ManageRelatedRecords;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
-use Filament\Support\Icons\Heroicon;
 use UnitEnum;
 
 class ListEventCheckinLists extends ManageRelatedRecords
@@ -33,7 +33,7 @@ class ListEventCheckinLists extends ManageRelatedRecords
 
     public function getTitle(): string|Htmlable
     {
-        return $this->record->title . ' - Listes de Check-in';
+        return $this->record->title.' - Listes de Check-in';
     }
 
     protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentCheck;
@@ -69,12 +69,12 @@ class ListEventCheckinLists extends ManageRelatedRecords
                         Select::make('ticketTypes')
                             ->label('Tickets concernés')
                             ->multiple()
-                            ->relationship('ticketTypes', 'name', fn($query) => $query->where('event_id', $this->record->id))
+                            ->relationship('ticketTypes', 'name', fn ($query) => $query->where('event_id', $this->record->id))
                             ->preload(),
                         Select::make('addons')
                             ->label('Extras concernés')
                             ->multiple()
-                            ->relationship('addons', 'name', fn($query) => $query->where('event_id', $this->record->id))
+                            ->relationship('addons', 'name', fn ($query) => $query->where('event_id', $this->record->id))
                             ->preload(),
                         TextInput::make('public_url_password')
                             ->label('Mot de passe (optionnel)')
@@ -96,12 +96,12 @@ class ListEventCheckinLists extends ManageRelatedRecords
                         Select::make('ticketTypes')
                             ->label('Tickets concernés')
                             ->multiple()
-                            ->relationship('ticketTypes', 'name', fn($query) => $query->where('event_id', $this->record->id))
+                            ->relationship('ticketTypes', 'name', fn ($query) => $query->where('event_id', $this->record->id))
                             ->preload(),
                         Select::make('addons')
                             ->label('Extras concernés')
                             ->multiple()
-                            ->relationship('addons', 'name', fn($query) => $query->where('event_id', $this->record->id))
+                            ->relationship('addons', 'name', fn ($query) => $query->where('event_id', $this->record->id))
                             ->preload(),
                         TextInput::make('public_url_password')
                             ->label('Nouveau mot de passe (optionnel)')

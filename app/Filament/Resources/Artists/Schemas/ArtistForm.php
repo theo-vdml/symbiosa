@@ -35,7 +35,7 @@ class ArtistForm
                                     ->multiple()
                                     ->relationship('genres', 'name')
                                     ->preload()
-                                    ->quickAdd(label: "Nouveau genre: {search}", resetSearch: true)
+                                    ->quickAdd(label: 'Nouveau genre: {search}', resetSearch: true)
                                     ->searchable(),
                             ]),
 

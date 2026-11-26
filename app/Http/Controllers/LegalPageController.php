@@ -26,12 +26,12 @@ class LegalPageController extends Controller
         }
 
         // Fallback to latest version if no specific version requested or found
-        if (!$version) {
+        if (! $version) {
             $version = $page->latestVersion;
         }
 
-        if (!$version) {
-            abort(404, "Aucune version disponible pour cette page.");
+        if (! $version) {
+            abort(404, 'Aucune version disponible pour cette page.');
         }
 
         return Inertia::render('Legal/Show', [

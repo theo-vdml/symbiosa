@@ -4,7 +4,6 @@ namespace App\Filament\Resources\LegalPages\RelationManagers;
 
 use Filament\Actions\ViewAction;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Checkouts\Schemas;
 
+use App\Models\LegalPage;
 use App\Services\TicketPdfService;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput\Actions\CopyAction;
@@ -13,7 +14,6 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Icons\Heroicon;
-use Illuminate\Support\HtmlString;
 
 class CheckoutInfolist
 {
@@ -67,7 +67,7 @@ class CheckoutInfolist
                                 ->size('xs')
                                 ->color('primary')
                                 ->icon('heroicon-m-arrow-top-right-on-square')
-                                ->url(fn($state) => $state ? "https://dashboard.stripe.com/customers/{$state}" : null)
+                                ->url(fn ($state) => $state ? "https://dashboard.stripe.com/customers/{$state}" : null)
                                 ->openUrlInNewTab()
                                 ->placeholder('N/A'),
                             TextEntry::make('stripe_payment_intent_id')
@@ -76,11 +76,11 @@ class CheckoutInfolist
                                 ->size('xs')
                                 ->color('primary')
                                 ->icon('heroicon-m-arrow-top-right-on-square')
-                                ->url(fn($state) => $state ? "https://dashboard.stripe.com/payments/{$state}" : null)
+                                ->url(fn ($state) => $state ? "https://dashboard.stripe.com/payments/{$state}" : null)
                                 ->openUrlInNewTab()
                                 ->placeholder('N/A'),
                         ])
-                        ->visible(fn($record) => $record->stripe_customer_id || $record->stripe_payment_intent_id),
+                        ->visible(fn ($record) => $record->stripe_customer_id || $record->stripe_payment_intent_id),
 
                     Section::make('Informations Client')
                         ->icon('heroicon-m-user')
@@ -104,7 +104,10 @@ class CheckoutInfolist
                             RepeatableEntry::make('accepted_legal_pages')
                                 ->hiddenLabel()
                                 ->state(function ($record) {
-                                    if (empty($record->accepted_legal_pages)) return [];
+                                    if (empty($record->accepted_legal_pages)) {
+                                        return [];
+                                    }
+
                                     return collect($record->accepted_legal_pages)->map(function ($page) {
                                         return [
                                             'slug' => $page['slug'],
@@ -120,26 +123,27 @@ class CheckoutInfolist
                                                 ->label('Page')
                                                 ->formatStateUsing(function ($state) {
                                                     static $titles = [];
-                                                    if (!isset($titles[$state])) {
-                                                        $titles[$state] = \App\Models\LegalPage::where('slug', $state)->value('title') ?? $state;
+                                                    if (! isset($titles[$state])) {
+                                                        $titles[$state] = LegalPage::where('slug', $state)->value('title') ?? $state;
                                                     }
+
                                                     return $titles[$state];
                                                 }),
                                             TextEntry::make('version_number')
                                                 ->label('Version')
-                                                ->formatStateUsing(fn($state) => "v{$state}"),
+                                                ->formatStateUsing(fn ($state) => "v{$state}"),
                                             TextEntry::make('url')
                                                 ->label('')
-                                                ->formatStateUsing(fn() => 'Voir la page')
+                                                ->formatStateUsing(fn () => 'Voir la page')
                                                 ->color('primary')
                                                 ->icon('heroicon-m-arrow-top-right-on-square')
-                                                ->url(fn($state) => $state)
+                                                ->url(fn ($state) => $state)
                                                 ->openUrlInNewTab(),
                                         ]),
                                 ])
                                 ->grid(1),
                         ])
-                        ->visible(fn($record) => !empty($record->accepted_legal_pages)),
+                        ->visible(fn ($record) => ! empty($record->accepted_legal_pages)),
 
                     Section::make('Contenu du panier')
                         ->icon('heroicon-m-shopping-bag')
@@ -155,6 +159,7 @@ class CheckoutInfolist
                                                     $reservable = $record->reservable;
                                                     if ($record->reservable_type === 'App\Models\TicketType') {
                                                         $priceName = $record->ticketPrice?->name ?? 'Tarif standard';
+
                                                         return "{$reservable->name} - {$priceName}";
                                                     }
 
@@ -164,12 +169,12 @@ class CheckoutInfolist
                                                 ->columnSpan(2),
                                             TextEntry::make('quantity')
                                                 ->label('Quantité')
-                                                ->formatStateUsing(fn($state) => "x{$state}")
+                                                ->formatStateUsing(fn ($state) => "x{$state}")
                                                 ->color('gray')
                                                 ->columnSpan(1),
                                             TextEntry::make('total_price')
                                                 ->label('Total')
-                                                ->state(fn($record) => ($record->quantity * $record->unit_price) / 100)
+                                                ->state(fn ($record) => ($record->quantity * $record->unit_price) / 100)
                                                 ->money('eur')
                                                 ->weight(FontWeight::Bold)
                                                 ->columnSpan(1),
@@ -180,11 +185,11 @@ class CheckoutInfolist
                                 ->extraAttributes(['class' => 'mt-4 pt-4 border-t border-gray-200 dark:border-white/10'])
                                 ->schema([
                                     TextEntry::make('total_amount')
-                                        ->label("Total")
-                                        ->state(fn($record) => $record->reservations->sum(fn($r) => $r->quantity * $r->unit_price) / 100)
+                                        ->label('Total')
+                                        ->state(fn ($record) => $record->reservations->sum(fn ($r) => $r->quantity * $r->unit_price) / 100)
                                         ->money('eur')
                                         ->weight(FontWeight::Bold)
-                                        ->size('lg')
+                                        ->size('lg'),
                                 ]),
                         ]),
                     Section::make('Billets générés')
@@ -195,13 +200,13 @@ class CheckoutInfolist
                                 ->icon('heroicon-m-arrow-down-tray')
                                 ->action(function ($record, TicketPdfService $pdfService) {
                                     $pdf = $pdfService->generate($record->event, $record->issuedTickets);
-                                    $filename = $record->uuid . '.pdf';
+                                    $filename = $record->uuid.'.pdf';
 
                                     return response()->streamDownload(
-                                        fn() => print($pdf->output()),
+                                        fn () => print ($pdf->output()),
                                         $filename
                                     );
-                                })
+                                }),
                         ])
                         ->schema([
                             RepeatableEntry::make('issuedTickets')
@@ -213,13 +218,14 @@ class CheckoutInfolist
                                                 ->label(function ($record) {
                                                     $reservable = $record->reservable;
                                                     $ticketPrice = $record->ticketPrice;
-                                                    return $reservable->name . ($ticketPrice ? " - {$ticketPrice->name}" : '');
+
+                                                    return $reservable->name.($ticketPrice ? " - {$ticketPrice->name}" : '');
                                                 })
                                                 ->copyable()
                                                 ->weight(FontWeight::Bold)
                                                 ->columnSpan(2),
                                             TextEntry::make('status')
-                                                ->label("Statut")
+                                                ->label('Statut')
                                                 ->badge()
                                                 ->state(function ($record) {
                                                     return $record->checked_in_at ? 'Utilisé' : 'Non utilisé';
@@ -234,19 +240,19 @@ class CheckoutInfolist
                                                 ->icon('heroicon-m-arrow-down-tray')
                                                 ->action(function ($record, TicketPdfService $pdfService) {
                                                     $pdf = $pdfService->generate($record->event, $record);
-                                                    $filename =  $record->public_id . '.pdf';
+                                                    $filename = $record->public_id.'.pdf';
 
                                                     return response()->streamDownload(
-                                                        fn() => print($pdf->output()),
+                                                        fn () => print ($pdf->output()),
                                                         $filename
                                                     );
-                                                })
+                                                }),
                                         ]),
                                 ])
                                 ->grid(1)
                                 ->placeholder('Aucun billet généré pour cette session.'),
 
-                        ])
+                        ]),
 
                 ])
                     ->columnSpanFull(),

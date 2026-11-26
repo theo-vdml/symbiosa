@@ -27,6 +27,7 @@ class SponsorResource extends Resource
     protected static string|UnitEnum|null $navigationGroup = NavigationGroups::Events;
 
     protected static ?string $modelLabel = 'Sponsor';
+
     protected static ?string $pluralModelLabel = 'Sponsors';
 
     public static function form(Schema $schema): Schema
