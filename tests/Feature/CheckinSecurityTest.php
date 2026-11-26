@@ -14,19 +14,6 @@ beforeEach(function () {
     $this->withoutVite();
 });
 
-function makeEvent(): Event
-{
-    return Event::create([
-        'title' => 'Event '.Str::random(6),
-        'slug' => 'event-'.Str::lower(Str::random(8)),
-        'start_at' => now()->addWeek(),
-        'end_at' => now()->addWeek()->addHours(6),
-        'city' => 'Bruxelles',
-        'country' => 'Belgique',
-        'description' => 'Description',
-    ]);
-}
-
 function makeTicket(Event $event, TicketType $ticketType): IssuedTicket
 {
     $checkout = Checkout::create([
