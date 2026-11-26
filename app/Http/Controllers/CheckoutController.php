@@ -266,10 +266,14 @@ class CheckoutController extends Controller
             'code' => 'required|string',
         ]);
 
-        $error = $this->attemptEmailVerification($checkout->fresh(), (string) $request->code);
+        $error = $this->attemptEmailVerification($checkout, (string) $request->code);
 
         if ($error) {
-            return redirect()->back()->withErrors(['code' => $error]);
+            // Once the code is invalidated the page goes back to the email step, where
+            // field errors of the code step are not shown: flash the message instead.
+            return $checkout->fresh()->verification_pending
+                ? redirect()->back()->withErrors(['code' => $error])
+                : redirect()->back()->with('error', $error);
         }
 
         return redirect()->back();
@@ -282,35 +286,41 @@ class CheckoutController extends Controller
      */
     private function attemptEmailVerification(Checkout $checkout, string $code): ?string
     {
-        if ($checkout->email_verified_at) {
+        // Row lock: concurrent guesses are counted one after the other, so the
+        // attempt limit cannot be exceeded.
+        return DB::transaction(function () use ($checkout, $code) {
+            $checkout = Checkout::whereKey($checkout->getKey())->lockForUpdate()->firstOrFail();
+
+            if ($checkout->email_verified_at) {
+                return null;
+            }
+
+            if (blank($checkout->email_verification_code)) {
+                return 'Aucun code en attente. Demandez un nouveau code.';
+            }
+
+            $expired = $checkout->email_verification_sent_at === null
+                || $checkout->email_verification_sent_at->addMinutes(Checkout::VERIFICATION_CODE_TTL)->isPast();
+
+            if ($expired || $checkout->email_verification_attempts >= Checkout::VERIFICATION_MAX_ATTEMPTS) {
+                $checkout->update(['email_verification_code' => null]);
+
+                return 'Ce code a expiré ou a été trop de fois mal saisi. Demandez un nouveau code.';
+            }
+
+            $checkout->increment('email_verification_attempts');
+
+            if (! hash_equals((string) $checkout->email_verification_code, trim($code))) {
+                return 'Code invalide.';
+            }
+
+            $checkout->update([
+                'email_verified_at' => now(),
+                'email_verification_code' => null,
+            ]);
+
             return null;
-        }
-
-        if (blank($checkout->email_verification_code)) {
-            return 'Aucun code en attente. Demandez un nouveau code.';
-        }
-
-        $expired = $checkout->email_verification_sent_at === null
-            || $checkout->email_verification_sent_at->addMinutes(Checkout::VERIFICATION_CODE_TTL)->isPast();
-
-        if ($expired || $checkout->email_verification_attempts >= Checkout::VERIFICATION_MAX_ATTEMPTS) {
-            $checkout->update(['email_verification_code' => null]);
-
-            return 'Ce code a expiré ou a été trop de fois mal saisi. Demandez un nouveau code.';
-        }
-
-        $checkout->increment('email_verification_attempts');
-
-        if (! hash_equals((string) $checkout->email_verification_code, trim($code))) {
-            return 'Code invalide.';
-        }
-
-        $checkout->update([
-            'email_verified_at' => now(),
-            'email_verification_code' => null,
-        ]);
-
-        return null;
+        });
     }
 
     /**

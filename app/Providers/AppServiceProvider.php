@@ -75,7 +75,7 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('checkout-verification-email', function (Request $request) {
             $checkout = $request->route('checkout');
             $uuid = (string) (is_object($checkout) ? $checkout->uuid : $checkout);
-            $email = Str::lower((string) $request->input('email'));
+            $email = self::normalizedEmail($request);
             $tooMany = fn () => back()->with('error', 'Trop d\'emails envoyés. Patientez quelques minutes avant de redemander un code.');
 
             return [
@@ -86,13 +86,25 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // Codes are also capped per checkout (Checkout::VERIFICATION_MAX_ATTEMPTS).
-        RateLimiter::for('checkout-verify', fn (Request $request) => Limit::perMinute(10)
-            ->by('checkout-verify:'.$request->ip())
-            ->response(fn () => back()->withErrors(['code' => 'Trop de tentatives. Réessayez dans une minute.'])));
+        // Shared by the form (POST) and the email link (GET ?verification_code=):
+        // plain page views of the checkout are not limited.
+        RateLimiter::for('checkout-verify', function (Request $request) {
+            if ($request->isMethod('GET') && ! $request->filled('verification_code')) {
+                return Limit::none();
+            }
+
+            $message = 'Trop de tentatives. Réessayez dans une minute.';
+
+            return Limit::perMinute(10)
+                ->by('checkout-verify:'.$request->ip())
+                ->response(fn () => $request->isMethod('GET')
+                    ? redirect()->to($request->url())->with('error', $message)
+                    : back()->withErrors(['code' => $message]));
+        });
 
         // Each request may send emails with tickets attached.
         RateLimiter::for('lost-tickets', function (Request $request) {
-            $email = Str::lower((string) $request->input('email'));
+            $email = self::normalizedEmail($request);
             $tooMany = fn () => back()->withErrors(['email' => 'Trop de demandes. Réessayez plus tard.']);
 
             return [
@@ -100,6 +112,17 @@ class AppServiceProvider extends ServiceProvider
                 Limit::perHour(10)->by('lost-tickets:ip:'.$request->ip())->response($tooMany),
             ];
         });
+    }
+
+    /**
+     * Limiters run before validation: a non-string email (e.g. email[]=...) must
+     * not crash them, validation rejects it afterwards.
+     */
+    private static function normalizedEmail(Request $request): string
+    {
+        $email = $request->input('email');
+
+        return is_string($email) ? Str::lower(trim($email)) : '';
     }
 
     /**

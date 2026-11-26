@@ -244,8 +244,11 @@ describe('S8 — the email verification code is hardened', function () {
             $this->post("/checkout/{$checkout->uuid}/verify", ['code' => '000000'])->assertSessionHasErrors(['code' => 'Code invalide.']);
         }
 
+        // Flashed, not a field error: the page is back on the email step, where the
+        // code field is not displayed.
         $this->post("/checkout/{$checkout->uuid}/verify", ['code' => '123456'])
-            ->assertSessionHasErrors(['code' => 'Ce code a expiré ou a été trop de fois mal saisi. Demandez un nouveau code.']);
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('error', 'Ce code a expiré ou a été trop de fois mal saisi. Demandez un nouveau code.');
 
         expect($checkout->fresh())
             ->email_verified_at->toBeNull()
@@ -260,7 +263,7 @@ describe('S8 — the email verification code is hardened', function () {
         ]);
 
         $this->post("/checkout/{$checkout->uuid}/verify", ['code' => '123456'])
-            ->assertSessionHasErrors('code');
+            ->assertSessionHas('error', 'Ce code a expiré ou a été trop de fois mal saisi. Demandez un nouveau code.');
 
         expect($checkout->fresh()->email_verified_at)->toBeNull();
     });
@@ -307,6 +310,51 @@ describe('S6 — checkout endpoints are rate limited', function () {
 
         $this->post('/lost-tickets', ['email' => 'JANE@example.com'])
             ->assertSessionHasErrors(['email' => 'Trop de demandes. Réessayez plus tard.']);
+    });
+
+    it('shares the code-guess limit between the form and the email link', function () {
+        $checkouts = collect(range(1, 11))->map(fn () => makePendingCheckout(makeOnSaleEvent(), [
+            'email_verification_code' => '123456',
+            'email_verification_sent_at' => now(),
+        ]));
+
+        foreach ($checkouts->take(5) as $checkout) {
+            $this->post("/checkout/{$checkout->uuid}/verify", ['code' => '000000'])->assertSessionHasErrors(['code' => 'Code invalide.']);
+        }
+
+        foreach ($checkouts->slice(5, 5) as $checkout) {
+            $this->get("/checkout/{$checkout->uuid}?verification_code=000000")->assertSessionHas('error', 'Code invalide.');
+        }
+
+        $last = $checkouts->last();
+        $this->get("/checkout/{$last->uuid}?verification_code=123456")
+            ->assertRedirect(route('checkout.show', $last->uuid))
+            ->assertSessionHas('error', 'Trop de tentatives. Réessayez dans une minute.');
+
+        expect($last->fresh())
+            ->email_verified_at->toBeNull()
+            ->email_verification_attempts->toBe(0);
+    });
+
+    it('does not limit plain views of the checkout page', function () {
+        $checkout = makePendingCheckout(makeOnSaleEvent());
+
+        foreach (range(1, 15) as $_) {
+            $this->get("/checkout/{$checkout->uuid}")->assertOk();
+        }
+    });
+
+    it('rejects a non-string email with a validation error instead of crashing', function () {
+        Mail::fake();
+        Queue::fake();
+        $checkout = makePendingCheckout(makeOnSaleEvent());
+
+        $this->post("/checkout/{$checkout->uuid}/send-verification", ['email' => ['jane@example.com'], 'name' => 'Jane'])
+            ->assertSessionHasErrors('email');
+        $this->post('/lost-tickets', ['email' => ['jane@example.com']])
+            ->assertSessionHasErrors('email');
+
+        Mail::assertNothingSent();
     });
 
     it('limits checkout creation to 10 per minute per IP', function () {
