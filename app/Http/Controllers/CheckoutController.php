@@ -45,6 +45,11 @@ class CheckoutController extends Controller
 
         try {
             $checkout = DB::transaction(function () use ($request, $event) {
+                // Serialize reservations per event: a concurrent checkout waits here until this
+                // one commits, then sees its reservations in the stock count (no overselling).
+                // Must be the first query of the transaction so the stock reads happen after it.
+                Event::whereKey($event->getKey())->lockForUpdate()->first();
+
                 $checkout = Checkout::create([
                     'uuid' => (string) Str::uuid(),
                     'expires_at' => now()->addMinutes(15),
@@ -170,6 +175,8 @@ class CheckoutController extends Controller
         $event = $checkout->event;
         $eventMetadata = $event->stripe_metadata ?? [];
 
+        $stripeExpiresAt = now()->addMinutes(Checkout::STRIPE_SESSION_TTL);
+
         $session = Session::create([
             'payment_method_types' => ['card', 'bancontact'],
             'line_items' => $lineItems,
@@ -178,7 +185,7 @@ class CheckoutController extends Controller
             'cancel_url' => route('checkout.cancel_payment', $checkout->uuid),
             'customer_email' => $checkout->customer_email,
             'client_reference_id' => $checkout->uuid,
-            'expires_at' => now()->addMinutes(30)->timestamp,
+            'expires_at' => $stripeExpiresAt->timestamp,
             'metadata' => array_merge([
                 'checkout_uuid' => $checkout->uuid,
             ], $eventMetadata),
@@ -189,8 +196,10 @@ class CheckoutController extends Controller
             ],
         ]);
 
+        // Hold the stock for as long as this session can be paid.
         $checkout->update([
             'stripe_session_id' => $session->id,
+            'expires_at' => $stripeExpiresAt->addMinutes(Checkout::STRIPE_WEBHOOK_GRACE),
         ]);
 
         return Inertia::location($session->url);
