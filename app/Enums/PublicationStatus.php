@@ -44,6 +44,7 @@ enum PublicationStatus: string implements HasColor, HasIcon, HasLabel
         if ($this === self::Published && $date?->isFuture()) {
             return 'Programmé';
         }
+
         return $this->getLabel();
     }
 
@@ -52,6 +53,7 @@ enum PublicationStatus: string implements HasColor, HasIcon, HasLabel
         if ($this === self::Published && $date?->isFuture()) {
             return 'info';
         }
+
         return $this->getColor();
     }
 
@@ -60,6 +62,7 @@ enum PublicationStatus: string implements HasColor, HasIcon, HasLabel
         if ($this === self::Published && $date?->isFuture()) {
             return 'heroicon-o-clock';
         }
+
         return $this->getIcon();
     }
 }

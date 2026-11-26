@@ -5,8 +5,8 @@ namespace App\Filament\Pages;
 use App\Enums\NavigationGroups;
 use App\Settings\AsblSettings;
 use BackedEnum;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -16,10 +16,15 @@ use UnitEnum;
 class ManageAsblSettings extends SettingsPage
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingLibrary;
-    protected static ?string $navigationLabel = "Informations ASBL";
+
+    protected static ?string $navigationLabel = 'Informations ASBL';
+
     protected static string|UnitEnum|null $navigationGroup = NavigationGroups::Admin;
+
     protected static ?int $navigationSort = 5;
-    protected ?string $heading = "Informations ASBL";
+
+    protected ?string $heading = 'Informations ASBL';
+
     protected ?string $subheading = "Gérer les informations administratives de l'ASBL (Footer)";
 
     protected static string $settings = AsblSettings::class;

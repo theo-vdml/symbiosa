@@ -6,8 +6,8 @@ use App\Enums\NavigationGroups;
 use App\Filament\Shared\Schemas\SeoSchema;
 use App\Models\ArchivePage;
 use BackedEnum;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -20,8 +20,11 @@ class ArchivePageResource extends Resource
     protected static ?string $model = ArchivePage::class;
 
     protected static UnitEnum|string|null $navigationGroup = NavigationGroups::Pages;
+
     protected static BackedEnum|string|null $navigationIcon = Heroicon::ArchiveBox;
-    protected static ?string $navigationLabel = "Archives";
+
+    protected static ?string $navigationLabel = 'Archives';
+
     protected static ?int $navigationSort = 5;
 
     public static function form(Schema $schema): Schema
@@ -68,6 +71,7 @@ class ArchivePageResource extends Resource
             if ($record) {
                 return parent::getUrl('edit', ['record' => $record], $isAbsolute, $panel, $tenant, $shouldGuessMissingParameters, $configuration);
             }
+
             return parent::getUrl('create', [], $isAbsolute, $panel, $tenant, $shouldGuessMissingParameters, $configuration);
         }
 

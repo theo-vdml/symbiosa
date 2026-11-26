@@ -16,10 +16,15 @@ use UnitEnum;
 class ManageContactEmails extends SettingsPage
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAtSymbol;
-    protected static ?string $navigationLabel = "Emails de contact";
+
+    protected static ?string $navigationLabel = 'Emails de contact';
+
     protected static string|UnitEnum|null $navigationGroup = NavigationGroups::Admin;
+
     protected static ?int $navigationSort = 4;
-    protected ?string $heading = "Emails de contact";
+
+    protected ?string $heading = 'Emails de contact';
+
     protected ?string $subheading = "Gérer les adresses e-mail de contact pour l'ensemble du site";
 
     protected static string $settings = ContactSettings::class;
@@ -48,7 +53,7 @@ class ManageContactEmails extends SettingsPage
                             ])
                             ->columns(2)
                             ->collapsible()
-                            ->itemLabel(fn(array $state): ?string => $state['label'] ?? null),
+                            ->itemLabel(fn (array $state): ?string => $state['label'] ?? null),
                     ]),
             ]);
     }

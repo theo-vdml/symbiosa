@@ -27,8 +27,11 @@ class AboutPageResource extends Resource
     protected static ?string $model = AboutPage::class;
 
     protected static string|UnitEnum|null $navigationGroup = NavigationGroups::Pages;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedLightBulb;
-    protected static ?string $navigationLabel = "À propos";
+
+    protected static ?string $navigationLabel = 'À propos';
+
     protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
@@ -68,8 +71,8 @@ class AboutPageResource extends Resource
                                             ->image()
                                             ->required()
                                             ->optimize('webp'),
-                                    ])
-                            ])
+                                    ]),
+                            ]),
                     ]),
 
                 SeoSchema::make()
@@ -98,6 +101,7 @@ class AboutPageResource extends Resource
             if ($record) {
                 return parent::getUrl('edit', ['record' => $record], $isAbsolute, $panel, $tenant, $shouldGuessMissingParameters, $configuration);
             }
+
             return parent::getUrl('create', [], $isAbsolute, $panel, $tenant, $shouldGuessMissingParameters, $configuration);
         }
 

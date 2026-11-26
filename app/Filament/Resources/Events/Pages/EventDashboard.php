@@ -16,7 +16,7 @@ class EventDashboard extends Page
 {
     use InteractsWithRecord;
 
-     protected static string $resource = EventResource::class;
+    protected static string $resource = EventResource::class;
 
     protected static ?string $navigationLabel = 'Dashboard';
 
@@ -24,7 +24,7 @@ class EventDashboard extends Page
 
     public function getTitle(): string|Htmlable
     {
-        return $this->record->title . ' - Dashboard';
+        return $this->record->title.' - Dashboard';
     }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPresentationChartLine;
@@ -35,12 +35,12 @@ class EventDashboard extends Page
     }
 
     protected function getHeaderWidgets(): array
-{
-    return [
-        EventDashboardTitle::make(['title' => 'Finances', 'icon' => Heroicon::OutlinedCurrencyDollar]),
-        EventRevenueStats::class,
-        EventDashboardTitle::make(['title' => 'Statistiques', 'icon' => Heroicon::OutlinedUsers]),
-        EventAttendeeStats::class,
-    ];
-}
+    {
+        return [
+            EventDashboardTitle::make(['title' => 'Finances', 'icon' => Heroicon::OutlinedCurrencyDollar]),
+            EventRevenueStats::class,
+            EventDashboardTitle::make(['title' => 'Statistiques', 'icon' => Heroicon::OutlinedUsers]),
+            EventAttendeeStats::class,
+        ];
+    }
 }

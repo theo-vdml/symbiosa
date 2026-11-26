@@ -13,7 +13,6 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\ViewField;
 use Filament\Infolists\Components\ViewEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Grid;
@@ -30,8 +29,11 @@ class HomePageResource extends Resource
     protected static ?string $model = HomePage::class;
 
     protected static string|UnitEnum|null $navigationGroup = NavigationGroups::Pages;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedHome;
-    protected static ?string $navigationLabel = "Homepage";
+
+    protected static ?string $navigationLabel = 'Homepage';
+
     protected static ?int $navigationSort = 1;
 
     public static function form(Schema $schema): Schema
@@ -59,7 +61,7 @@ class HomePageResource extends Resource
                                     ->label('Vidéo de fond')
                                     ->collection('hero_video')
                                     ->helperText('Format recommandé : MP4 ou WebM. La première image sera utilisée comme poster.'),
-                            ])
+                            ]),
                     ]),
 
                 Section::make('Bento Gallery')
@@ -90,7 +92,7 @@ class HomePageResource extends Resource
 
                                 ViewEntry::make('bento_guide')
                                     ->view('filament.components.bento-layout-guide'),
-                            ])
+                            ]),
                     ]),
 
                 Section::make('Playlist Spotify')
@@ -111,16 +113,19 @@ class HomePageResource extends Resource
                                         ->placeholder('https://open.spotify.com/playlist/...')
                                         ->prefixIcon(Heroicon::Link)
                                         ->hint('Collez l\'URL complète de la playlist.')
-                                        ->formatStateUsing(fn($state) => $state ? "https://open.spotify.com/playlist/{$state}" : null)
+                                        ->formatStateUsing(fn ($state) => $state ? "https://open.spotify.com/playlist/{$state}" : null)
                                         ->dehydrateStateUsing(function ($state) {
-                                            if (empty($state)) return null;
+                                            if (empty($state)) {
+                                                return null;
+                                            }
+
                                             return Str::betweenFirst($state, 'playlist/', '?');
                                         })
                                         ->suffixAction(
                                             Action::make('open_playlist')
                                                 ->icon(Heroicon::ArrowTopRightOnSquare)
-                                                ->url(fn($state) => $state ?: null)
-                                                ->visible(fn($state) => !empty($state)),
+                                                ->url(fn ($state) => $state ?: null)
+                                                ->visible(fn ($state) => ! empty($state)),
                                         )
                                         ->url()
                                         ->live(),
@@ -139,7 +144,7 @@ class HomePageResource extends Resource
                                             ->label('Forcer le thème sombre')
                                             ->helperText('Ajoute un paramètre pour forcer le lecteur Spotify en mode sombre.')
                                             ->default(false),
-                                    ])
+                                    ]),
                             ]),
                     ]),
 
@@ -169,6 +174,7 @@ class HomePageResource extends Resource
             if ($record) {
                 return parent::getUrl('edit', ['record' => $record], $isAbsolute, $panel, $tenant, $shouldGuessMissingParameters, $configuration);
             }
+
             return parent::getUrl('create', [], $isAbsolute, $panel, $tenant, $shouldGuessMissingParameters, $configuration);
         }
 

@@ -19,8 +19,9 @@ class CheckoutResource extends Resource
 
     protected static string|\UnitEnum|null $navigationGroup = NavigationGroups::Ticketing;
 
-    protected static string|null $modelLabel = 'Commande';
-    protected static string|null $pluralModelLabel = 'Commandes';
+    protected static ?string $modelLabel = 'Commande';
+
+    protected static ?string $pluralModelLabel = 'Commandes';
 
     protected static ?string $recordTitleAttribute = 'uuid';
 

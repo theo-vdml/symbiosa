@@ -24,7 +24,7 @@ class EditEventFaq extends EditRecord
 
     public function getTitle(): string|Htmlable
     {
-        return $this->record->title . ' - Foire aux questions';
+        return $this->record->title.' - Foire aux questions';
     }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleBottomCenterText;

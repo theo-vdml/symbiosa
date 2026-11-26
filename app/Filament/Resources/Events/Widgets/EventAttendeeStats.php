@@ -2,16 +2,16 @@
 
 namespace App\Filament\Resources\Events\Widgets;
 
-use App\Models\TicketType;
+use App\Models\Event;
 use App\Models\EventAddon;
+use App\Models\TicketType;
 use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class EventAttendeeStats extends StatsOverviewWidget
 {
-
-    public ?\App\Models\Event $record = null;
+    public ?Event $record = null;
 
     protected function getStats(): array
     {
@@ -19,7 +19,7 @@ class EventAttendeeStats extends StatsOverviewWidget
             ->whereNotNull('completed_at');
 
         $pendingReservations = $this->record->reservations()
-            ->whereHas('checkout', fn($q) => $q->isPending());
+            ->whereHas('checkout', fn ($q) => $q->isPending());
 
         $ticketsSold = (int) (clone $completedReservations)
             ->where('reservable_type', TicketType::class)
@@ -60,7 +60,7 @@ class EventAttendeeStats extends StatsOverviewWidget
                 ->description('Billets en attente de paiement')
                 ->color('warning'),
 
-            Stat::make('occupancy_rate', $occupancyRate . ' %')
+            Stat::make('occupancy_rate', $occupancyRate.' %')
                 ->label('Taux de remplissage')
                 ->icon('heroicon-o-chart-bar')
                 ->color($occupancyRate > 80 ? 'success' : ($occupancyRate > 50 ? 'warning' : 'danger')),
@@ -79,7 +79,7 @@ class EventAttendeeStats extends StatsOverviewWidget
 
             Stat::make('checkins', $checkins)
                 ->label('Check-ins')
-                ->description($ticketsSold > 0 ? round(($checkins / $ticketsSold) * 100, 1) . ' % de présence' : null)
+                ->description($ticketsSold > 0 ? round(($checkins / $ticketsSold) * 100, 1).' % de présence' : null)
                 ->icon('heroicon-o-check-circle')
                 ->color('secondary'),
         ];

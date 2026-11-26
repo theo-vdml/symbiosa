@@ -25,7 +25,7 @@ trait HasSlug
             $source = $model->getSlugSource();
             $field = $model->getSlugField();
 
-            if (empty($model->{$field}) && !empty($model->{$source})) {
+            if (empty($model->{$field}) && ! empty($model->{$source})) {
                 $slug = Str::slug($model->{$source});
                 $model->{$field} = $model->generateUniqueSlug($slug);
             }
@@ -61,10 +61,10 @@ trait HasSlug
 
         while (
             static::where($field, $slug)
-            ->where($this->getKeyName(), '!=', $this->getKey())
-            ->exists()
+                ->where($this->getKeyName(), '!=', $this->getKey())
+                ->exists()
         ) {
-            $slug = $originalSlug . '-' . $count++;
+            $slug = $originalSlug.'-'.$count++;
         }
 
         return $slug;

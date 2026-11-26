@@ -48,13 +48,13 @@ class ResentLostTicketsMail extends Mailable
     /**
      * Get the attachments for the message.
      *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     * @return array<int, Attachment>
      */
     public function attachments(): array
     {
         return [
             Attachment::fromData(
-                fn() => $this->pdfs->output(),
+                fn () => $this->pdfs->output(),
                 'tickets.pdf'
             )->withMime('application/pdf'),
         ];

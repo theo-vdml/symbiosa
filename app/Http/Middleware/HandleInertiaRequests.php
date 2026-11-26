@@ -2,6 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\LegalPage;
+use App\Settings\AsblSettings;
+use App\Settings\ContactSettings;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -45,9 +48,9 @@ class HandleInertiaRequests extends Middleware
                 'message' => $request->session()->get('message'),
                 'error' => $request->session()->get('error'),
             ],
-            'footerLegalPages' => \App\Models\LegalPage::inFooter()->get(['title', 'slug']),
-            'contactEmails' => app(\App\Settings\ContactSettings::class)->email_options,
-            'asbl' => app(\App\Settings\AsblSettings::class)->toArray(),
+            'footerLegalPages' => LegalPage::inFooter()->get(['title', 'slug']),
+            'contactEmails' => app(ContactSettings::class)->email_options,
+            'asbl' => app(AsblSettings::class)->toArray(),
         ];
     }
 }

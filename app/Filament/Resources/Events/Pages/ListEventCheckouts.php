@@ -7,10 +7,10 @@ use App\Filament\Resources\Checkouts\Schemas\CheckoutInfolist;
 use App\Filament\Resources\Checkouts\Tables\CheckoutsTable;
 use App\Filament\Resources\Events\EventResource;
 use Filament\Resources\Pages\ManageRelatedRecords;
-use Filament\Tables\Table;
-use Illuminate\Contracts\Support\Htmlable;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use UnitEnum;
 
 class ListEventCheckouts extends ManageRelatedRecords
@@ -27,7 +27,7 @@ class ListEventCheckouts extends ManageRelatedRecords
 
     public function getTitle(): string|Htmlable
     {
-        return $this->record->title . ' - Commandes';
+        return $this->record->title.' - Commandes';
     }
 
     protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedShoppingCart;

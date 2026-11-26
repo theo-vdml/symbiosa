@@ -27,7 +27,7 @@ return new class extends PageSettingsMigration
             [
                 'label' => 'Devenir bénévole ?',
                 'email' => 'team@symbiosa.be',
-            ]
+            ],
         ]);
 
         $this->addSeoSettings('contact');

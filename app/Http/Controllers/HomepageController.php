@@ -11,7 +11,7 @@ class HomepageController extends Controller
 {
     public function index()
     {
-        $homePage = HomePage::first() ?? new HomePage();
+        $homePage = HomePage::first() ?? new HomePage;
 
         $posts = Post::published()
             ->with('category')

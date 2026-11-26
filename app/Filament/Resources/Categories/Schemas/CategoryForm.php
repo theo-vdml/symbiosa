@@ -35,7 +35,9 @@ class CategoryForm
                             ->icon(Heroicon::Sparkles)
                             ->action(function (Set $set, Get $get) {
                                 $name = $get('name');
-                                if (blank($name)) return;
+                                if (blank($name)) {
+                                    return;
+                                }
                                 $set('slug', Str::slug($name));
                             })
                     )

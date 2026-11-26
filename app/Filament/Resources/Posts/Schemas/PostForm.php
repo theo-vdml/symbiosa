@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Posts\Schemas;
 
 use App\Filament\Shared\Actions\PublicationActions;
 use App\Filament\Shared\Schemas\PublicationSchema;
+use App\Filament\Shared\Schemas\SeoSchema;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -52,13 +53,13 @@ class PostForm
                                     ->relationship('category', 'name')
                                     ->preload()
                                     ->searchable()
-                                    ->quickAdd(label: "Nouvelle catégorie: {search}", resetSearch: true),
+                                    ->quickAdd(label: 'Nouvelle catégorie: {search}', resetSearch: true),
 
                                 TextInput::make('title')
                                     ->label('Titre')
                                     ->required()
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state))),
+                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
 
                                 TextInput::make('slug')
                                     ->label('Slug')
@@ -106,11 +107,11 @@ class PostForm
                                 Actions::make([
                                     ...PublicationActions::make("l'article"),
                                 ])
-                                    ->hidden(fn($record) => $record === null)
+                                    ->hidden(fn ($record) => $record === null)
                                     ->verticalAlignment('start'),
                             ]),
 
-                        \App\Filament\Shared\Schemas\SeoSchema::make()
+                        SeoSchema::make()
                             ->visible($withSeo)
                             ->columnSpanFull(),
                     ]),

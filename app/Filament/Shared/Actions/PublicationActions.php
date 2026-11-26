@@ -17,7 +17,7 @@ class PublicationActions
 {
     public static function make(?string $resourceLabel = null): array
     {
-        $suffix = $resourceLabel ? " $resourceLabel" : "";
+        $suffix = $resourceLabel ? " $resourceLabel" : '';
 
         return [
             static::getPublishAction($suffix),
@@ -29,27 +29,27 @@ class PublicationActions
 
     public static function getPublishAction(string $suffix = ''): Action
     {
-        $getLabel = fn($record) => ($record->published_at ? "Republier" : "Publier") . $suffix;
+        $getLabel = fn ($record) => ($record->published_at ? 'Republier' : 'Publier').$suffix;
 
         return Action::make('publish')
             ->extraAttributes(['class' => 'w-full'])
-            ->label(fn($record) => $getLabel($record))
-            ->icon(fn($record) => $record->published_at ? Heroicon::ArrowPath : Heroicon::PaperAirplane)
+            ->label(fn ($record) => $getLabel($record))
+            ->icon(fn ($record) => $record->published_at ? Heroicon::ArrowPath : Heroicon::PaperAirplane)
             ->color('success')
-            ->visible(fn($record) => in_array($record->status, [PublicationStatus::Draft, PublicationStatus::Archived]))
-            ->schema(fn($record) => [
+            ->visible(fn ($record) => in_array($record->status, [PublicationStatus::Draft, PublicationStatus::Archived]))
+            ->schema(fn ($record) => [
                 static::getPublishOptions($record),
                 Group::make(static::getScheduleSchema())
-                    ->visible(fn($get) => $get('publish_type') === 'schedule'),
+                    ->visible(fn ($get) => $get('publish_type') === 'schedule'),
             ])
-            ->modalSubmitActionLabel(fn($record) => $getLabel($record))
+            ->modalSubmitActionLabel(fn ($record) => $getLabel($record))
             ->action(function ($record, array $data) {
                 $record->update([
                     'status' => PublicationStatus::Published,
                     'published_at' => static::resolvePublishedAt($data, $record),
                 ]);
             })
-            ->after(fn($livewire) => $livewire->dispatch('$refresh'));
+            ->after(fn ($livewire) => $livewire->dispatch('$refresh'));
     }
 
     public static function getPublishNowAction(string $suffix = ''): Action
@@ -59,17 +59,17 @@ class PublicationActions
             ->label('Publier maintenant')
             ->color('success')
             ->icon('heroicon-o-paper-airplane')
-            ->visible(fn($record) => $record->status === PublicationStatus::Published && $record->published_at?->isFuture())
+            ->visible(fn ($record) => $record->status === PublicationStatus::Published && $record->published_at?->isFuture())
             ->requiresConfirmation()
-            ->modalHeading("Publier immédiatement ?")
-            ->modalDescription("La planification sera annulée et la publication sera immédiate.")
+            ->modalHeading('Publier immédiatement ?')
+            ->modalDescription('La planification sera annulée et la publication sera immédiate.')
             ->action(function ($record) {
                 $record->update([
                     'status' => PublicationStatus::Published,
                     'published_at' => now(),
                 ]);
             })
-            ->after(fn($livewire) => $livewire->dispatch('$refresh'));
+            ->after(fn ($livewire) => $livewire->dispatch('$refresh'));
     }
 
     public static function getArchiveAction(string $suffix = ''): Action
@@ -79,14 +79,14 @@ class PublicationActions
             ->label('Archiver')
             ->color('warning')
             ->icon('heroicon-o-archive-box')
-            ->visible(fn($record) => $record->status === PublicationStatus::Published)
+            ->visible(fn ($record) => $record->status === PublicationStatus::Published)
             ->requiresConfirmation()
-            ->modalHeading("Archiver" . $suffix . " ?")
-            ->modalDescription("Ne sera plus visible sur le site mais sera conservé en archive.")
+            ->modalHeading('Archiver'.$suffix.' ?')
+            ->modalDescription('Ne sera plus visible sur le site mais sera conservé en archive.')
             ->action(function ($record) {
                 $record->update(['status' => PublicationStatus::Archived]);
             })
-            ->after(fn($livewire) => $livewire->dispatch('$refresh'));
+            ->after(fn ($livewire) => $livewire->dispatch('$refresh'));
     }
 
     public static function getRevertToDraftAction(string $suffix = ''): Action
@@ -96,17 +96,17 @@ class PublicationActions
             ->label('Brouillon')
             ->color('gray')
             ->icon('heroicon-o-pencil')
-            ->visible(fn($record) => $record->status !== PublicationStatus::Draft)
+            ->visible(fn ($record) => $record->status !== PublicationStatus::Draft)
             ->requiresConfirmation()
             ->modalHeading('Remettre en brouillon ?')
-            ->modalDescription("Sera retiré du site et sa date de publication sera effacée.")
+            ->modalDescription('Sera retiré du site et sa date de publication sera effacée.')
             ->action(function ($record) {
                 $record->update([
                     'status' => PublicationStatus::Draft,
                     'published_at' => null,
                 ]);
             })
-            ->after(fn($livewire) => $livewire->dispatch('$refresh'));
+            ->after(fn ($livewire) => $livewire->dispatch('$refresh'));
     }
 
     public static function getPublishOptions(mixed $record): RadioList
@@ -118,13 +118,13 @@ class PublicationActions
             'schedule' => 'Programmer plus tard',
         ];
         $descriptions = [
-            'now' => "Sera publié immédiatement.",
+            'now' => 'Sera publié immédiatement.',
             'schedule' => 'Choisissez une date et une heure de publication.',
         ];
         $extras = [];
 
         if ($publishedAt) {
-            $descriptions['keep'] = "Sera publié avec sa date de publication originale.";
+            $descriptions['keep'] = 'Sera publié avec sa date de publication originale.';
             $options = array_merge(['keep' => 'Conserver la date originale'], $options);
             $extras['keep'] = $publishedAt->translatedFormat('l j F Y à H:i');
         }
@@ -155,7 +155,7 @@ class PublicationActions
                 ->seconds(false)
                 ->native(false)
                 ->displayFormat('H:i')
-                ->visible(fn($get) => !$get('at_nine_am'))
+                ->visible(fn ($get) => ! $get('at_nine_am'))
                 ->default('09:00'),
 
             Toggle::make('at_nine_am')
@@ -177,6 +177,7 @@ class PublicationActions
                 return $date->startOfDay()->addHours(9);
             }
             $time = Carbon::parse($data['time_only']);
+
             return $date->setTime($time->hour, $time->minute);
         }
 

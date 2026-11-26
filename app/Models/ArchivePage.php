@@ -18,15 +18,15 @@ class ArchivePage extends Model
     public function getSeoDefaults(): array
     {
         return [
-            'title' => ($this->heading ?? 'Nos Archives') . ' - ' . config('app.name'),
-            "canonical_url" => fn() => route('archives'),
+            'title' => ($this->heading ?? 'Nos Archives').' - '.config('app.name'),
+            'canonical_url' => fn () => route('archives'),
         ];
     }
 
     public function getSeoFallbacks(): array
     {
         return [
-            'description' => 'description'
+            'description' => 'description',
         ];
     }
 }

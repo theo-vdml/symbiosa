@@ -21,13 +21,13 @@ class CheckinController extends Controller
     {
         $checkinList = CheckinList::where('public_url_token', $token)->firstOrFail();
 
-        if (!$this->hasPublicAccess($checkinList)) {
+        if (! $this->hasPublicAccess($checkinList)) {
             return Inertia::render('Checkin/Password', [
                 'checkinList' => [
                     'id' => $checkinList->id,
                     'name' => $checkinList->name,
                     'token' => $checkinList->public_url_token,
-                ]
+                ],
             ]);
         }
 
@@ -74,9 +74,9 @@ class CheckinController extends Controller
             'isPublic' => $isPublic,
             'scan_result' => session('scan_result'),
             'availableFilters' => [
-                'ticket_types' => $checkinList->ticketTypes()->get(['ticket_types.id', 'name'])->map(fn($t) => ['id' => $t->id, 'name' => $t->name]),
-                'addons' => $checkinList->addons()->get(['event_addons.id', 'name'])->map(fn($a) => ['id' => $a->id, 'name' => $a->name]),
-            ]
+                'ticket_types' => $checkinList->ticketTypes()->get(['ticket_types.id', 'name'])->map(fn ($t) => ['id' => $t->id, 'name' => $t->name]),
+                'addons' => $checkinList->addons()->get(['event_addons.id', 'name'])->map(fn ($a) => ['id' => $a->id, 'name' => $a->name]),
+            ],
         ]);
     }
 
@@ -84,7 +84,7 @@ class CheckinController extends Controller
     {
         $query = $request->input('q');
 
-        if (!$query || strlen($query) < 2) {
+        if (! $query || strlen($query) < 2) {
             return response()->json([]);
         }
 
@@ -98,7 +98,7 @@ class CheckinController extends Controller
             })
             ->limit(50)
             ->get()
-            ->map(fn(IssuedTicket $ticket) => $this->ticketPayload($ticket));
+            ->map(fn (IssuedTicket $ticket) => $this->ticketPayload($ticket));
 
         return response()->json($tickets);
     }
@@ -107,7 +107,7 @@ class CheckinController extends Controller
     {
         $checkinList = CheckinList::where('public_url_token', $token)->firstOrFail();
 
-        if (!$this->hasPublicAccess($checkinList)) {
+        if (! $this->hasPublicAccess($checkinList)) {
             return response()->json(['success' => false, 'message' => 'Non autorisé'], 401);
         }
 
@@ -125,7 +125,7 @@ class CheckinController extends Controller
     {
         $checkinList = CheckinList::where('public_url_token', $token)->firstOrFail();
 
-        if (!$this->hasPublicAccess($checkinList)) {
+        if (! $this->hasPublicAccess($checkinList)) {
             return response()->json(['success' => false, 'message' => 'Non autorisé'], 401);
         }
 
@@ -164,7 +164,7 @@ class CheckinController extends Controller
     {
         $checkinList = CheckinList::where('public_url_token', $token)->firstOrFail();
 
-        if (!$this->hasPublicAccess($checkinList)) {
+        if (! $this->hasPublicAccess($checkinList)) {
             return response()->json(['success' => false, 'message' => 'Non autorisé'], 401);
         }
 
@@ -175,7 +175,7 @@ class CheckinController extends Controller
     {
         $checkinList = CheckinList::where('public_url_token', $token)->firstOrFail();
 
-        if (!$this->hasPublicAccess($checkinList)) {
+        if (! $this->hasPublicAccess($checkinList)) {
             return response()->json(['success' => false, 'message' => 'Non autorisé'], 401);
         }
 
@@ -193,25 +193,27 @@ class CheckinController extends Controller
             ->with(['reservable', 'checkout'])
             ->first();
 
-        if (!$ticket) {
+        if (! $ticket) {
             $error = ['success' => false, 'status' => 'invalid', 'message' => 'Ticket introuvable'];
             if ($request->header('X-Inertia')) {
                 return back()->with('scan_result', $error);
             }
+
             return response()->json($error, 404);
         }
 
-        if (!$this->ticketBelongsToList($checkinList, $ticket)) {
+        if (! $this->ticketBelongsToList($checkinList, $ticket)) {
             $error = ['success' => false, 'status' => 'unauthorized', 'message' => 'Ce ticket n\'est pas autorisé pour cette liste'];
             if ($request->header('X-Inertia')) {
                 return back()->with('scan_result', $error);
             }
+
             return response()->json($error, 403);
         }
 
         $alreadyCheckedIn = $ticket->checked_in_at !== null;
 
-        if (!$alreadyCheckedIn) {
+        if (! $alreadyCheckedIn) {
             $ticket->update(['checked_in_at' => now()]);
         }
 
@@ -230,7 +232,7 @@ class CheckinController extends Controller
             'stats' => [
                 'total' => $this->getTicketsQuery($checkinList)->count(),
                 'scanned' => $this->getTicketsQuery($checkinList)->whereNotNull('checked_in_at')->count(),
-            ]
+            ],
         ]));
     }
 
@@ -240,7 +242,7 @@ class CheckinController extends Controller
      */
     protected function hasPublicAccess(CheckinList $checkinList): bool
     {
-        if (!$checkinList->hasPublicPassword()) {
+        if (! $checkinList->hasPublicPassword()) {
             return true;
         }
 

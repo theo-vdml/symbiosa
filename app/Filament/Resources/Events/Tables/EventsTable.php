@@ -30,9 +30,9 @@ class EventsTable
                 TextColumn::make('status')
                     ->label('Statut')
                     ->badge()
-                    ->formatStateUsing(fn($record) => $record->status->getDynamicLabel($record->published_at))
-                    ->color(fn($record) => $record->status->getDynamicColor($record->published_at))
-                    ->icon(fn($record) => $record->status->getDynamicIcon($record->published_at))
+                    ->formatStateUsing(fn ($record) => $record->status->getDynamicLabel($record->published_at))
+                    ->color(fn ($record) => $record->status->getDynamicColor($record->published_at))
+                    ->icon(fn ($record) => $record->status->getDynamicIcon($record->published_at))
                     ->sortable(),
 
                 TextColumn::make('start_at')

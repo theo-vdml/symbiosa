@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\NewsPage;
 use App\Models\Post;
 use Inertia\Inertia;
 
 class NewsController extends Controller
 {
-
     public function index()
     {
-        $page = \App\Models\NewsPage::first() ?? new \App\Models\NewsPage();
+        $page = NewsPage::first() ?? new NewsPage;
         $posts = Post::published()->latest('published_at')->get();
         $categories = $posts->pluck('category')->filter()->unique('id')->values();
 
         return Inertia::render('News/Index', [
-            'preheading' => $page->preheading ?? "Actualités",
+            'preheading' => $page->preheading ?? 'Actualités',
             'heading' => $page->heading ?? 'Nos Actualités',
             'description' => $page->description ?? '',
             'posts' => $posts,

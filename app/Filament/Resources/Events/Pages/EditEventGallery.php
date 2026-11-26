@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Events\Pages;
 use App\Enums\EventNavigationGroups;
 use App\Filament\Resources\Events\EventResource;
 use App\Filament\Resources\Events\Widgets\GalleryHeroWidget;
+use App\Models\Event;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -23,26 +24,29 @@ use UnitEnum;
 
 class EditEventGallery extends ManageRelatedRecords
 {
-
     protected static string $resource = EventResource::class;
 
     protected static string $relationship = 'media';
+
     protected static string $collection = 'gallery';
 
     protected static ?string $navigationLabel = 'Galerie';
+
     protected static ?string $breadcrumb = 'Galerie';
+
     protected static string|UnitEnum|null $navigationGroup = EventNavigationGroups::Archives;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
     public function getTitle(): string|Htmlable
     {
-        return $this->record->title . ' - Galerie';
+        return $this->record->title.' - Galerie';
     }
 
     protected function getHeaderWidgets(): array
     {
         return [
-            GalleryHeroWidget::class
+            GalleryHeroWidget::class,
         ];
     }
 
@@ -51,14 +55,16 @@ class EditEventGallery extends ManageRelatedRecords
         return $table
             ->recordTitleAttribute('file_name')
             ->reorderable('order_column')
-            ->modifyQueryUsing(fn(Builder $query) => $query->where('collection_name', static::$collection))
+            ->modifyQueryUsing(fn (Builder $query) => $query->where('collection_name', static::$collection))
             ->columns([
                 HoverImageColumn::make('url')
                     ->label('Aperçu')
                     ->state(function ($record) {
-                        if (! $record->hasGeneratedConversion('thumb'))
-                            return $record->getUrl() . '?v=' . $record->updated_at->timestamp;
-                        return $record->getUrl('thumb') . '?v=' . $record->updated_at->timestamp;
+                        if (! $record->hasGeneratedConversion('thumb')) {
+                            return $record->getUrl().'?v='.$record->updated_at->timestamp;
+                        }
+
+                        return $record->getUrl('thumb').'?v='.$record->updated_at->timestamp;
                     })
                     ->imageWidth('120px')
                     ->imageHeight('auto')
@@ -91,7 +97,7 @@ class EditEventGallery extends ManageRelatedRecords
                             ->maxSize(10240),
                     ])
                     ->action(function (array $data, ManageRelatedRecords $livewire) {
-                        /** @var \App\Models\Event $event */
+                        /** @var Event $event */
                         $event = $livewire->getOwnerRecord();
 
                         foreach ($data['files'] as $file) {
@@ -101,16 +107,16 @@ class EditEventGallery extends ManageRelatedRecords
                                 ->toMediaCollection(static::$collection);
                         }
                     })
-                    ->modalSubmitActionLabel('Upload')
+                    ->modalSubmitActionLabel('Upload'),
             ])
             ->recordActions([
                 DeleteAction::make()
-                    ->iconButton()
+                    ->iconButton(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make()
-                ])
+                    DeleteBulkAction::make(),
+                ]),
             ]);
     }
 }

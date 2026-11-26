@@ -14,6 +14,7 @@ class EditLegalPage extends EditRecord
     protected function mutateFormDataBeforeFill(array $data): array
     {
         $data['content'] = $this->record->latestVersion?->content;
+
         return $data;
     }
 

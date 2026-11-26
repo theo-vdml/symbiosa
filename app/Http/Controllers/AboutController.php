@@ -13,7 +13,7 @@ class AboutController extends Controller
 
         $sections = $aboutPage?->sections()
             ->get()
-            ->map(fn($section) => [
+            ->map(fn ($section) => [
                 'title' => $section->title,
                 'content' => $section->content,
                 'image' => $section->getFirstMediaUrl('image'),

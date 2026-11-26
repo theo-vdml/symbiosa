@@ -29,7 +29,7 @@ class EditEventTicketingConfig extends EditRecord
 
     public function getTitle(): string|Htmlable
     {
-        return $this->record->title . ' - Configuration Billetterie';
+        return $this->record->title.' - Configuration Billetterie';
     }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
@@ -43,7 +43,7 @@ class EditEventTicketingConfig extends EditRecord
                     ->warning()
                     ->heading('Action requise : module de billetterie désactivé')
                     ->description('Définissez une date d\'ouverture pour activer le module de billetterie. Tant que cette date n\'est pas renseignée, les options d\'achat de billets ne seront pas visibles par les utilisateurs.')
-                    ->visible(fn() => !$this->record->ticketing_starts_at),
+                    ->visible(fn () => ! $this->record->ticketing_starts_at),
 
                 Section::make('Disponibilité de la billetterie')
                     ->columnSpanFull()

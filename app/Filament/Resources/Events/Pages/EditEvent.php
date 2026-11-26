@@ -35,7 +35,7 @@ class EditEvent extends EditRecord
 
     public function getTitle(): string|Htmlable
     {
-        return $this->record->title . ' - Configuration';
+        return $this->record->title.' - Configuration';
     }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::AdjustmentsHorizontal;
@@ -72,7 +72,7 @@ class EditEvent extends EditRecord
                                         ->verticalAlignment('start'),
                                 ]),
                             ]),
-                        Callout::make("Archives")
+                        Callout::make('Archives')
                             ->info()
                             ->description('Pour que vos événements passés restent consultables sur votre page archives, veillez à ne pas changer leur statut en « Archivé ». Laissez-les « Publiés » et attendez simplement que la date de fin de l\'événement soit passée.'),
                     ]),
@@ -86,10 +86,10 @@ class EditEvent extends EditRecord
                         TextEntry::make('dangerText')
                             ->hiddenLabel()
                             ->color('gray')
-                            ->state("Attention, supprimer un événement est irréversible et entraînera la suppression de toutes les données associées, y compris les commandes et les tickets liés à cet événement. Assurez-vous de bien comprendre les conséquences avant de procéder."),
+                            ->state('Attention, supprimer un événement est irréversible et entraînera la suppression de toutes les données associées, y compris les commandes et les tickets liés à cet événement. Assurez-vous de bien comprendre les conséquences avant de procéder.'),
                         DeleteAction::make()
                             ->label(function ($record) {
-                                return 'Supprimer définitivement ' . $record->title;
+                                return 'Supprimer définitivement '.$record->title;
                             })
                             ->requiresConfirmation()
                             ->modalHeading('Confirmer la suppression')

@@ -24,7 +24,7 @@ class EditEventDetails extends EditRecord
 
     public function getTitle(): string|Htmlable
     {
-        return $this->record->title . ' - Informations pratiques';
+        return $this->record->title.' - Informations pratiques';
     }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedInformationCircle;
@@ -35,7 +35,7 @@ class EditEventDetails extends EditRecord
             ->components([
                 ...EventForm::getDateTimeSchema(),
                 ...EventForm::getLocationSchema(),
-                ...EventForm::getDetailsSchema()
+                ...EventForm::getDetailsSchema(),
             ]);
     }
 }

@@ -21,14 +21,15 @@ class ArtistResource extends Resource
     protected static ?string $model = Artist::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
+
     protected static string|UnitEnum|null $navigationGroup = NavigationGroups::Events;
 
     protected static ?int $navigationSort = 1;
 
     protected static ?string $recordTitleAttribute = 'name';
 
-
     protected static ?string $modelLabel = 'Artiste';
+
     protected static ?string $pluralModelLabel = 'Artistes';
 
     public static function form(Schema $schema): Schema

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
  * is updated or deleted. It supports multiple disks and handles Soft Deletes
  * by only removing files during a force delete.
  *
- * @mixin \Illuminate\Database\Eloquent\Model
+ * @mixin Model
  */
 trait InteractsWithFiles
 {
@@ -33,8 +33,6 @@ trait InteractsWithFiles
      * Verifies that:
      * 1. The class is a valid Eloquent Model.
      * 2. The required 'fileAttributes' method has been implemented.
-     *
-     * @return bool
      */
     protected static function canBootInteractsWithFiles(): bool
     {
@@ -47,19 +45,16 @@ trait InteractsWithFiles
      *
      * Registers 'saving' and 'deleting' Eloquent hooks to manage file lifecycles.
      * Only executes if the using class is an instance of Illuminate\Database\Eloquent\Model.
-     *
-     * @return void
      */
     protected static function bootInteractsWithFiles(): void
     {
-        if (!static::canBootInteractsWithFiles()) {
+        if (! static::canBootInteractsWithFiles()) {
             return;
         }
 
         /**
          * Handle file cleanup during model updates.
          * Deletes the old file if the attribute has changed.
-         *
          */
         static::updated(function (Model $model) {
             if (method_exists($model, 'getNormalizedFileAttributes')) {
@@ -73,7 +68,6 @@ trait InteractsWithFiles
 
         /**
          * Handle file cleanup during model deletion.
-         *
          */
         static::deleted(function (Model $model) {
             if (method_exists($model, 'getNormalizedFileAttributes')) {
@@ -102,6 +96,7 @@ trait InteractsWithFiles
                 $normalized[$key] = $value;
             }
         }
+
         return $normalized;
     }
 }

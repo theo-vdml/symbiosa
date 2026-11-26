@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\EventsPage;
 use Inertia\Inertia;
 
 class EventController extends Controller
 {
     public function index()
     {
-        $page = \App\Models\EventsPage::first() ?? new \App\Models\EventsPage();
+        $page = EventsPage::first() ?? new EventsPage;
         $events = Event::published()
             ->upcoming(includeOngoing: true)
             ->with('genres')
@@ -23,6 +24,7 @@ class EventController extends Controller
             'seo' => $page->getSeoData(),
         ]);
     }
+
     public function show(string $slug)
     {
         $event = Event::where('slug', $slug)
@@ -34,6 +36,7 @@ class EventController extends Controller
             'seo' => $event->getSeoData(),
         ]);
     }
+
     public function ticketing(string $slug)
     {
         $event = Event::where('slug', $slug)

@@ -84,12 +84,12 @@ class Event extends Model implements HasMedia
 
     protected function photoCount(): Attribute
     {
-        return Attribute::get(fn() => $this->getMedia('gallery')->count());
+        return Attribute::get(fn () => $this->getMedia('gallery')->count());
     }
 
     protected function isArchived(): Attribute
     {
-        return Attribute::get(fn() => $this->end_at?->isPast() ?? false);
+        return Attribute::get(fn () => $this->end_at?->isPast() ?? false);
     }
 
     public function getPosterUrlAttribute(): ?string
@@ -105,6 +105,7 @@ class Event extends Model implements HasMedia
     public function getBackgroundResponsiveAttribute(): array
     {
         $media = $this->getFirstMedia('background');
+
         return $media ? [
             'src' => $media->getUrl(),
             'srcset' => $media->getSrcset(),
@@ -114,12 +115,12 @@ class Event extends Model implements HasMedia
     public function getGalleryUrlsAttribute(): array
     {
         return $this->getMedia('gallery')
-            ->filter(fn($media) => $media->hasGeneratedConversion('thumb'))
-            ->map(fn($media) => [
+            ->filter(fn ($media) => $media->hasGeneratedConversion('thumb'))
+            ->map(fn ($media) => [
                 'id' => $media->id,
                 'url' => $media->getUrl(),
                 'file_name' => $media->file_name,
-                'thumb' => $media->getUrl('thumb') . '?t=' . $media->updated_at?->timestamp,
+                'thumb' => $media->getUrl('thumb').'?t='.$media->updated_at?->timestamp,
             ])->toArray();
     }
 
@@ -146,22 +147,22 @@ class Event extends Model implements HasMedia
 
     protected function isTicketingOpen(): Attribute
     {
-        return Attribute::get(fn() => $this->ticketing_status === 'open');
+        return Attribute::get(fn () => $this->ticketing_status === 'open');
     }
 
     protected function date(): Attribute
     {
-        return Attribute::get(fn() => $this->start_at?->copy()->startOfDay());
+        return Attribute::get(fn () => $this->start_at?->copy()->startOfDay());
     }
 
     protected function startTime(): Attribute
     {
-        return Attribute::get(fn() => $this->start_at?->format('H:i'));
+        return Attribute::get(fn () => $this->start_at?->format('H:i'));
     }
 
     protected function endTime(): Attribute
     {
-        return Attribute::get(fn() => $this->end_at?->format('H:i'));
+        return Attribute::get(fn () => $this->end_at?->format('H:i'));
     }
 
     public function getMinPriceAttribute()
@@ -270,18 +271,18 @@ class Event extends Model implements HasMedia
     public function getSeoDefaults(): array
     {
         return [
-            "title" => fn($record) => "$record->title - " . config('app.name'),
-            "description" => fn($record) => str()->limit(strip_tags($record->body), 150),
-            "canonical_url" => fn($record) => route('events.show', $record->slug),
-            "twitter_card" => "summary_large_image",
+            'title' => fn ($record) => "$record->title - ".config('app.name'),
+            'description' => fn ($record) => str()->limit(strip_tags($record->body), 150),
+            'canonical_url' => fn ($record) => route('events.show', $record->slug),
+            'twitter_card' => 'summary_large_image',
         ];
     }
 
     public function getSeoFallbacks(): array
     {
         return [
-            "description" => "description",
-            "og_image" => ['media:background', 'media:poster'],
+            'description' => 'description',
+            'og_image' => ['media:background', 'media:poster'],
         ];
     }
 }

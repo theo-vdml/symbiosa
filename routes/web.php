@@ -1,76 +1,86 @@
 <?php
 
-use Inertia\Inertia;
+use App\Http\Controllers\AboutController;
+use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\CheckinController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\HomepageController;
+use App\Http\Controllers\LegalPageController;
+use App\Http\Controllers\LostTicketsController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\StripeWebhookController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [\App\Http\Controllers\HomepageController::class, 'index'])
+Route::get('/', [HomepageController::class, 'index'])
     ->name('home');
 
-Route::get('/events', [\App\Http\Controllers\EventController::class, 'index'])
+Route::get('/events', [EventController::class, 'index'])
     ->name('events.index');
 
-Route::get('/events/{slug}', [\App\Http\Controllers\EventController::class, 'show'])
+Route::get('/events/{slug}', [EventController::class, 'show'])
     ->name('events.show');
 
-Route::get('/events/{slug}/ticketing', [\App\Http\Controllers\EventController::class, 'ticketing'])
+Route::get('/events/{slug}/ticketing', [EventController::class, 'ticketing'])
     ->name('events.ticketing');
 
-Route::get('/archives', [\App\Http\Controllers\ArchiveController::class, 'index'])->name('archives');
+Route::get('/archives', [ArchiveController::class, 'index'])->name('archives');
 
-Route::get('/about', \App\Http\Controllers\AboutController::class)->name('about');
-Route::get('/contact', \App\Http\Controllers\ContactController::class)->name('contact');
+Route::get('/about', AboutController::class)->name('about');
+Route::get('/contact', ContactController::class)->name('contact');
 
-Route::get('/news', [\App\Http\Controllers\NewsController::class, 'index'])
+Route::get('/news', [NewsController::class, 'index'])
     ->name('news.index');
 
-Route::get('/news/{slug}', [\App\Http\Controllers\NewsController::class, 'show'])
+Route::get('/news/{slug}', [NewsController::class, 'show'])
     ->name('news.show');
 
-Route::get('/legal/{slug}', [\App\Http\Controllers\LegalPageController::class, 'show'])
+Route::get('/legal/{slug}', [LegalPageController::class, 'show'])
     ->name('legal.show');
 
-Route::get('/lost-tickets', [\App\Http\Controllers\LostTicketsController::class, 'show'])->name('lost-tickets.show');
-Route::post('/lost-tickets', [\App\Http\Controllers\LostTicketsController::class, 'send'])->name('lost-tickets.send');
+Route::get('/lost-tickets', [LostTicketsController::class, 'show'])->name('lost-tickets.show');
+Route::post('/lost-tickets', [LostTicketsController::class, 'send'])->name('lost-tickets.send');
 
-Route::post('/events/{event:slug}/checkout', [\App\Http\Controllers\CheckoutController::class, 'store'])
+Route::post('/events/{event:slug}/checkout', [CheckoutController::class, 'store'])
     ->name('events.checkout.store');
 
-Route::get('/checkout/{checkout:uuid}', [\App\Http\Controllers\CheckoutController::class, 'show'])
+Route::get('/checkout/{checkout:uuid}', [CheckoutController::class, 'show'])
     ->name('checkout.show');
 
-Route::post('/checkout/{checkout:uuid}/send-verification', [\App\Http\Controllers\CheckoutController::class, 'sendVerificationEmail'])
+Route::post('/checkout/{checkout:uuid}/send-verification', [CheckoutController::class, 'sendVerificationEmail'])
     ->name('checkout.send-verification');
 
-Route::post('/checkout/{checkout:uuid}/verify', [\App\Http\Controllers\CheckoutController::class, 'verifyEmail'])
+Route::post('/checkout/{checkout:uuid}/verify', [CheckoutController::class, 'verifyEmail'])
     ->name('checkout.verify');
 
-Route::post('/checkout/{checkout:uuid}/start', [\App\Http\Controllers\CheckoutController::class, 'checkout'])
+Route::post('/checkout/{checkout:uuid}/start', [CheckoutController::class, 'checkout'])
     ->name('checkout.start');
 
-Route::get('/checkout/{checkout:uuid}/success', [\App\Http\Controllers\CheckoutController::class, 'success'])
+Route::get('/checkout/{checkout:uuid}/success', [CheckoutController::class, 'success'])
     ->name('checkout.success');
 
-Route::get('/checkout/{checkout:uuid}/download', [\App\Http\Controllers\CheckoutController::class, 'downloadTickets'])
+Route::get('/checkout/{checkout:uuid}/download', [CheckoutController::class, 'downloadTickets'])
     ->name('checkout.download');
 
-Route::get('/checkout/{checkout:uuid}/cancel', [\App\Http\Controllers\CheckoutController::class, 'cancel_payment'])
+Route::get('/checkout/{checkout:uuid}/cancel', [CheckoutController::class, 'cancel_payment'])
     ->name('checkout.cancel_payment');
 
-Route::get('/checkin/{token}', [\App\Http\Controllers\CheckinController::class, 'publicShow'])->name('checkin.public');
-Route::get('/checkin/{token}/search', [\App\Http\Controllers\CheckinController::class, 'publicSearch'])->name('checkin.public_search');
-Route::post('/checkin/{token}/auth', [\App\Http\Controllers\CheckinController::class, 'authenticate'])
+Route::get('/checkin/{token}', [CheckinController::class, 'publicShow'])->name('checkin.public');
+Route::get('/checkin/{token}/search', [CheckinController::class, 'publicSearch'])->name('checkin.public_search');
+Route::post('/checkin/{token}/auth', [CheckinController::class, 'authenticate'])
     ->middleware('throttle:checkin-auth')
     ->name('checkin.authenticate');
-Route::post('/checkin/{token}/scan', [\App\Http\Controllers\CheckinController::class, 'publicScan'])->name('checkin.public_scan');
-Route::post('/checkin/{token}/tickets/{issuedTicket}/toggle', [\App\Http\Controllers\CheckinController::class, 'publicToggleCheckin'])->name('checkin.public_toggle');
-Route::get('/checkin/{token}/tickets/{issuedTicket}/status', [\App\Http\Controllers\CheckinController::class, 'publicTicketStatus'])->name('checkin.public_status');
+Route::post('/checkin/{token}/scan', [CheckinController::class, 'publicScan'])->name('checkin.public_scan');
+Route::post('/checkin/{token}/tickets/{issuedTicket}/toggle', [CheckinController::class, 'publicToggleCheckin'])->name('checkin.public_toggle');
+Route::get('/checkin/{token}/tickets/{issuedTicket}/status', [CheckinController::class, 'publicTicketStatus'])->name('checkin.public_status');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/checkin/list/{checkinList}', [\App\Http\Controllers\CheckinController::class, 'show'])->name('checkin.show');
-    Route::get('/checkin/list/{checkinList}/search', [\App\Http\Controllers\CheckinController::class, 'search'])->name('checkin.search');
-    Route::post('/checkin/list/{checkinList}/scan', [\App\Http\Controllers\CheckinController::class, 'scan'])->name('checkin.scan');
-    Route::post('/checkin/list/{checkinList}/tickets/{issuedTicket}/toggle', [\App\Http\Controllers\CheckinController::class, 'toggleCheckin'])->name('checkin.toggle');
-    Route::get('/checkin/list/{checkinList}/tickets/{issuedTicket}/status', [\App\Http\Controllers\CheckinController::class, 'getTicketStatus'])->name('checkin.status');
+    Route::get('/checkin/list/{checkinList}', [CheckinController::class, 'show'])->name('checkin.show');
+    Route::get('/checkin/list/{checkinList}/search', [CheckinController::class, 'search'])->name('checkin.search');
+    Route::post('/checkin/list/{checkinList}/scan', [CheckinController::class, 'scan'])->name('checkin.scan');
+    Route::post('/checkin/list/{checkinList}/tickets/{issuedTicket}/toggle', [CheckinController::class, 'toggleCheckin'])->name('checkin.toggle');
+    Route::get('/checkin/list/{checkinList}/tickets/{issuedTicket}/status', [CheckinController::class, 'getTicketStatus'])->name('checkin.status');
 });
 
-Route::post('/webhooks/stripe', [\App\Http\Controllers\StripeWebhookController::class, 'handle']);
+Route::post('/webhooks/stripe', [StripeWebhookController::class, 'handle']);

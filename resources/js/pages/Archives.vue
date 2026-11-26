@@ -1,126 +1,169 @@
 <script setup lang="ts">
-    import { computed, ref, watch } from 'vue';
-    import MainLayout from '@/layouts/MainLayout.vue';
-    import PageHeader from '@/components/PageHeader.vue';
-    import routes from '@/routes/events';
-    import { Link } from '@inertiajs/vue3';
-    import { ArrowRight } from '@lucide/vue';
+import { Link } from '@inertiajs/vue3';
+import { ArrowRight } from '@lucide/vue';
+import { computed, ref, watch } from 'vue';
+import PageHeader from '@/components/PageHeader.vue';
+import MainLayout from '@/layouts/MainLayout.vue';
+import routes from '@/routes/events';
 
-    const props = defineProps<{
-        preheading: string;
-        heading: string;
-        description: string;
-        events: Event[];
-        seo: any;
-    }>();
+const props = defineProps<{
+    preheading: string;
+    heading: string;
+    description: string;
+    events: Event[];
+    seo: any;
+}>();
 
-    const search = ref('');
-    const pageSize = 12;
-    const visibleCount = ref(pageSize);
+const search = ref('');
+const pageSize = 12;
+const visibleCount = ref(pageSize);
 
-    const filteredPastEvents = computed(() => {
-        const term = search.value.trim().toLowerCase();
-        if (!term) {
-            return props.events;
-        }
+const filteredPastEvents = computed(() => {
+    const term = search.value.trim().toLowerCase();
 
-        return props.events.filter((event) => {
-            return event.title.toLowerCase().includes(term);
-        });
-    });
-
-    const visiblePastEvents = computed(() => {
-        return filteredPastEvents.value.slice(0, visibleCount.value);
-    });
-
-    const hasMore = computed(() => {
-        return visibleCount.value < filteredPastEvents.value.length;
-    });
-
-    watch(search, () => {
-        visibleCount.value = pageSize;
-    });
-
-    function formatDate(isoDate: string) {
-        const date = new Date(isoDate);
-        if (isNaN(date.getTime())) return 'DATE INCONNUE';
-
-        return new Intl.DateTimeFormat('fr-BE', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric',
-        })
-            .format(date)
-            .replace('.', '')
-            .toUpperCase();
+    if (!term) {
+        return props.events;
     }
 
-    function loadMore() {
-        visibleCount.value += pageSize;
+    return props.events.filter((event) => {
+        return event.title.toLowerCase().includes(term);
+    });
+});
+
+const visiblePastEvents = computed(() => {
+    return filteredPastEvents.value.slice(0, visibleCount.value);
+});
+
+const hasMore = computed(() => {
+    return visibleCount.value < filteredPastEvents.value.length;
+});
+
+watch(search, () => {
+    visibleCount.value = pageSize;
+});
+
+function formatDate(isoDate: string) {
+    const date = new Date(isoDate);
+
+    if (isNaN(date.getTime())) {
+        return 'DATE INCONNUE';
     }
+
+    return new Intl.DateTimeFormat('fr-BE', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+    })
+        .format(date)
+        .replace('.', '')
+        .toUpperCase();
+}
+
+function loadMore() {
+    visibleCount.value += pageSize;
+}
 </script>
 
 <template>
     <MainLayout :seo="seo" has-background>
         <div class="relative z-10 mx-auto max-w-6xl px-4 pt-34 pb-32 md:px-10">
-            <PageHeader :preheading="preheading" :heading="heading" :description="description" />
+            <PageHeader
+                :preheading="preheading"
+                :heading="heading"
+                :description="description"
+            />
 
             <div class="mb-8">
-                <label for="archive_query" class="sr-only">Rechercher un évènement dans les archives</label>
-                <input id="archive_query" v-model="search" type="text" placeholder="Rechercher un évènement."
+                <label for="archive_query" class="sr-only"
+                    >Rechercher un évènement dans les archives</label
+                >
+                <input
+                    id="archive_query"
+                    v-model="search"
+                    type="text"
+                    placeholder="Rechercher un évènement."
                     aria-label="Rechercher un évènement dans les archives"
-                    class="w-full rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm text-white placeholder:text-gray-500 focus:border-[#06402B]/70 focus:ring-2 focus:ring-[#06402B]/30 focus:outline-none" />
+                    class="w-full rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm text-white placeholder:text-gray-500 focus:border-[#06402B]/70 focus:ring-2 focus:ring-[#06402B]/30 focus:outline-none"
+                />
             </div>
             <section v-if="visiblePastEvents.length" class="space-y-5">
-                <Link v-for="event in visiblePastEvents" :key="event.id" :href="routes.show(event.slug).url"
-                    class="group relative flex items-center gap-6 overflow-hidden rounded-2xl border border-white/8 bg-white/3 p-2.5 pr-8 transition-all duration-300 hover:border-white/15 hover:bg-white/6">
-                    <div class="relative aspect-video w-36 shrink-0 overflow-hidden rounded-xl bg-white/5 md:w-64">
-                        <img v-if="event.background_url || event.poster_url"
-                            :src="event.background_url || event.poster_url" :alt="event.title"
-                            class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                        <div class="absolute inset-0 bg-black/10 transition-opacity duration-300 group-hover:opacity-0">
-                        </div>
+                <Link
+                    v-for="event in visiblePastEvents"
+                    :key="event.id"
+                    :href="routes.show(event.slug).url"
+                    class="group relative flex items-center gap-6 overflow-hidden rounded-2xl border border-white/8 bg-white/3 p-2.5 pr-8 transition-all duration-300 hover:border-white/15 hover:bg-white/6"
+                >
+                    <div
+                        class="relative aspect-video w-36 shrink-0 overflow-hidden rounded-xl bg-white/5 md:w-64"
+                    >
+                        <img
+                            v-if="event.background_url || event.poster_url"
+                            :src="event.background_url || event.poster_url"
+                            :alt="event.title"
+                            class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+                        <div
+                            class="absolute inset-0 bg-black/10 transition-opacity duration-300 group-hover:opacity-0"
+                        ></div>
                     </div>
 
                     <div class="min-w-0 flex-1 py-2">
                         <div class="flex items-center gap-2">
                             <span
-                                class="text-[10px] font-bold tracking-[0.15em] text-[#51A687] uppercase opacity-80 group-hover:opacity-100 md:text-xs">
+                                class="text-[10px] font-bold tracking-[0.15em] text-[#51A687] uppercase opacity-80 group-hover:opacity-100 md:text-xs"
+                            >
                                 {{ formatDate(event.start_at) }}
                             </span>
                         </div>
 
-                        <h2 class="truncate font-chillax text-2xl leading-tight text-white md:text-4xl">
+                        <h2
+                            class="truncate font-chillax text-2xl leading-tight text-white md:text-4xl"
+                        >
                             {{ event.title }}
                         </h2>
 
-                        <div class="flex items-center gap-x-3 text-[11px] text-gray-400 md:text-sm">
-                            <p class="font-medium">{{ event.city }}, {{ event.country }}</p>
-                            <span class="h-1 w-1 rounded-full bg-white/20"></span>
-                            <p class="font-medium">{{ event.photo_count }} photos</p>
+                        <div
+                            class="flex items-center gap-x-3 text-[11px] text-gray-400 md:text-sm"
+                        >
+                            <p class="font-medium">
+                                {{ event.city }}, {{ event.country }}
+                            </p>
+                            <span
+                                class="h-1 w-1 rounded-full bg-white/20"
+                            ></span>
+                            <p class="font-medium">
+                                {{ event.photo_count }} photos
+                            </p>
                         </div>
                     </div>
 
                     <div class="shrink-0">
                         <div
-                            class="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 transition-all duration-300 group-hover:border-[#51A687]/40 group-hover:bg-[#51A687]/10">
+                            class="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 transition-all duration-300 group-hover:border-[#51A687]/40 group-hover:bg-[#51A687]/10"
+                        >
                             <ArrowRight
                                 class="h-5 w-5 text-white transition-colors duration-300 group-hover:text-[#51A687]"
-                                aria-label="Voir l'archive" />
+                                aria-label="Voir l'archive"
+                            />
                         </div>
                     </div>
                 </Link>
             </section>
 
             <div v-if="hasMore" class="mt-12 flex justify-center">
-                <button type="button" @click="loadMore"
-                    class="cursor-pointer rounded-full border border-white/20 bg-white/5 px-6 py-2.5 text-xs font-bold tracking-[0.18em] text-white uppercase transition-colors hover:border-white/35">
+                <button
+                    type="button"
+                    @click="loadMore"
+                    class="cursor-pointer rounded-full border border-white/20 bg-white/5 px-6 py-2.5 text-xs font-bold tracking-[0.18em] text-white uppercase transition-colors hover:border-white/35"
+                >
                     Charger plus
                 </button>
             </div>
 
-            <section v-if="!visiblePastEvents.length"
-                class="flex flex-col items-center justify-center py-20 text-center">
+            <section
+                v-if="!visiblePastEvents.length"
+                class="flex flex-col items-center justify-center py-20 text-center"
+            >
                 <h2 class="font-chillax text-3xl text-white md:text-4xl">
                     Aucun résultat
                 </h2>

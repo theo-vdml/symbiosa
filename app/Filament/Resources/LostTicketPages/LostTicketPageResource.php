@@ -7,8 +7,8 @@ use App\Filament\Shared\Schemas\SeoSchema;
 use App\Models\LostTicketPage;
 use BackedEnum;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -21,8 +21,11 @@ class LostTicketPageResource extends Resource
     protected static ?string $model = LostTicketPage::class;
 
     protected static UnitEnum|string|null $navigationGroup = NavigationGroups::Pages;
+
     protected static BackedEnum|string|null $navigationIcon = Heroicon::Ticket;
-    protected static ?string $navigationLabel = "Billets perdus";
+
+    protected static ?string $navigationLabel = 'Billets perdus';
+
     protected static ?int $navigationSort = 6;
 
     public static function form(Schema $schema): Schema
@@ -58,7 +61,7 @@ class LostTicketPageResource extends Resource
                                     ->required()
                                     ->rows(3),
                             ])
-                            ->itemLabel(fn(array $state): ?string => $state['title'] ?? null)
+                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? null)
                             ->collapsible(),
                     ]),
 
@@ -87,6 +90,7 @@ class LostTicketPageResource extends Resource
             if ($record) {
                 return parent::getUrl('edit', ['record' => $record], $isAbsolute, $panel, $tenant, $shouldGuessMissingParameters, $configuration);
             }
+
             return parent::getUrl('create', [], $isAbsolute, $panel, $tenant, $shouldGuessMissingParameters, $configuration);
         }
 

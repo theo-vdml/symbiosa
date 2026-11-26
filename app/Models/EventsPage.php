@@ -18,15 +18,15 @@ class EventsPage extends Model
     public function getSeoDefaults(): array
     {
         return [
-            'title' => ($this->heading ?? 'Événements à venir') . ' - ' . config('app.name'),
-            "canonical_url" => fn() => route('events.index'),
+            'title' => ($this->heading ?? 'Événements à venir').' - '.config('app.name'),
+            'canonical_url' => fn () => route('events.index'),
         ];
     }
 
     public function getSeoFallbacks(): array
     {
         return [
-            'description' => 'description'
+            'description' => 'description',
         ];
     }
 }

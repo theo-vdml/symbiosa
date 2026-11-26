@@ -4,6 +4,8 @@ namespace App\Filament\Resources\Events\Pages;
 
 use App\Enums\EventNavigationGroups;
 use App\Filament\Resources\Events\EventResource;
+use App\Models\IssuedTicket;
+use App\Models\Reservation;
 use App\Models\TicketType;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -35,7 +37,7 @@ class EditEventTicketing extends EditRecord
 
     public function getTitle(): string|Htmlable
     {
-        return $this->record->title . ' - Prix des billets';
+        return $this->record->title.' - Prix des billets';
     }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTicket;
@@ -49,7 +51,7 @@ class EditEventTicketing extends EditRecord
                     ->warning()
                     ->heading('Action requise : module de billetterie désactivé')
                     ->description('Définissez une date d\'ouverture pour activer le module de billetterie. Tant que cette date n\'est pas renseignée, les options d\'achat de billets ne seront pas visibles par les utilisateurs.')
-                    ->visible(fn() => !$this->record->ticketing_starts_at),
+                    ->visible(fn () => ! $this->record->ticketing_starts_at),
 
                 Section::make('Types de billets')
                     ->description('Gérez les différents types de billets disponibles pour cet événement, leurs prix, capacités et disponibilités.')
@@ -61,22 +63,23 @@ class EditEventTicketing extends EditRecord
                             ->relationship()
                             ->orderColumn('sort_order')
                             ->itemLabel(
-                                fn(array $state): ?string =>
-                                isset($state['name']) ? $state['name'] : 'Nouveau type de billet'
+                                fn (array $state): ?string => isset($state['name']) ? $state['name'] : 'Nouveau type de billet'
                             )
                             ->addActionLabel('Ajouter un type de billet')
                             ->deleteAction(
                                 fn (Action $action) => $action->before(function (Action $action, array $arguments) {
                                     $recordId = $arguments['item'] ?? null;
                                     $recordId = str_replace('record-', '', $recordId);
-                                    if (!$recordId) return;
+                                    if (! $recordId) {
+                                        return;
+                                    }
 
-                                    $hasDeps = \App\Models\Reservation::where('reservable_type', TicketType::class)
+                                    $hasDeps = Reservation::where('reservable_type', TicketType::class)
                                         ->where('reservable_id', $recordId)
                                         ->exists() ||
-                                        \App\Models\IssuedTicket::where('reservable_type', TicketType::class)
-                                        ->where('reservable_id', $recordId)
-                                        ->exists();
+                                        IssuedTicket::where('reservable_type', TicketType::class)
+                                            ->where('reservable_id', $recordId)
+                                            ->exists();
 
                                     if ($hasDeps) {
                                         Notification::make()
@@ -145,10 +148,12 @@ class EditEventTicketing extends EditRecord
                                         fn (Action $action) => $action->before(function (Action $action, array $arguments) {
                                             $recordId = $arguments['item'] ?? null;
                                             $recordId = str_replace('record-', '', $recordId);
-                                            if (!$recordId) return;
+                                            if (! $recordId) {
+                                                return;
+                                            }
 
-                                            $hasDeps = \App\Models\Reservation::where('ticket_price_id', $recordId)->exists() ||
-                                                       \App\Models\IssuedTicket::where('ticket_price_id', $recordId)->exists();
+                                            $hasDeps = Reservation::where('ticket_price_id', $recordId)->exists() ||
+                                                       IssuedTicket::where('ticket_price_id', $recordId)->exists();
 
                                             if ($hasDeps) {
                                                 Notification::make()
@@ -167,16 +172,14 @@ class EditEventTicketing extends EditRecord
                                         Column::make('price_in_euro')
                                             ->label('Prix')
                                             ->formatUsing(
-                                                fn($state) =>
-                                                number_format($state, 2, ',', ' ') . ' €'
+                                                fn ($state) => number_format($state, 2, ',', ' ').' €'
                                             ),
                                         Column::make('threshold')
                                             ->label('Seuil'),
                                         Column::make('available_until')
                                             ->label('Fin')
                                             ->formatUsing(
-                                                fn($state) =>
-                                                $state ? date('d/m/Y H:i', strtotime($state)) : null
+                                                fn ($state) => $state ? date('d/m/Y H:i', strtotime($state)) : null
                                             ),
                                     ])
                                     ->addActionLabel('Ajouter un prix')
@@ -215,8 +218,8 @@ class EditEventTicketing extends EditRecord
                                             ->columnSpan(1),
                                     ])
                                     ->defaultItems(0)
-                                    ->minItems(1)
-                            ])
+                                    ->minItems(1),
+                            ]),
                     ]),
 
             ]);

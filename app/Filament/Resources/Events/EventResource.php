@@ -11,23 +11,23 @@ use App\Filament\Resources\Events\Pages\EditEventDetails;
 use App\Filament\Resources\Events\Pages\EditEventFaq;
 use App\Filament\Resources\Events\Pages\EditEventGallery;
 use App\Filament\Resources\Events\Pages\EditEventLineup;
-use App\Filament\Resources\Events\Pages\EditEventSponsors;
 use App\Filament\Resources\Events\Pages\EditEventSeo;
+use App\Filament\Resources\Events\Pages\EditEventSponsors;
 use App\Filament\Resources\Events\Pages\EditEventTicketing;
 use App\Filament\Resources\Events\Pages\EditEventTicketingConfig;
 use App\Filament\Resources\Events\Pages\EditEventVisuals;
+use App\Filament\Resources\Events\Pages\EventDashboard;
 use App\Filament\Resources\Events\Pages\ListEventCheckinLists;
 use App\Filament\Resources\Events\Pages\ListEventCheckouts;
 use App\Filament\Resources\Events\Pages\ListEventIssuedTickets;
 use App\Filament\Resources\Events\Pages\ListEvents;
-use App\Filament\Resources\Events\Pages\EventDashboard;
 use App\Filament\Resources\Events\Schemas\EventForm;
 use App\Filament\Resources\Events\Schemas\EventInfolist;
 use App\Filament\Resources\Events\Tables\EventsTable;
 use App\Models\Event;
 use BackedEnum;
-use Filament\Pages\Page;
 use Filament\Pages\Enums\SubNavigationPosition;
+use Filament\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -43,8 +43,10 @@ class EventResource extends Resource
     protected static ?int $navigationSort = 0;
 
     protected static string|UnitEnum|null $navigationGroup = NavigationGroups::Events;
-    protected static string|null $modelLabel = 'Événement';
-    protected static string|null $pluralModelLabel = 'Événements';
+
+    protected static ?string $modelLabel = 'Événement';
+
+    protected static ?string $pluralModelLabel = 'Événements';
 
     protected static ?string $recordTitleAttribute = 'title';
 
