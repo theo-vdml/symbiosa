@@ -28,6 +28,8 @@ class EventController extends Controller
     public function show(string $slug)
     {
         $event = Event::where('slug', $slug)
+            // Drafts and scheduled events stay private; logged-in admins can still preview them.
+            ->when(! auth()->check(), fn ($query) => $query->published())
             ->with(['genres', 'sponsors', 'artists', 'artists.genres', 'ticketTypes.prices', 'seo'])
             ->firstOrFail();
 
@@ -39,7 +41,8 @@ class EventController extends Controller
 
     public function ticketing(string $slug)
     {
-        $event = Event::where('slug', $slug)
+        $event = Event::published()
+            ->where('slug', $slug)
             ->with('ticketTypes', 'ticketTypes.prices', 'addons')
             ->firstOrFail();
 
