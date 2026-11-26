@@ -28,3 +28,6 @@ yarn-error.log
 /.zed
 
 /cms
+
+# Claude Code local worktrees
+/.claude/worktrees/
