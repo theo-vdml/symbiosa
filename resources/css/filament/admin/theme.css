@@ -2,11 +2,841 @@
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
+@source '../../../../resources/views/components/admin/**/*';
 
 @source '../../../../vendor/codewithdennis/filament-advanced-choice/resources/**/*.blade.php';
 
 @source '../../../../vendor/cmsmaxinc/filament-error-pages/resources/**/*.blade.php';
 
+/*
+ * Symbiosa admin theme
+ * ------------------------------------------------------------------
+ * Same identity as the public site: Chillax for headings, Synonym for
+ * text (loaded from Fontshare by AdminPanelProvider::font()), the brand
+ * green #51A687, and a near-black green sidebar.
+ *
+ * Colours come from Filament's palette variables (--primary-*, --gray-*),
+ * so the panel's colors() config stays the single source of truth. The
+ * few theme-only tokens are below.
+ */
+
+:root {
+    --sy-font-display:
+        'Chillax', var(--font-family), ui-sans-serif, system-ui, sans-serif;
+
+    --sy-side-bg: oklch(0.175 0.014 165);
+    --sy-side-bg-2: oklch(0.215 0.016 165);
+    --sy-side-fg: oklch(0.92 0.012 165);
+    --sy-side-muted: oklch(0.66 0.02 165);
+    --sy-side-line: oklch(1 0 0 / 0.07);
+    --sy-side-hover: oklch(1 0 0 / 0.05);
+    --sy-side-active: color-mix(in oklch, var(--primary-500) 18%, transparent);
+
+    --sy-radius-card: 1rem;
+    --sy-shadow-card:
+        0 1px 2px oklch(0.2 0.02 165 / 0.05),
+        0 6px 20px -12px oklch(0.2 0.02 165 / 0.18);
+}
+
+:root.dark {
+    --sy-side-bg: oklch(0.125 0.01 165);
+    --sy-side-bg-2: oklch(0.16 0.012 165);
+    --sy-side-line: oklch(1 0 0 / 0.06);
+    --sy-shadow-card:
+        0 1px 2px oklch(0 0 0 / 0.4), 0 10px 28px -16px oklch(0 0 0 / 0.7);
+}
+
+/* ------------------------------------------------------------------
+ * Base & typography
+ * ------------------------------------------------------------------ */
+
 .fi-main {
     @apply max-w-none!;
+}
+
+.fi-body {
+    @apply bg-gray-50 dark:bg-gray-950;
+}
+
+.fi-header-heading,
+.fi-simple-header-heading,
+.fi-section-header-heading,
+.fi-ta-header-heading,
+.fi-modal-heading,
+.fi-wi-stats-overview-stat-value,
+.fi-wi-chart-heading,
+.fi-ta-empty-state-heading,
+.fi-empty-state-heading {
+    font-family: var(--sy-font-display);
+    letter-spacing: -0.01em;
+}
+
+.fi-header-heading {
+    @apply font-semibold;
+}
+
+.fi-section-header-heading {
+    @apply font-semibold;
+}
+
+.fi-ta-text-item,
+.fi-wi-stats-overview-stat-value {
+    font-variant-numeric: tabular-nums;
+}
+
+::selection {
+    background: color-mix(in oklch, var(--primary-500) 30%, transparent);
+}
+
+/* ------------------------------------------------------------------
+ * Logo
+ * ------------------------------------------------------------------ */
+
+.fi-logo:has(.sy-logo) {
+    height: auto !important;
+}
+
+.sy-logo {
+    @apply flex items-center gap-2.5;
+    color: inherit;
+}
+
+.sy-logo-mark {
+    @apply grid size-9 shrink-0 place-items-center rounded-[0.7rem];
+    background: var(--primary-500);
+    color: oklch(0.2 0.03 165);
+
+    & svg {
+        @apply size-6;
+    }
+}
+
+.sy-logo-text {
+    @apply flex flex-col leading-none;
+}
+
+.sy-logo-name {
+    font-family: var(--sy-font-display);
+    @apply text-lg font-semibold tracking-wide;
+}
+
+.sy-logo-sub {
+    @apply mt-1 text-[0.65rem] font-medium tracking-[0.14em] uppercase opacity-60;
+}
+
+/* ------------------------------------------------------------------
+ * Topbar
+ * On desktop, the topbar's logo area takes the sidebar's width and colour,
+ * so the sidebar reads as one dark column running the full height.
+ * ------------------------------------------------------------------ */
+
+.fi-topbar {
+    @apply shadow-none ring-0;
+    border-bottom: 1px solid var(--gray-200);
+    background: color-mix(in oklch, white 88%, transparent);
+    backdrop-filter: blur(10px);
+
+    @variant dark {
+        border-bottom-color: oklch(1 0 0 / 0.07);
+        background: color-mix(in oklch, var(--gray-900) 88%, transparent);
+    }
+}
+
+.fi-topbar-start {
+    @media (width >= 64rem) {
+        align-self: stretch;
+        width: var(--sidebar-width);
+        /* Covers the topbar's bottom border, which belongs to the light area only. */
+        margin-block-end: -1px;
+        border-block-end: 1px solid var(--sy-side-line);
+        margin-inline-start: -1rem;
+        margin-inline-end: 1.5rem;
+        padding-inline: 1.25rem;
+        background: var(--sy-side-bg);
+        color: white;
+        border-inline-end: 1px solid var(--sy-side-line);
+
+        & .fi-logo {
+            @apply ms-0;
+            color: white;
+        }
+    }
+}
+
+.sy-env-badge {
+    @apply hidden rounded-md px-2 py-1 font-mono text-[0.7rem] font-semibold tracking-wider sm:inline-flex;
+    background: var(--warning-100);
+    color: var(--warning-700);
+
+    @variant dark {
+        background: color-mix(in oklch, var(--warning-500) 18%, transparent);
+        color: var(--warning-300);
+    }
+}
+
+/* ------------------------------------------------------------------
+ * Main sidebar (dark). Scoped to .fi-main-sidebar because the record
+ * sub-navigation reuses the same sidebar item components.
+ * ------------------------------------------------------------------ */
+
+.fi-main-sidebar {
+    background: var(--sy-side-bg) !important;
+    color: var(--sy-side-fg);
+    border-inline-end: 1px solid var(--sy-side-line);
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(
+            120% 45% at 0% 0%,
+            color-mix(in oklch, var(--primary-500) 16%, transparent),
+            transparent 70%
+        );
+    }
+
+    & > * {
+        position: relative;
+    }
+
+    & .fi-sidebar-header {
+        background: transparent !important;
+        box-shadow: none !important;
+        color: white;
+        border-bottom: 1px solid var(--sy-side-line);
+
+        & .fi-logo {
+            color: white;
+        }
+    }
+
+    & .fi-sidebar-nav {
+        @apply gap-y-6 px-4 py-6;
+        scrollbar-color: oklch(1 0 0 / 0.15) transparent;
+    }
+
+    & .fi-sidebar-nav-groups {
+        @apply mx-0 gap-y-6;
+    }
+
+    & .fi-sidebar-group-btn {
+        @apply px-3 pt-0 pb-1;
+
+        & .fi-icon {
+            color: var(--sy-side-muted);
+        }
+    }
+
+    & .fi-sidebar-group-label {
+        @apply text-[0.68rem] leading-5 font-semibold tracking-[0.12em] uppercase;
+        color: var(--sy-side-muted);
+    }
+
+    & .fi-sidebar-group-collapse-btn .fi-icon,
+    & .fi-icon-btn .fi-icon {
+        color: var(--sy-side-muted);
+    }
+
+    & .fi-sidebar-group-items {
+        @apply gap-y-0.5;
+    }
+
+    & .fi-sidebar-item-btn {
+        @apply rounded-lg px-3 py-2;
+
+        & > .fi-icon {
+            color: var(--sy-side-muted);
+        }
+    }
+
+    & .fi-sidebar-item-label {
+        color: var(--sy-side-fg);
+    }
+
+    & .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn {
+        &:hover,
+        &:focus-visible {
+            background: var(--sy-side-hover);
+        }
+    }
+
+    & .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+        background: var(--sy-side-active);
+        box-shadow: inset 0 0 0 1px
+            color-mix(in oklch, var(--primary-500) 32%, transparent);
+
+        & > .fi-icon {
+            color: var(--primary-400);
+        }
+
+        & > .fi-sidebar-item-label {
+            color: white;
+        }
+
+        & .fi-sidebar-item-grouped-border-part {
+            background: var(--primary-400);
+        }
+    }
+
+    & .fi-sidebar-item-grouped-border-part {
+        background: var(--sy-side-muted);
+    }
+
+    & .fi-sidebar-item-grouped-border-part-not-first,
+    & .fi-sidebar-item-grouped-border-part-not-last {
+        background: var(--sy-side-line);
+    }
+
+    & .fi-sidebar-footer {
+        @apply mx-4;
+    }
+
+    & .fi-user-menu-trigger,
+    & .fi-sidebar-database-notifications-btn {
+        color: var(--sy-side-fg);
+
+        &:hover {
+            background: var(--sy-side-hover);
+        }
+    }
+}
+
+/* Next-event card at the bottom of the sidebar (render hook SIDEBAR_FOOTER) */
+.sy-live-event {
+    @apply mx-4 mt-auto mb-4 grid gap-1 rounded-xl p-3 text-xs transition;
+    background: var(--sy-side-bg-2);
+    border: 1px solid var(--sy-side-line);
+    color: var(--sy-side-muted);
+
+    &:hover,
+    &:focus-visible {
+        border-color: color-mix(in oklch, var(--primary-500) 40%, transparent);
+    }
+}
+
+.sy-live-event-head {
+    @apply flex items-center gap-2 text-[0.68rem] font-semibold tracking-[0.1em] uppercase;
+}
+
+.sy-live-event-dot {
+    @apply size-2 shrink-0 rounded-full;
+    background: var(--sy-side-muted);
+}
+
+.sy-live-event-open .sy-live-event-dot {
+    background: var(--primary-400);
+    animation: sy-pulse 2s infinite;
+}
+
+.sy-live-event-title {
+    @apply truncate text-sm font-semibold;
+    color: white;
+    font-family: var(--sy-font-display);
+}
+
+.sy-live-event-meta {
+    font-variant-numeric: tabular-nums;
+}
+
+.sy-live-event-bar {
+    @apply mt-1 block h-1.5 overflow-hidden rounded-full;
+    background: oklch(1 0 0 / 0.08);
+
+    & > span {
+        @apply block h-full rounded-full;
+        background: var(--primary-400);
+    }
+}
+
+@keyframes sy-pulse {
+    0% {
+        box-shadow: 0 0 0 0
+            color-mix(in oklch, var(--primary-400) 60%, transparent);
+    }
+    70%,
+    100% {
+        box-shadow: 0 0 0 7px transparent;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sy-live-event-open .sy-live-event-dot,
+    .sy-dot {
+        animation: none !important;
+    }
+}
+
+/* ------------------------------------------------------------------
+ * Page header & breadcrumbs
+ * ------------------------------------------------------------------ */
+
+.fi-page-header-main-ctn {
+    @apply gap-y-6 py-6 lg:py-8;
+}
+
+.fi-breadcrumbs ol li {
+    @apply text-[0.8rem];
+}
+
+/* ------------------------------------------------------------------
+ * Record sub-navigation (event pages): a card in the page's left column
+ * ------------------------------------------------------------------ */
+
+.fi-page-sub-navigation-sidebar-ctn {
+    @apply w-64 shrink-0 md:sticky md:top-20;
+}
+
+.fi-page-sub-navigation-sidebar {
+    @apply gap-y-4 rounded-(--sy-radius-card) bg-white p-2 ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10;
+    box-shadow: var(--sy-shadow-card);
+
+    & .fi-sidebar-group {
+        @apply gap-y-0.5;
+    }
+
+    & .fi-sidebar-group-btn {
+        @apply px-2.5 pt-2 pb-1;
+    }
+
+    & .fi-sidebar-group-label {
+        @apply text-[0.68rem] leading-5 font-semibold tracking-[0.12em] text-gray-500 uppercase dark:text-gray-400;
+    }
+
+    & .fi-sidebar-item-btn {
+        @apply rounded-lg px-2.5 py-1.5;
+    }
+
+    & .fi-sidebar-item-label {
+        @apply text-[0.85rem];
+    }
+
+    & .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+        background: color-mix(in oklch, var(--primary-500) 12%, transparent);
+
+        & > .fi-sidebar-item-label {
+            @apply text-primary-800 dark:text-primary-300 font-semibold;
+        }
+
+        & > .fi-icon {
+            @apply text-primary-600 dark:text-primary-400;
+        }
+    }
+}
+
+/* ------------------------------------------------------------------
+ * Cards: sections, tables, widgets, stats
+ * ------------------------------------------------------------------ */
+
+.fi-section:not(.fi-section-not-contained):not(.fi-aside),
+.fi-section:not(.fi-section-not-contained).fi-aside > .fi-section-content-ctn,
+.fi-ta-ctn,
+.fi-wi-stats-overview-stat,
+.fi-wi-chart .fi-section {
+    border-radius: var(--sy-radius-card);
+    box-shadow: var(--sy-shadow-card);
+}
+
+.fi-section:not(.fi-section-not-contained):not(.fi-aside) > .fi-section-header {
+    @apply py-4;
+}
+
+.fi-section.fi-aside .fi-section-header-heading {
+    @apply text-base;
+}
+
+/* Tables */
+.fi-ta-table > thead > tr {
+    @apply bg-gray-50 dark:bg-white/[0.03];
+}
+
+.fi-ta-header-cell {
+    @apply py-3 text-[0.72rem] font-semibold tracking-[0.06em] text-gray-500 uppercase dark:text-gray-400;
+}
+
+.fi-ta-row.fi-clickable:hover,
+.fi-ta-row:hover {
+    background: color-mix(in oklch, var(--primary-500) 4%, transparent);
+}
+
+/* Stats overview */
+.fi-wi-stats-overview-stat {
+    @apply overflow-hidden p-5;
+
+    & .fi-wi-stats-overview-stat-label-ctn .fi-icon {
+        @apply text-primary-600 dark:text-primary-400;
+    }
+
+    & .fi-wi-stats-overview-stat-value {
+        @apply text-[1.75rem] font-semibold;
+    }
+
+    & .fi-wi-stats-overview-stat-chart > canvas {
+        @apply h-10;
+    }
+}
+
+.fi-wi-stats-overview-stat:has(.fi-wi-stats-overview-stat-chart) {
+    @apply pb-12;
+}
+
+/* ------------------------------------------------------------------
+ * Controls
+ * ------------------------------------------------------------------ */
+
+.fi-btn {
+    @apply font-semibold;
+}
+
+.fi-badge {
+    @apply rounded-full px-2.5;
+}
+
+.fi-input-wrp {
+    @apply shadow-none;
+}
+
+.fi-tabs.fi-contained {
+    border-radius: var(--sy-radius-card);
+}
+
+.fi-modal-window {
+    border-radius: calc(var(--sy-radius-card) + 0.25rem) !important;
+}
+
+.fi-dropdown-panel {
+    @apply rounded-xl;
+}
+
+/* ------------------------------------------------------------------
+ * Event dashboard
+ * ------------------------------------------------------------------ */
+
+.sy-dashboard-title {
+    @apply flex items-center gap-3 pt-2;
+
+    & h2 {
+        font-family: var(--sy-font-display);
+        @apply text-lg font-semibold text-gray-950 dark:text-white;
+    }
+}
+
+.sy-dashboard-title-icon {
+    @apply text-primary-700 dark:text-primary-300 grid size-8 place-items-center rounded-lg;
+    background: color-mix(in oklch, var(--primary-500) 14%, transparent);
+
+    & .fi-icon {
+        @apply size-5;
+    }
+}
+
+.sy-event-hero {
+    --sy-hero-ground: oklch(0.16 0.02 165);
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: calc(var(--sy-radius-card) + 0.25rem);
+    background-color: var(--sy-hero-ground);
+    background-image:
+        radial-gradient(
+            90% 120% at 100% 0%,
+            color-mix(in oklch, var(--primary-500) 45%, transparent),
+            transparent 60%
+        ),
+        repeating-radial-gradient(
+            circle at 85% 20%,
+            oklch(1 0 0 / 0.05) 0 1px,
+            transparent 1px 26px
+        );
+    color: white;
+    box-shadow: var(--sy-shadow-card);
+
+    &.sy-event-hero-has-image {
+        background-image:
+            linear-gradient(
+                90deg,
+                oklch(0.13 0.02 165 / 0.94) 0%,
+                oklch(0.13 0.02 165 / 0.6) 55%,
+                oklch(0.13 0.02 165 / 0.25) 100%
+            ),
+            var(--sy-hero-image);
+        background-size: cover;
+        background-position: center;
+    }
+}
+
+.sy-event-hero-inner {
+    @apply flex flex-col gap-6 p-6 sm:p-8 lg:flex-row lg:items-end lg:justify-between;
+    min-height: 13rem;
+}
+
+.sy-event-hero-main {
+    @apply flex min-w-0 flex-col justify-end gap-3;
+}
+
+.sy-event-hero-eyebrow {
+    @apply flex flex-wrap gap-x-3 gap-y-1 font-mono text-[0.7rem] font-medium tracking-[0.14em] uppercase;
+    color: var(--primary-300);
+
+    & span + span::before {
+        content: '·';
+        margin-inline-end: 0.75rem;
+        opacity: 0.6;
+    }
+}
+
+.sy-event-hero-title {
+    font-family: var(--sy-font-display);
+    @apply text-3xl leading-[1.02] font-semibold text-balance sm:text-4xl lg:text-5xl;
+}
+
+.sy-event-hero-meta {
+    @apply flex flex-wrap gap-x-5 gap-y-1.5 text-sm;
+    color: oklch(0.88 0.02 165);
+
+    & > span {
+        @apply inline-flex items-center gap-1.5;
+    }
+
+    & .fi-icon {
+        @apply size-4 opacity-80;
+    }
+}
+
+.sy-event-hero-badges {
+    @apply flex flex-wrap gap-2 pt-1;
+}
+
+.sy-event-hero-side {
+    @apply flex flex-col gap-4 lg:items-end;
+}
+
+.sy-event-hero-actions {
+    @apply flex flex-wrap gap-2;
+}
+
+.sy-btn-glass.fi-btn {
+    background: oklch(1 0 0 / 0.1) !important;
+    color: white !important;
+    box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.2) !important;
+    backdrop-filter: blur(6px);
+
+    & .fi-icon {
+        color: white !important;
+    }
+
+    &:hover {
+        background: oklch(1 0 0 / 0.16) !important;
+    }
+}
+
+.sy-countdown-cells {
+    @apply flex gap-1.5;
+
+    & > div {
+        @apply min-w-14 rounded-lg px-2.5 py-1.5 text-center;
+        background: oklch(1 0 0 / 0.08);
+        border: 1px solid oklch(1 0 0 / 0.14);
+    }
+
+    & b {
+        font-family: var(--sy-font-display);
+        font-variant-numeric: tabular-nums;
+        @apply block text-xl leading-tight font-semibold;
+    }
+
+    & small {
+        @apply text-[0.62rem] tracking-[0.1em] uppercase;
+        color: var(--primary-300);
+    }
+}
+
+.sy-countdown-live {
+    @apply inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold;
+    background: oklch(1 0 0 / 0.08);
+    border: 1px solid oklch(1 0 0 / 0.14);
+
+    &.sy-countdown-done {
+        color: oklch(0.85 0.01 165);
+    }
+}
+
+.sy-dot {
+    @apply size-2 rounded-full;
+    background: var(--primary-400);
+    animation: sy-pulse 2s infinite;
+}
+
+/* ------------------------------------------------------------------
+ * Login & other simple pages: brand panel on the left (lg and up)
+ * ------------------------------------------------------------------ */
+
+.sy-auth-aside {
+    display: none;
+}
+
+@media (width >= 64rem) {
+    .fi-simple-layout:has(.sy-auth-aside) {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+        align-items: stretch;
+
+        & > .fi-simple-main-ctn {
+            grid-column: 2;
+            grid-row: 1;
+            @apply bg-white dark:bg-gray-900;
+        }
+
+        & .fi-simple-main {
+            @apply my-0 bg-transparent shadow-none ring-0;
+        }
+
+        & .fi-simple-layout-header {
+            z-index: 2;
+        }
+
+        & .fi-simple-header .fi-logo {
+            display: none;
+        }
+    }
+
+    .sy-auth-aside {
+        grid-column: 1;
+        grid-row: 1;
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 100dvh;
+        padding: 2.5rem;
+        background: oklch(0.13 0.016 165);
+        color: white;
+    }
+}
+
+.sy-auth-aside-lines {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+        radial-gradient(
+            80% 60% at 85% 15%,
+            color-mix(in oklch, var(--primary-500) 45%, transparent),
+            transparent 70%
+        ),
+        repeating-radial-gradient(
+            ellipse at 30% 110%,
+            oklch(1 0 0 / 0.06) 0 1px,
+            transparent 1px 22px
+        );
+}
+
+.sy-auth-aside-brand {
+    color: white;
+}
+
+.sy-auth-aside-copy {
+    @apply grid max-w-xl gap-4;
+}
+
+.sy-auth-aside-title {
+    font-family: var(--sy-font-display);
+    @apply text-5xl leading-[0.98] font-semibold text-balance xl:text-6xl;
+
+    & em {
+        font-style: normal;
+        color: var(--primary-300);
+    }
+}
+
+.sy-auth-aside-text {
+    @apply max-w-md text-base;
+    color: oklch(0.82 0.02 165);
+}
+
+/* ------------------------------------------------------------------
+ * Home dashboard: upcoming events
+ * ------------------------------------------------------------------ */
+
+.sy-upcoming {
+    @apply -mx-2 grid gap-1;
+}
+
+.sy-upcoming-item {
+    @apply grid items-center gap-x-4 gap-y-2 rounded-xl p-2 transition;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+
+    &:hover,
+    &:focus-visible {
+        background: color-mix(in oklch, var(--primary-500) 6%, transparent);
+    }
+
+    & .sy-upcoming-sales {
+        grid-column: 2 / -1;
+    }
+
+    @media (width >= 48rem) {
+        grid-template-columns: auto minmax(0, 1fr) minmax(12rem, 16rem) auto;
+
+        & .sy-upcoming-sales {
+            grid-column: auto;
+        }
+    }
+}
+
+.sy-upcoming-date {
+    @apply grid size-14 place-content-center rounded-xl text-center leading-none;
+    background: color-mix(in oklch, var(--primary-500) 12%, transparent);
+    color: var(--primary-800);
+
+    @variant dark {
+        color: var(--primary-300);
+    }
+
+    & b {
+        font-family: var(--sy-font-display);
+        font-variant-numeric: tabular-nums;
+        @apply text-xl font-semibold;
+    }
+
+    & small {
+        @apply mt-0.5 text-[0.65rem] font-semibold tracking-[0.1em] uppercase;
+    }
+}
+
+.sy-upcoming-body {
+    @apply grid min-w-0 gap-0.5;
+}
+
+.sy-upcoming-title {
+    font-family: var(--sy-font-display);
+    @apply truncate text-base font-semibold text-gray-950 dark:text-white;
+}
+
+.sy-upcoming-meta {
+    @apply truncate text-sm text-gray-500 first-letter:uppercase dark:text-gray-400;
+}
+
+.sy-upcoming-sales {
+    @apply grid gap-1.5;
+}
+
+.sy-upcoming-sales-label {
+    @apply flex justify-between gap-2 text-xs text-gray-600 dark:text-gray-400;
+    font-variant-numeric: tabular-nums;
+}
+
+.sy-progress {
+    @apply block h-1.5 overflow-hidden rounded-full bg-gray-100 dark:bg-white/10;
+
+    & > span {
+        @apply block h-full rounded-full;
+        background: var(--primary-500);
+    }
+}
+
+.sy-upcoming-empty {
+    @apply flex flex-col items-start gap-3 text-sm text-gray-600 dark:text-gray-400;
 }

@@ -9,6 +9,9 @@ class EventDashboardTitle extends Widget
 {
     protected string $view = 'filament.resources.events.widgets.event-dashboard-title';
 
+    // Rendered with the page: cheap to compute, and avoids a layout jump while loading.
+    protected static bool $isLazy = false;
+
     // Force le widget à prendre toute la largeur disponible
     protected int|string|array $columnSpan = 'full';
 

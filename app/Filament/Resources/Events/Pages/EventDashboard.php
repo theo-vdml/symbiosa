@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Events\Pages;
 use App\Filament\Resources\Events\EventResource;
 use App\Filament\Resources\Events\Widgets\EventAttendeeStats;
 use App\Filament\Resources\Events\Widgets\EventDashboardTitle;
+use App\Filament\Resources\Events\Widgets\EventHero;
 use App\Filament\Resources\Events\Widgets\EventRevenueStats;
 use BackedEnum;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
@@ -27,6 +28,12 @@ class EventDashboard extends Page
         return $this->record->title.' - Dashboard';
     }
 
+    // The EventHero widget already shows the event's name, so the page heading stays short.
+    public function getHeading(): string|Htmlable
+    {
+        return 'Tableau de bord';
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPresentationChartLine;
 
     public function mount(int|string $record): void
@@ -37,6 +44,7 @@ class EventDashboard extends Page
     protected function getHeaderWidgets(): array
     {
         return [
+            EventHero::class,
             EventDashboardTitle::make(['title' => 'Finances', 'icon' => Heroicon::OutlinedCurrencyDollar]),
             EventRevenueStats::class,
             EventDashboardTitle::make(['title' => 'Statistiques', 'icon' => Heroicon::OutlinedUsers]),
