@@ -51,6 +51,21 @@ class Checkout extends Model
         'email_verification_code',
     ];
 
+    /**
+     * Never sent to the browser: the verification code would make email
+     * verification pointless, and the Stripe ids are internal.
+     */
+    protected $hidden = [
+        'email_verification_code',
+        'stripe_session_id',
+        'stripe_payment_intent_id',
+        'stripe_customer_id',
+    ];
+
+    protected $appends = [
+        'verification_pending',
+    ];
+
     protected $casts = [
         'expires_at' => 'datetime',
         'completed_at' => 'datetime',
@@ -157,5 +172,13 @@ class Checkout extends Model
 
             return CheckoutStatus::PENDING;
         });
+    }
+
+    /**
+     * A code was sent and is waiting to be entered (exposed instead of the code itself).
+     */
+    protected function verificationPending(): Attribute
+    {
+        return Attribute::get(fn (): bool => filled($this->email_verification_code) && ! $this->email_verified_at);
     }
 }
