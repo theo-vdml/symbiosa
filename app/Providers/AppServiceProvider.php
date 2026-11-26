@@ -50,7 +50,9 @@ class AppServiceProvider extends ServiceProvider
         // Check-in list password: 5 attempts/min per IP and list, 20/min per list
         // overall (the global cap still holds if client IPs are spoofed).
         RateLimiter::for('checkin-auth', function (Request $request) {
-            $token = (string) $request->route('token');
+            $token = (string) \App\Models\CheckinList::where('public_url_token', (string) $request->route('token'))
+                ->firstOrFail()
+                ->public_url_token;
             $tooMany = fn () => back()->withErrors([
                 'password' => 'Trop de tentatives. Réessayez dans une minute.',
             ]);
