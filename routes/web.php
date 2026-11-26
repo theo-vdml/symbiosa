@@ -49,6 +49,7 @@ Route::post('/events/{event:slug}/checkout', [CheckoutController::class, 'store'
     ->name('events.checkout.store');
 
 Route::get('/checkout/{checkout:uuid}', [CheckoutController::class, 'show'])
+    ->middleware('throttle:checkout-verify')
     ->name('checkout.show');
 
 Route::post('/checkout/{checkout:uuid}/send-verification', [CheckoutController::class, 'sendVerificationEmail'])
