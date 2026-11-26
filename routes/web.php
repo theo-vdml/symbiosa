@@ -40,18 +40,23 @@ Route::get('/legal/{slug}', [LegalPageController::class, 'show'])
     ->name('legal.show');
 
 Route::get('/lost-tickets', [LostTicketsController::class, 'show'])->name('lost-tickets.show');
-Route::post('/lost-tickets', [LostTicketsController::class, 'send'])->name('lost-tickets.send');
+Route::post('/lost-tickets', [LostTicketsController::class, 'send'])
+    ->middleware('throttle:lost-tickets')
+    ->name('lost-tickets.send');
 
 Route::post('/events/{event:slug}/checkout', [CheckoutController::class, 'store'])
+    ->middleware('throttle:checkout-create')
     ->name('events.checkout.store');
 
 Route::get('/checkout/{checkout:uuid}', [CheckoutController::class, 'show'])
     ->name('checkout.show');
 
 Route::post('/checkout/{checkout:uuid}/send-verification', [CheckoutController::class, 'sendVerificationEmail'])
+    ->middleware('throttle:checkout-verification-email')
     ->name('checkout.send-verification');
 
 Route::post('/checkout/{checkout:uuid}/verify', [CheckoutController::class, 'verifyEmail'])
+    ->middleware('throttle:checkout-verify')
     ->name('checkout.verify');
 
 Route::post('/checkout/{checkout:uuid}/start', [CheckoutController::class, 'checkout'])
