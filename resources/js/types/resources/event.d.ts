@@ -31,9 +31,6 @@ interface Event {
     poster_url: string;
     ticketing_starts_at: string | null;
     ticketing_ends_at: string | null;
-    ticket_email_content: string | null;
-    ticket_pdf_content: string | null;
-    stripe_metadata: Record<string, string> | null;
     is_ticketing_open: boolean;
     is_archived: boolean;
     photo_count: number;
